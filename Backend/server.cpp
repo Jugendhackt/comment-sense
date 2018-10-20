@@ -9,14 +9,14 @@ Server::Server(QObject *parent) :
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
     server->listen(QHostAddress::Any, 1234);
     qDebug()<<QSqlDatabase::drivers();
-    database = QSqlDatabase::addDatabase("QMYSQL");
+    database = QSqlDatabase::addDatabase("QSQLITE");
     database.setHostName("localhost");
     database.setPort(1433);
     database.setDatabaseName("test");
     database.setUserName("commondbusr");
     char *str = (char*)malloc(sizeof (char)*100);
-    fgets(str, 100, stdin);
-    database.setPassword(str);
+    //fgets(str, 100, stdin);
+    database.setPassword("str");
     qDebug()<<"password set";
     if(database.open())
         qDebug()<<"database connection succsessful";
@@ -115,13 +115,14 @@ void Server::httpDelete(QString data, QTcpSocket *socket)
 
 QByteArray Server::getDatabaseContent(QString commentHash)
 {
-    QString querry = "SELECT comment_id FROM commment_on_site WHERE site_id = " + commentHash;
+    QString querry = "SELECT comment_id FROM comment_on_site WHERE site_hash = " + commentHash;
     QByteArray result;
     QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
     sqlQuery->exec();
     qDebug()<<querry;
     while(sqlQuery->next()){
         QVariant value = sqlQuery->value(0);
+        qDebug()<<value.toString();
         result.append(value.toByteArray());
     }
     return result;
