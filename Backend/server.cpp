@@ -8,12 +8,16 @@ Server::Server(QObject *parent) :
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
     server->listen(QHostAddress::Any, 1234);
-    database = QSqlDatabase::addDatabase("dataBase");
+    qDebug()<<QSqlDatabase::drivers();
+    database = QSqlDatabase::addDatabase("QSQLITE");
     database.setHostName("localhost");
     database.setPort(1433);
     database.setDatabaseName("test");
-    database.setUserName("");
-    database.setPassword("");
+    database.setUserName("commondbusr");
+    char *str = (char*)malloc(sizeof (char)*100);
+    //fgets(str, 100, stdin);
+    database.setPassword("str");
+    qDebug()<<"password set";
     if(database.open())
         qDebug()<<"database connection succsessful";
 }
@@ -64,14 +68,7 @@ void Server::httpGet(QString data, QTcpSocket *socket)
             requestedData = getDatabaseContent(commentHash);
         }
         else{
-            QString filename = ".";
-            for(int i = 1; i < url.length(); i++)
-                filename.append("/"+url[i]);
-            qDebug()<<filename;
-            QFile file(filename);
-            file.open(QIODevice::ReadOnly);
-            requestedData = file.readAll();
-            file.close();
+            requestedData = "that's not a comment";
         }
     }
 
@@ -82,7 +79,7 @@ void Server::httpGet(QString data, QTcpSocket *socket)
 void Server::httpPut(QString data, QTcpSocket *socket)
 {
     qDebug()<<"httpPut request: \""<<data<<" \".";
-    qint64 result = -1;
+    QString result;
     QString commentHash, dataToWrite;
     QStringList put = data.split('\n').first().split(' ');
     QStringList url = put[1].split('/');
@@ -90,21 +87,14 @@ void Server::httpPut(QString data, QTcpSocket *socket)
     if(url.length() >= 2){
         if(url[url.length()-2] == "comments"){
             commentHash = url.last();
-            result = putDatabaseContent(dataToWrite.toLatin1(), commentHash);
+            result = QString::number(putDatabaseContent(dataToWrite.toLatin1(), commentHash));
         }
         else{
-            QString filename = ".";
-            for(int i = 1; i < url.length(); i++)
-                filename.append("/"+url[i]);
-            qDebug()<<filename;
-            QFile file(filename);
-            file.open(QIODevice::WriteOnly);
-            result = file.write(dataToWrite.toLatin1());
-            file.close();
+            result = "that's not a comment";
         }
     }
 
-    socket->write(QString::number(result).toLatin1());
+    socket->write(result.toLatin1());
     socket->flush();
 }
 
@@ -125,13 +115,14 @@ void Server::httpDelete(QString data, QTcpSocket *socket)
 
 QByteArray Server::getDatabaseContent(QString commentHash)
 {
-    QString querry = "SELECT comment_id FROM commment_on_site WHERE site_id = " + commentHash;
+    QString querry = "SELECT comment_id FROM comment_on_site WHERE site_hash = " + commentHash;
     QByteArray result;
     QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
     sqlQuery->exec();
     qDebug()<<querry;
     while(sqlQuery->next()){
         QVariant value = sqlQuery->value(0);
+        qDebug()<<value.toString();
         result.append(value.toByteArray());
     }
     return result;
