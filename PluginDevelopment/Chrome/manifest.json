@@ -3,9 +3,37 @@
   "description": "My first Chrome App.",
   "version": "0.1",
   "manifest_version": 2,
+  "permissions": [
+    "contextMenus",
+    "privacy",
+    "storage",
+    "tabs",
+    "unlimitedStorage",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+    ],
   "icons": { "32": "./assets/icons/like.svg"},
   "browser_action": {
     "default_icon": "./assets/icons/like.svg",
     "default_popup": "popup.html"
-  }
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "/assets/js/jquery-3.3.1.js",
+        "/assets/js/jquery-ui.min.js",
+        "popup.js",
+        "backend.js"
+      ],
+    }
+  ]
 }
