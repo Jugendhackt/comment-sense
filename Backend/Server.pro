@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core network sql
+QT       += core network
+
 
 TARGET = Server
 TEMPLATE = app

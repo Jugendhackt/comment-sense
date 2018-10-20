@@ -8,7 +8,7 @@ Server::Server(QObject *parent) :
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
     server->listen(QHostAddress::Any, 1234);
-    qDebug()<<QSqlDatabase::drivers();
+ /*   qDebug()<<QSqlDatabase::drivers();
     database = QSqlDatabase::addDatabase("QSQLITE");
     database.setHostName("localhost");
     database.setPort(1433);
@@ -19,11 +19,18 @@ Server::Server(QObject *parent) :
     database.setPassword("str");
     qDebug()<<"password set";
     if(database.open())
-        qDebug()<<"database connection succsessful";
+        qDebug()<<"database connection succsessful";*/
+    char *zErrMsg = 0;
+    rc = sqlite3_open("database.db", &db);
+    if(rc){
+        qDebug()<<"Cant't open database "<<sqlite3_errmsg(db);
+        return;
+    }
 }
 
 Server::~Server()
 {
+    sqlite3_close(db);
 }
 
 void Server::newConnection()
@@ -117,20 +124,20 @@ QByteArray Server::getDatabaseContent(QString commentHash)
 {
     QString querry = "SELECT comment_id FROM comment_on_site WHERE site_hash = " + commentHash;
     QByteArray result;
-    QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
+/*    QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
     sqlQuery->exec();
     qDebug()<<querry;
     while(sqlQuery->next()){
         QVariant value = sqlQuery->value(0);
         qDebug()<<value.toString();
         result.append(value.toByteArray());
-    }
+    }*/
     return result;
 }
 
 qint64 Server::putDatabaseContent(QByteArray data, QString commentHash)
 {
     QString querry = "";
-    QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
-    return sqlQuery->exec();
+    //QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
+    //return sqlQuery->exec();
 }

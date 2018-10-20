@@ -3,8 +3,9 @@
 
 #include <QTcpServer>
 #include <QTcpSocket>
-#include <QtSql>
+//#include <QtSql>
 #include <QIODevice>
+#include <sqlite3.h>
 
 
 class Server : public QObject
@@ -22,7 +23,9 @@ private:
     //Ui::Widget *ui;
     QTcpServer *server;
     QList<QTcpSocket*> socketList;
-    QSqlDatabase database;
+//s    QSqlDatabase database;
+    sqlite3 *db;
+    int rc;
 
 
     void httpGet(QString data, QTcpSocket *socket);
