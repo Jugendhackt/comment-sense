@@ -8,10 +8,13 @@ Server::Server(QObject *parent) :
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
     server->listen(QHostAddress::Any, 1234);
-    database = new QSqlDatabase();
-    database->setHostName("localhost");
-    database->setPort(1433);
-    if(database->open())
+    database = QSqlDatabase::addDatabase("dataBase");
+    database.setHostName("localhost");
+    database.setPort(1433);
+    database.setDatabaseName("test");
+    database.setUserName("");
+    database.setPassword("");
+    if(database.open())
         qDebug()<<"database connection succsessful";
 }
 
@@ -124,7 +127,7 @@ QByteArray Server::getDatabaseContent(QString commentHash)
 {
     QString querry = "SELECT comment_id FROM commment_on_site WHERE site_id = " + commentHash;
     QByteArray result;
-    QSqlQuery *sqlQuery = new QSqlQuery(querry, *database);
+    QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
     sqlQuery->exec();
     qDebug()<<querry;
     while(sqlQuery->next()){
@@ -137,6 +140,6 @@ QByteArray Server::getDatabaseContent(QString commentHash)
 qint64 Server::putDatabaseContent(QByteArray data, QString commentHash)
 {
     QString querry = "";
-    QSqlQuery *sqlQuery = new QSqlQuery(querry, *database);
+    QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
     return sqlQuery->exec();
 }

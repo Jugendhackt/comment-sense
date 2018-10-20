@@ -22,7 +22,7 @@ private:
     //Ui::Widget *ui;
     QTcpServer *server;
     QList<QTcpSocket*> socketList;
-    QSqlDatabase *database;
+    QSqlDatabase database;
 
 
     void httpGet(QString data, QTcpSocket *socket);
