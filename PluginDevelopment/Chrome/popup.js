@@ -36,6 +36,7 @@ $(document).ready(function() {
         height: '76px'
       }, 300, function() {
         $('footer button[name="writeComment"]').show("slide", { direction: "left" }, 300);
+        animateForm('hide');
       });
       basicDisplay('.footer-overlay-close', 'none');
     } else if (mode == 'extended') {
@@ -43,7 +44,7 @@ $(document).ready(function() {
         $('footer').animate({
           height: '400px'
         });
-        animateForm();
+        animateForm('show');
       });
       basicDisplay('.footer-overlay-close', 'flex');
     }
