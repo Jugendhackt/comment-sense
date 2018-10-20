@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets network sql
+QT       += core network sql
 
 TARGET = Server
 TEMPLATE = app

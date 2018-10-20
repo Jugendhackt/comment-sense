@@ -1,7 +1,6 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include <QWidget>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QtSql>
