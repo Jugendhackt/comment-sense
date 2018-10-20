@@ -2,30 +2,29 @@
 #include <QtDebug>
 #include <QFile>
 
+QList<QList<QPair<QString, QString>>> dataBaseQuerryResult;
+
+static int callback(void *data, int argc, char **argv, char **azColName){
+    qDebug()<<(char*)data;
+    QList<QPair<QString, QString>> querryElement;
+    for(int i = 0; i < argc; i++)
+        querryElement.append(QPair<QString, QString>(QString(azColName[i]), QString(argv[i] ? argv[i] : "NULL")));
+    dataBaseQuerryResult.append(querryElement);
+    return 0;
+}
+
 Server::Server(QObject *parent) :
     QObject(parent)
 {
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
     server->listen(QHostAddress::Any, 1234);
- /*   qDebug()<<QSqlDatabase::drivers();
-    database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setHostName("localhost");
-    database.setPort(1433);
-    database.setDatabaseName("test");
-    database.setUserName("commondbusr");
-    char *str = (char*)malloc(sizeof (char)*100);
-    //fgets(str, 100, stdin);
-    database.setPassword("str");
-    qDebug()<<"password set";
-    if(database.open())
-        qDebug()<<"database connection succsessful";*/
-    char *zErrMsg = 0;
-    rc = sqlite3_open("database.db", &db);
+    rc = sqlite3_open("mainDataBase.db", &db);
     if(rc){
         qDebug()<<"Cant't open database "<<sqlite3_errmsg(db);
         return;
     }
+    zErrMsg = 0;
 }
 
 Server::~Server()
@@ -80,7 +79,7 @@ void Server::httpGet(QString data, QTcpSocket *socket)
     }
 
     socket->write(requestedData.toLatin1());
-    socket->flush();                            //wants commentator names, comments, votes
+    socket->flush();
 }
 
 void Server::httpPut(QString data, QTcpSocket *socket)
@@ -120,24 +119,62 @@ void Server::httpDelete(QString data, QTcpSocket *socket)
     qDebug()<<"httpPost request: \""<<data<<" \".";
 }
 
-QByteArray Server::getDatabaseContent(QString commentHash)
+void Server::initDatabase()
 {
-    QString querry = "SELECT comment_id FROM comment_on_site WHERE site_hash = " + commentHash;
+    execSqlQuerry("CREATE TABLE comments("
+                  "id INT PRIMARY KEY NOT NULL,"
+                  "user_id INT,"
+                  "rating INT,"
+                  "created_at DATE,"
+                  "content TEXT)", 0);
+    execSqlQuerry("CREATE TABLE comments_on_site("
+                  "id INT PRIMARY KEY NOT NULL,"
+                  "comment_id INT,"
+                  "site_hash TEXT NOT NULL)", 0);
+    execSqlQuerry("CREATE TABLE sites("
+                  "id INT PRIMARY KEY NOT NULL,"
+                  " url TEXT, "
+                  "hash TEXT NOT NULL)", 0);
+    execSqlQuerry("CREATE TABLE users("
+                  "id INT PRIMARY KEY NOT NULL,"
+                  "name TEXT NOT NULL,"
+                  "password TEXT NOT NULL)", 0);
+}
+
+QByteArray Server::getDatabaseContent(QString commentHash) //wants commentator names, comments, votes
+{
+    QString querry = "SELECT comment_id FROM comments_on_site WHERE site_hash = " + commentHash;
     QByteArray result;
-/*    QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
-    sqlQuery->exec();
-    qDebug()<<querry;
-    while(sqlQuery->next()){
-        QVariant value = sqlQuery->value(0);
-        qDebug()<<value.toString();
-        result.append(value.toByteArray());
-    }*/
+    zErrMsg = 0;
+    char *data = "Callback function called";
+    execSqlQuerry(querry, data);
+    QList<int> commentIds;
+    for(int i = 0; i < dataBaseQuerryResult.length(); i++){
+        commentIds.append(dataBaseQuerryResult[i].first().second.toInt());
+    }
+    dataBaseQuerryResult.clear();
+    execSqlQuerry("SELECT * FROM comments", data);
+    for(int i = 0; i < dataBaseQuerryResult.length(); i++){
+        if(commentIds.contains(i)){ //add comments[i].comment & votes to result, get commentator name & add to result
+            ;
+        }
+    }
     return result;
 }
 
 qint64 Server::putDatabaseContent(QByteArray data, QString commentHash)
 {
     QString querry = "";
-    //QSqlQuery *sqlQuery = new QSqlQuery(querry, database);
-    //return sqlQuery->exec();
+}
+
+int Server::execSqlQuerry(QString querry, char *data)
+{
+    rc = sqlite3_exec(db, querry.toLatin1().data(), callback, (void*)data, &zErrMsg);
+    if(rc != SQLITE_OK){
+        qDebug()<<"SQL error: "<<zErrMsg;
+        sqlite3_free(zErrMsg);
+    }
+    else{
+        qDebug()<<"Operation done succesfully";
+    }
 }

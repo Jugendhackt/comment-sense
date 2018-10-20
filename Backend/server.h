@@ -7,6 +7,12 @@
 #include <QIODevice>
 #include <sqlite3.h>
 
+typedef int (*sqlite3_callback)(
+        void *,
+        int,
+        char**,
+        char**
+);
 
 class Server : public QObject
 {
@@ -26,6 +32,7 @@ private:
 //s    QSqlDatabase database;
     sqlite3 *db;
     int rc;
+    char *zErrMsg;
 
 
     void httpGet(QString data, QTcpSocket *socket);
@@ -34,8 +41,18 @@ private:
     void httpPatch(QString data, QTcpSocket *socket);
     void httpDelete(QString data, QTcpSocket *socket);
 
+    void initDatabase();
+
     QByteArray getDatabaseContent(QString commentHash);
     qint64 putDatabaseContent(QByteArray data, QString commentHash);
+    int execSqlQuerry(QString querry, char *data);
+
+    enum Table{
+        comments,
+        comments_on_site,
+        site,
+        users
+    };
 };
 
 #endif // WIDGET_H
