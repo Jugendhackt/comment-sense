@@ -6,16 +6,28 @@ $(document).ready(function() {
     });
   }
 
-  function animateForm() {
-    let fields = ['.form-description h1', '.form-description p', '.form-description hr', '.form-group:nth-child(1)', '.form-group:nth-child(2)', '.form-check', '.footer-overlay #submit'];
-    var index = 0;
-    let inserter = setInterval(function() {
-      $(fields[index]).fadeIn();
-      index++;
-      if (index == 7) {
-        clearInterval(inserter);
-      }
-    }, 200);
+  function animateForm(mode) {
+    if (mode == "show") {
+      let fields = ['.form-description h1', '.form-description p', '.form-description hr', '.form-group:nth-child(1)', '.form-group:nth-child(2)', '.form-check', '.footer-overlay #submit'];
+      var index = 0;
+      let inserter = setInterval(function() {
+        $(fields[index]).fadeIn();
+        index++;
+        if (index == 7) {
+          clearInterval(inserter);
+        }
+      }, 200);
+    } else {
+      let fields = ['.form-description h1', '.form-description p', '.form-description hr', '.form-group:nth-child(1)', '.form-group:nth-child(2)', '.form-check', '.footer-overlay #submit'];
+      var index = 0;
+      let inserter = setInterval(function() {
+        $(fields[index]).fadeOut();
+        index++;
+        if (index == 7) {
+          clearInterval(inserter);
+        }
+      }, 200);
+    }
   }
 
   function fadeFooter(mode) {
