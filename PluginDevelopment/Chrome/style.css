@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  width: 250px;
+}
+main {
+
+}
+h1, h2, h3, h4, .logo {
+  font-family: 'Roboto';
+}
+.logo {
+  font-weight: 500;
+}
+
+/*  */
+nav {
+  width: 100%;
+  height: 50px;
+  background-color: #31AF91;
+  border-radius: 5px 5px 0 0;
+}
+.nav-item, .navbar-brand {
+  display: flex;
+  align-items: center;
+}
+.navbar-brand {
+  margin: 0;
+  padding: 0;
+}
