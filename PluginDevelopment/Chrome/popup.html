@@ -18,67 +18,69 @@
     </li>
   </nav>
   <main>
-    <div class="card" style="width: 18rem;">
-      <div class="card-header">
-        <div class="flex-centered-vertically">
-          <span class="profile-image">
-            <img src="./assets/icons/user.svg" alt="">
-          </span>
-          <h5 class="card-title">Mustermann</h5>
+    <div id="landingpage">
+      <div class="card" style="width: 18rem;">
+        <div class="card-header">
+          <div class="flex-centered-vertically">
+            <span class="profile-image">
+              <img src="./assets/icons/user.svg" alt="">
+            </span>
+            <h5 class="card-title">Mustermann</h5>
+          </div>
+          <p class="card-title-description">Liked 21 times</p>
         </div>
-        <p class="card-title-description">Liked 21 times</p>
-      </div>
-      <div class="card-body">
-        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <button type="button" class="btn btn-primary btn-sm">
-          <span class="like">
-            <img src="./assets/icons/like.svg" alt="">
-          </span>
-          Like
-        </button>
-      </div>
-    </div>
-    <div class="card" style="width: 18rem;">
-      <div class="card-header">
-        <div class="flex-centered-vertically">
-          <span class="profile-image">
-            <img src="./assets/icons/user.svg" alt="">
-          </span>
-          <h5 class="card-title">Mustermann</h5>
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <button type="button" class="btn btn-primary btn-sm">
+            <span class="like">
+              <img src="./assets/icons/like.svg" alt="">
+            </span>
+            Gefällt mir
+          </button>
         </div>
-        <p class="card-title-description">Liked 21 times</p>
       </div>
-      <div class="card-body">
-        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <button type="button" class="btn btn-primary btn-sm">
-          <span class="like">
-            <img src="./assets/icons/like.svg" alt="">
-          </span>
-          Like
-        </button>
-      </div>
-    </div>
-    <div class="card" style="width: 18rem;">
-      <div class="card-header">
-        <div class="flex-centered-vertically">
-          <span class="profile-image">
-            <img src="./assets/icons/user.svg" alt="">
-          </span>
-          <h5 class="card-title">Mustermann</h5>
+      <div class="card" style="width: 18rem;">
+        <div class="card-header">
+          <div class="flex-centered-vertically">
+            <span class="profile-image">
+              <img src="./assets/icons/user.svg" alt="">
+            </span>
+            <h5 class="card-title">Mustermann</h5>
+          </div>
+          <p class="card-title-description">Liked 21 times</p>
         </div>
-        <p class="card-title-description">Liked 21 times</p>
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <button type="button" class="btn btn-primary btn-sm">
+            <span class="like">
+              <img src="./assets/icons/like.svg" alt="">
+            </span>
+            Gefällt mir
+          </button>
+        </div>
       </div>
-      <div class="card-body">
-        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <button type="button" class="btn btn-primary btn-sm">
-          <span class="like">
-            <img src="./assets/icons/like.svg" alt="">
-          </span>
-          Gefällt mir
-        </button>
+      <div class="card" style="width: 18rem;">
+        <div class="card-header">
+          <div class="flex-centered-vertically">
+            <span class="profile-image">
+              <img src="./assets/icons/user.svg" alt="">
+            </span>
+            <h5 class="card-title">Mustermann</h5>
+          </div>
+          <p class="card-title-description">Liked 21 times</p>
+        </div>
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <button type="button" class="btn btn-primary btn-sm">
+            <span class="like">
+              <img src="./assets/icons/like.svg" alt="">
+            </span>
+            Gefällt mir
+          </button>
+        </div>
       </div>
     </div>
   </main>
@@ -86,17 +88,44 @@
     <span class="fade-out-gradient"></span>
     <hr>
     <div class="flex-centered">
-      <button type="button" class="btn btn-secondary">
+      <button name="writeComment" type="button" class="btn btn-secondary">
         <span class="writeComment">
           <img src="./assets/icons/comment.svg" alt="">
         </span>
         Write a comment
       </button>
     </div>
+    <div class="footer-overlay-close">
+      <img src="./assets/icons/ArrowDown.svg" alt="">
+    </div>
+    <div class="footer-overlay">
+      <form>
+        <div class="form-description">
+          <h1>Write your comment</h1>
+          <p>Please fill all input fields!</p>
+          <hr>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+          <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        </div>
+        <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
   </footer>
 
   <!-- JavaScript Includes -->
   <script src="./assets/js/jquery-3.3.1.min.js"></script>
+  <script src="./assets/js/jquery-ui.min.js" charset="utf-8"></script>
   <script src="popup.js" charset="utf-8"></script>
 </body>
 </html>
