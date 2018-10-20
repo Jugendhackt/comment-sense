@@ -1,32 +1,149 @@
+/* ##### Table of contents #####
+  1. General
+    1.1 Includes
+    1.2 Basic declarations
+  2. Navbar
+  3. Main (Cards including comments)
+/* #################### */
+
+
+/* ##### 1. General ##### */
+/* ##### 1.1 Includes ##### */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+
+
+/* ##### 1.2 Basic declarations ##### */
 * {
   margin: 0;
   padding: 0;
 }
 html {
   width: 250px;
+  margin: 0 !important;
 }
-main {
-
+h1, h2, h3, h4 {
+  font-family: 'Roboto', sans-serif;
 }
-h1, h2, h3, h4, .logo {
-  font-family: 'Roboto';
-}
-.logo {
-  font-weight: 500;
-}
-
-/*  */
-nav {
-  width: 100%;
-  height: 50px;
-  background-color: #31AF91;
-  border-radius: 5px 5px 0 0;
-}
-.nav-item, .navbar-brand {
+.flex-centered-vertically {
   display: flex;
   align-items: center;
 }
+.btn-primary {
+  background-color: #0077D2;
+}
+
+/* ##### 2. Navbar ##### */
+nav {
+  width: 100%;
+  height: 50px;
+  position: fixed;
+  top: 0;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  background-color: #FFF;
+  border-radius: 5px 5px 0 0;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+}
+.nav li {
+  height: 40px;
+  padding: 0 auto;
+}
+.nav li:nth-child(1) {
+  display: flex;
+  align-items: center;
+  margin-left: 25px;
+  width: 20px;
+  height: 20px;
+}
+.nav li:last-of-type {
+  padding-left: 10px;
+}
+.nav img {
+  width: 24px;
+  height: 24px;
+}
 .navbar-brand {
   margin: 0;
-  padding: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000;
+}
+
+
+/* ##### 3. Main ##### */
+main {
+  width: 100%;
+  height: auto;
+  display: flex;
+  margin-top: 50px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.card {
+  width: 230px !important;
+  margin-top: 15px;
+  border: none;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+}
+.card-header {
+  border: none;
+  background-color: #f9f9f9;
+}
+.card .profile-image {
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+}
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  padding-left: 12px;
+}
+.card .profile-image img {
+  width: 35px;
+  height: 35px;
+}
+.card-title-description {
+  font-size: 13px;
+  color: #A5A5A5;
+  margin: -8px 0 0 0;
+  padding-left: 47px;
+}
+.card-subtitle {
+  font-weight: 700;
+  color: #171717 !important;
+  margin-bottom: .3rem !important;
+}
+.card-text {
+  font-size: 14px;
+  letter-spacing: -.2px;
+}
+.card-body button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.like img {
+  width: 22px;
+  height: 22px;
+  stroke: #FFF;
+  margin-top: -2px;
+  padding-right: 5px;
+
+}
+
+/* ##### 4. Footer ##### */
+footer {
+  width: 100%;
+  height: 76px;
+  position: fixed;
+  bottom: 0;
+  background-color: #FFF;
+}
+footer hr {
+  width: 230px;
+  display: block;
+  margin: 0 auto 0 auto;
 }
