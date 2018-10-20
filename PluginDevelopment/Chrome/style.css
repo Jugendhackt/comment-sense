@@ -221,20 +221,35 @@ footer .flex-centered .writeComment img {
   padding-top: 30px;
   margin: 0 25px;
 }
-.footer-overlay h1 {
-  font-size: 22px;
-  font-weight: 700;
-}
 .footer-overlay h1, .footer-overlay p {
   margin: 0;
   padding: 0;
   display: none;
 }
+.footer-overlay h1 {
+  font-size: 22px;
+  font-weight: 700;
+}
+.footer-overlay p {
+  font-size: 14px;
+}
 .footer-overlay hr {
   margin: 10px auto;
+}
+.footer-overlay form label {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: .1rem;
 }
 .footer-overlay .form-group,
 .footer-overlay .form-check,
 .footer-overlay button[type="submit"] {
   display: none;
+}
+.footer-overlay button[type="submit"] {
+  background-color: #31af91;
+  border: none;
+}
+.form-control {
+  font-size: 14px;
 }
