@@ -7,13 +7,13 @@ $(document).ready(function() {
   }
 
   function animateFormfields(mode) {
-    let fields = ['.form-description h1', '.form-description p', '.form-description hr', 'div.form-group:nth-of-type(2)', 'div.form-group:nth-of-type(3)', '.footer-overlay #submit'];
+    let fields = ['.form-description h1', '.form-description p', '.form-description hr', 'div.form-group:nth-of-type(2)', 'div.form-group:nth-of-type(3)', 'div.form-group:nth-of-type(4)', '.footer-overlay #submit'];
     if (mode == 'show') {
       var index = 0;
       let inserter = setInterval(function() {
         $(fields[index]).fadeIn();
         index++;
-        if (index == 6) {
+        if (index == 7) {
           clearInterval(inserter);
         }
       }, 150);
@@ -45,9 +45,11 @@ $(document).ready(function() {
       basicDisplay('.footer-overlay-close', 'none');
       console.log('Display: ' + $('.footer-overlay form').css('display'));
     } else if (mode == 'extended') {
+      // Hide ScrollDown button
+      $('#scrollDown').hide();
       $('footer button[name="writeComment"]').hide("slide", { direction: "left" }, 300, function() {
         $('footer').animate({
-          height: '400px'
+          height: '450px'
         });
         animateFormfields('show');
       });
@@ -58,11 +60,6 @@ $(document).ready(function() {
   // Write comment, slide up animation
   $('footer button').click(function() {
     fadeFooter('extended');
-    // chrome.tabs.create({url: 'popup.html'}).then(() => {
-      var creating = chrome.tabs.create({
-        code: 'console.log("Printed.");'
-      });
-      console.log(creating);
     // });
   });
   $('.footer-overlay-close').click(function() {

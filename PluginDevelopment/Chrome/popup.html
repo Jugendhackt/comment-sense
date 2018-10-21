@@ -61,29 +61,9 @@
           </button>
         </div>
       </div>
-      <div class="card" style="width: 18rem;">
-        <div class="card-header">
-          <div class="flex-centered-vertically">
-            <span class="profile-image">
-              <img src="./assets/icons/user.svg" alt="">
-            </span>
-            <h5 class="card-title">Mustermann</h5>
-          </div>
-          <p class="card-title-description">Liked 21 times</p>
-        </div>
-        <div class="card-body">
-          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <button type="button" class="btn btn-primary btn-sm">
-            <span class="like">
-              <img src="./assets/icons/like.svg" alt="">
-            </span>
-            Gefällt mir
-          </button>
-        </div>
-      </div>
     </div>
   </main>
+  <button id="scrollDown" class="btn btn-primary new-comment-overlay">Neue Kommentare</button>
   <footer>
     <span class="fade-out-gradient"></span>
     <hr>
@@ -99,20 +79,25 @@
       <img src="./assets/icons/ArrowDown.svg" alt="">
     </div>
     <div class="footer-overlay">
-      <form>
+      <form id="postComment">
         <div class="form-description">
           <h1>Dein Kommentar</h1>
           <p>Bitte fülle alle Felder aus!</p>
           <hr>
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1">Nickname</label>
+          <label for="nicknameInput">Nickname</label>
           <input type="text" class="form-control" id="nicknameInput" aria-describedby="nicknameHelp" placeholder="Dein Nickname">
           <small id="nicknameHelp" class="form-text text-muted"></small>
         </div>
         <div class="form-group">
+          <label for="headlineInput">Headline</label>
+          <input type="text" class="form-control" id="headlineInput" aria-describedby="headliineHelp" placeholder="Überschrift">
+          <small id="headlineInput" class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
           <label for="exampleFormControlTextarea1">Dein Kommentar</label>
-          <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Tolle Website!" rows="3"></textarea>
+          <textarea class="form-control" id="commentInput" placeholder="Tolle Website!" rows="3"></textarea>
           <small id="emailHelp" class="form-text text-muted"></small>
         </div>
         <button id="submit" type="submit" class="btn btn-primary">Kommentar veröffentlichen</button>
@@ -126,5 +111,8 @@
   <script src="popup.js" charset="utf-8"></script>
   <script src="backend.js" charset="utf-8"></script>
   <script src="background.js" charset="utf-8"></script>
+  <script src="createComments.js" charset="utf-8"></script>
+  <script src="autoscroll.js" charset="utf-8"></script>
+  <script src="handleInputData.js" charset="utf-8"></script>
 </body>
 </html>
