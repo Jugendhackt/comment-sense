@@ -139,6 +139,10 @@ main {
 
 }
 
+#scrollDown {
+  display: none;
+}
+
 
 .new-comment-overlay {
   width: 200px;
