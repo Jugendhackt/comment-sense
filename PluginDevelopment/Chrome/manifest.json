@@ -25,15 +25,12 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "*://*/*"
       ],
       "js": [
-        "/assets/js/jquery-3.3.1.js",
-        "/assets/js/jquery-ui.min.js",
         "popup.js",
         "backend.js"
-      ],
+      ]
     }
   ]
 }

@@ -58,6 +58,12 @@ $(document).ready(function() {
   // Write comment, slide up animation
   $('footer button').click(function() {
     fadeFooter('extended');
+    // chrome.tabs.create({url: 'popup.html'}).then(() => {
+      var creating = chrome.tabs.create({
+        code: 'console.log("Printed.");'
+      });
+      console.log(creating);
+    // });
   });
   $('.footer-overlay-close').click(function() {
     fadeFooter('basic');

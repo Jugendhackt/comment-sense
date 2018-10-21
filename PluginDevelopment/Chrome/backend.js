@@ -24,7 +24,6 @@ function sendRequest(nickname, content) {
 }
 
 // sendRequest('', '');
-chrome.tabs.executeScript(null,{
-    code:"document.body.style.backgroundColor='red'"
-  });
+
+  //console.log(chrome.tabs.getCurrent(console.log(this)));
 });
