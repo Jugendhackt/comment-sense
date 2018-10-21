@@ -78,6 +78,7 @@ void Server::httpGet(QString data, QTcpSocket *socket)
         }
     }
 
+    qDebug()<<requestedData;
     socket->write(requestedData.toLatin1());
     socket->flush();
 }
@@ -99,7 +100,7 @@ void Server::httpPut(QString data, QTcpSocket *socket)
             result = "that's not a comment";
         }
     }
-
+    qDebug()<<result;
     socket->write(result.toLatin1());
     socket->flush();
 }
@@ -143,22 +144,54 @@ void Server::initDatabase()
 
 QByteArray Server::getDatabaseContent(QString commentHash) //wants commentator names, comments, votes
 {
-    QString querry = "SELECT comment_id FROM comments_on_site WHERE site_hash = " + commentHash;
-    QByteArray result;
+    qDebug()<<commentHash;
+    commentHash.replace("\r", "");
+    commentHash.replace("\n", "");
+    QString querry = "SELECT comment_id FROM comments_on_site WHERE site_hash LIKE \'" + commentHash +"\'";
+    QByteArray result = "{Comments:[";
     zErrMsg = 0;
     char *data = "Callback function called";
-    execSqlQuerry(querry, data);
     QList<int> commentIds;
+    execSqlQuerry(querry, data);
+    qDebug()<<dataBaseQuerryResult.length();
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
         commentIds.append(dataBaseQuerryResult[i].first().second.toInt());
     }
     dataBaseQuerryResult.clear();
-    execSqlQuerry("SELECT * FROM comments", data);
+
+    QStringList users;
+    execSqlQuerry("SELECT * FROM users", data);
+    qDebug()<<dataBaseQuerryResult.length();
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
-        if(commentIds.contains(i)){ //add comments[i].comment & votes to result, get commentator name & add to result
-            ;
+        for(int k = 0; k < dataBaseQuerryResult[i].length(); k++){
+            if(dataBaseQuerryResult[i][k].first.contains("name"))
+                users.append(dataBaseQuerryResult[i][k].second);
         }
     }
+    dataBaseQuerryResult.clear();
+
+    execSqlQuerry("SELECT * FROM comments", data);
+    qDebug()<<dataBaseQuerryResult.length();
+    for(int i = 0; i < dataBaseQuerryResult.length(); i++){
+        if(commentIds.contains(i)){ //add comments[i].comment & votes to result, get commentator name & add to result
+            result.append("{");
+            QList<QPair<QString, QString>> querryElement = dataBaseQuerryResult[i];
+            QString content, commentator;
+            int votes;
+            for(int k = 0; k < querryElement.length(); k++){
+                if(querryElement[k].first.contains("content"))
+                    content = querryElement[k].second;
+                else if(querryElement[k].first.contains("rating"))
+                    votes = querryElement[k].second.toInt();
+                else if (querryElement[k].first.contains("user_id")){
+                    commentator = users[querryElement[k].second.toInt()];
+                }
+            }
+            result.append("\"content\":\""+content+"\",\"votes\":" + QString::number(votes) + ",\"userName\":\""+ commentator + "\"},");
+        }
+    }
+    result.replace(result.length()-2, 1, "\0");
+    result.append("]}");
     return result;
 }
 
