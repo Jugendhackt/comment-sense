@@ -5,7 +5,7 @@
 #include <QTcpSocket>
 //#include <QtSql>
 #include <QIODevice>
-#include <sqlite3.h>
+#include "sqlite3.h"
 
 typedef int (*sqlite3_callback)(
         void *,
@@ -19,7 +19,7 @@ class Server : public QObject
     Q_OBJECT
 
 public:
-    explicit Server(QObject *parent = 0);
+    explicit Server(QObject *parent = nullptr);
     ~Server();
 public slots:
     void newConnection();

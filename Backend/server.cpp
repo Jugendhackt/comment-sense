@@ -4,11 +4,13 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QTime>
+#include <QDate>
 
-QList<QList<QPair<QString, QString>>> dataBaseQuerryResult;
+static QList<QList<QPair<QString, QString>>> dataBaseQuerryResult;
 
 static int callback(void *data, int argc, char **argv, char **azColName){
-    qDebug()<<(char*)data;
+    qDebug()<<reinterpret_cast<char*>(data);
     QList<QPair<QString, QString>> querryElement;
     for(int i = 0; i < argc; i++)
         querryElement.append(QPair<QString, QString>(QString(azColName[i]), QString(argv[i] ? argv[i] : "NULL")));
@@ -21,15 +23,16 @@ Server::Server(QObject *parent) :
 {
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
-    server->listen(QHostAddress::Any, 1234);
-    rc = sqlite3_open("mainDataBase.db", &db);
+    server->listen(QHostAddress::Any, 8080);
+    rc = sqlite3_open("mainDataBase.db3", &db);
     if(rc){
         qDebug()<<"Cant't open database "<<sqlite3_errmsg(db);
         return;
     }
-    zErrMsg = 0;
+    zErrMsg = nullptr;
     //qDebug()<<getDatabaseContent("hash1");
     putDatabaseContent("{\"userId\":1,\"password\":\"password2\",\"headline\":\"Header\",\"comment\":\"this is the comment\"}", "hash1");
+    //initDatabase();
 }
 
 Server::~Server()
@@ -132,19 +135,19 @@ void Server::initDatabase()
                   "user_id INT,"
                   "rating INT,"
                   "created_at DATE,"
-                  "content TEXT)", 0);
+                  "content TEXT)", nullptr);
     execSqlQuerry("CREATE TABLE comments_on_site("
                   "id INT PRIMARY KEY NOT NULL,"
                   "comment_id INT,"
-                  "site_hash TEXT NOT NULL)", 0);
+                  "site_hash TEXT NOT NULL)", nullptr);
     execSqlQuerry("CREATE TABLE sites("
                   "id INT PRIMARY KEY NOT NULL,"
                   " url TEXT, "
-                  "hash TEXT NOT NULL)", 0);
+                  "hash TEXT NOT NULL)", nullptr);
     execSqlQuerry("CREATE TABLE users("
                   "id INT PRIMARY KEY NOT NULL,"
                   "name TEXT NOT NULL,"
-                  "password TEXT NOT NULL)", 0);
+                  "password TEXT NOT NULL)", nullptr);
 }
 
 QByteArray Server::getDatabaseContent(QString commentHash) //wants commentator names, comments, votes
@@ -153,8 +156,8 @@ QByteArray Server::getDatabaseContent(QString commentHash) //wants commentator n
     commentHash.replace("\r", "");
     commentHash.replace("\n", "");
     QByteArray result = "{Comments:[";
-    zErrMsg = 0;
-    char *data = "Callback function called";
+    zErrMsg = nullptr;
+    char *data = QByteArray("Callback function called").data();
     QList<int> commentIds;
     execSqlQuerry("SELECT comment_id, site_hash FROM comments_on_site WHERE site_hash LIKE \'" + commentHash +"\'", data);
     qDebug()<<dataBaseQuerryResult.length();
@@ -213,7 +216,10 @@ qint64 Server::putDatabaseContent(QByteArray data, QString commentHash)
     //jason(data) -> vars
     int id, userId, rating, siteID;
     QString date, content, password, url, headline;
-
+    QDate currentDate = QDate::currentDate();
+    date = QString(QString::number(currentDate.day()) + "."
+                   + QString::number(currentDate.month()) + "."
+                   + QString::number(currentDate.year()));
     QJsonDocument json = QJsonDocument::fromJson(data);
     QJsonObject object = json.object();
     QJsonValue value = object.value(QString("userId"));
@@ -224,56 +230,62 @@ qint64 Server::putDatabaseContent(QByteArray data, QString commentHash)
     headline = value.toString();
     value = object.value(QString("comment"));
     content = value.toString();
+    value = object.value(QString("rating"));
+    rating = value.toInt();
 
     qDebug()<<data<<endl<<userId<<password<<headline<<content;
 
     commentHash.replace("\r", "");
     commentHash.replace("\n", "");
-    execSqlQuerry("SELECT password FROM users WHERE id LIKE \'" + QString::number(userId) + "\'", 0);
+    execSqlQuerry("SELECT password FROM users WHERE id LIKE \'" + QString::number(userId) + "\'", nullptr);
     if(dataBaseQuerryResult.length() < 1)
         return -1;
     else{
         bool correctPassword = false;
         for(int i = 0; i  < dataBaseQuerryResult.length(); i++){
-            if(dataBaseQuerryResult[i].first().second == password){
+            if(dataBaseQuerryResult[i].first().second.contains(password)){
                 correctPassword = true;
                 break;
             }
         }
-        if(!correctPassword)
+        if(!correctPassword){
+            qDebug()<<"Wrong password";
             return -1;
+        }
     }
+    
     dataBaseQuerryResult.clear();
 
-    execSqlQuerry("SELECT MAX(comment_id) FROM comments", 0);
+    execSqlQuerry("SELECT MAX(id) FROM comments", nullptr);
     id = dataBaseQuerryResult.first().first().second.toInt() + 1;
     dataBaseQuerryResult.clear();
 
-    execSqlQuerry("SELECT id FROM sites WHERE hash LIKE \'" + commentHash + "\'", 0);
-    bool newsite = false;
-    if(dataBaseQuerryResult.length() < 1)
-        newsite = true;
-    else
+    execSqlQuerry("SELECT id FROM sites WHERE hash LIKE \'" + commentHash + "\'", nullptr);
+    if(dataBaseQuerryResult.length() < 1){  //new site
+        dataBaseQuerryResult.clear();
+        execSqlQuerry("SELECT MAX(id) FROM sites", nullptr);
         siteID = dataBaseQuerryResult.first().first().second.toInt() + 1;
-    dataBaseQuerryResult.clear();
-    if(newsite){
-        execSqlQuerry("SELECT MAX(id) FROM sites", 0);
-        siteID = dataBaseQuerryResult.first().first().second.toInt() + 1;
-        execSqlQuerry("INSERT INTO sites (id, url, hash) VALUES (" + QString::number(siteID) + ",\'" + url + "\'," + commentHash + ");", 0);
+        execSqlQuerry("INSERT INTO sites (id, url, hash) VALUES (" + QString::number(siteID) + ",\'" + url + "\'," + commentHash + ");", nullptr);
     }
     dataBaseQuerryResult.clear();
-
-    execSqlQuerry("INSERT INTO comments (id, user_id, rating, created_at, content, Headline) VALUES (" +
-                  QString::number(id) + "," + QString::number(userId) + "," + QString::number(rating) + ",\'" +
-                  date + "\',\'" + content + "\',\'" + headline + "\');", 0);
-    execSqlQuerry("INSERT INTO comments_on_site (id, comment_id, site_hash) VALUES (" +
-                  QString::number(siteID) + "," + QString::number(id) + ",\'" + commentHash +"\');", 0);
+    qDebug()<<"1";
+    
+    execSqlQuerry("SELECT MAX(id) FROM comments_on_site", nullptr);
+    int cosId = dataBaseQuerryResult.first().first().second.toInt() + 1;    //new id in comments_on_site
     dataBaseQuerryResult.clear();
+    
+    execSqlQuerry("INSERT INTO comments (id, user_id, rating, created_at, content, headline) VALUES (" +
+                  QString::number(id) + "," + QString::number(userId) + "," + QString::number(rating) + ",\'" +
+                  date + "\',\'" + content + "\',\'" + headline + "\');", nullptr);
+    execSqlQuerry("INSERT INTO comments_on_site (id, comment_id, site_hash) VALUES (" +
+                  QString::number(cosId) + "," + QString::number(id) + ",\'" + commentHash +"\');", nullptr);
+    dataBaseQuerryResult.clear();
+    return 0;
 }
 
 int Server::execSqlQuerry(QString querry, char *data)
 {
-    rc = sqlite3_exec(db, querry.toLatin1().data(), callback, (void*)data, &zErrMsg);
+    rc = sqlite3_exec(db, querry.toLatin1().data(), callback, reinterpret_cast<void*>(data), &zErrMsg);
     if(rc != SQLITE_OK){
         qDebug()<<"SQL error: "<<zErrMsg;
         sqlite3_free(zErrMsg);
@@ -281,4 +293,5 @@ int Server::execSqlQuerry(QString querry, char *data)
     else{
         qDebug()<<"Operation done succesfully";
     }
+    return 0;
 }
