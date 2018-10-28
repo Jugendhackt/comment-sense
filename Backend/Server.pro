@@ -24,10 +24,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    server.cpp
+    server.cpp \
+    sqlite3.c
 
 HEADERS += \
-    server.h
+    server.h \
+    sqlite3.h
 
 FORMS += \
         widget.ui
