@@ -44,8 +44,13 @@ private:
     void initDatabase();
 
     QByteArray getDatabaseContent(QString commentHash);
-    qint64 putDatabaseContent(QByteArray data, QString commentHash);
+    qint64 putDatabaseContent(QByteArray data);
     int execSqlQuerry(QString querry, char *data);
+    int getUserId(QString userName);
+    int getCosId();
+    int getCommentId();
+    int getSiteId(QString hash, QString url);
+    bool isUserValid(QString userName, QString password);
 
     enum Table{
         comments,
