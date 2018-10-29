@@ -10,20 +10,21 @@ function getHash(url) {
 }
 
 
-function sendRequest(nickname, content) {
+function sendRequest(nickname, headline, content) {
+  console.log("hallo welt");
   var xhr = new XMLHttpRequest();
   // let hash = getHash();
   // console.log('Hash: ' + hash);
-  xhr.open('GET', 'http://159.69.14.13:1234/comments/', true);
+  xhr.open('POST', 'http://localhost:12345/comments/', true);
   // xhr.setRequestHeader('Content-type', 'application/commentSense');
   xhr.onload = function () {
       // do something to response
       console.log(this.responseText);
   };
-  xhr.send([nickname, content]);
+  xhr.send('{\"userName\":\"User2\",\"password\":\"password2\",\"headline\":\"Header\",\"comment\":\"this is the comment\",\"hash\":\"hash1\"}');
 }
 
-// sendRequest('', '');
+ sendRequest('nickname', 'headline', 'comment');
 
   //console.log(chrome.tabs.getCurrent(console.log(this)));
 });

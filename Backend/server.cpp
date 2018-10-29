@@ -23,7 +23,7 @@ Server::Server(QObject *parent) :
 {
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
-    server->listen(QHostAddress::Any, 8080);
+    server->listen(QHostAddress::Any, 12345);
     rc = sqlite3_open("mainDataBase.db3", &db);
     if(rc){
         qDebug()<<"Cant't open database "<<sqlite3_errmsg(db);
@@ -31,7 +31,11 @@ Server::Server(QObject *parent) :
     }
     zErrMsg = nullptr;
     //qDebug()<<getDatabaseContent("hash1");
-    putDatabaseContent("{\"userId\":1,\"password\":\"password2\",\"headline\":\"Header\",\"comment\":\"this is the comment\"}", "hash1");
+    putDatabaseContent("{\"userName\":\"User2\","
+                        "\"password\":\"password2\","
+                        "\"headline\":\"Header\","
+                        "\"comment\":\"this is the comment\","
+                        "\"hash\":\"hash1\"}");
     //initDatabase();
 }
 
@@ -94,28 +98,21 @@ void Server::httpGet(QString data, QTcpSocket *socket)
 void Server::httpPut(QString data, QTcpSocket *socket)
 {
     qDebug()<<"httpPut request: \""<<data<<" \".";
-    QString result;
-    QString commentHash, jsonData;
-    QStringList put = data.split('\n').first().split(' ');
-    QStringList url = put[1].split('/');
-    jsonData = data.split('\n')[1];
-    if(url.length() >= 2){
-        if(url[url.length()-2] == "comments"){
-            commentHash = url.last();
-            result = QString::number(putDatabaseContent(jsonData.toLatin1(), commentHash));
-        }
-        else{
-            result = "that's not a comment";
-        }
-    }
-    qDebug()<<result;
-    socket->write(result.toLatin1());
-    socket->flush();
 }
 
 void Server::httpPost(QString data, QTcpSocket *socket)
 {
     qDebug()<<"httpPost request: \""<<data<<" \".";
+    QStringList lines = data.split("\r\n");
+    QString json;
+    bool b_json = false;
+    for(int i = 0; i < lines.size(); i++){
+        if(lines[i].isEmpty())
+            b_json = true;
+        if(b_json)
+            json.append(lines[i]);
+    }
+    putDatabaseContent(json.toLatin1());
 }
 
 void Server::httpPatch(QString data, QTcpSocket *socket)
@@ -211,69 +208,43 @@ QByteArray Server::getDatabaseContent(QString commentHash) //wants commentator n
     return result;
 }
 
-qint64 Server::putDatabaseContent(QByteArray data, QString commentHash)
-{   //data = userId + password + headline + comment
-    //jason(data) -> vars
-    int id, userId, rating, siteID;
+qint64 Server::putDatabaseContent(QByteArray data)
+{
+    int rating = 0;
     QString date, content, password, url, headline;
+    QString commentHash, userName;
     QDate currentDate = QDate::currentDate();
     date = QString(QString::number(currentDate.day()) + "."
-                   + QString::number(currentDate.month()) + "."
-                   + QString::number(currentDate.year()));
+                 + QString::number(currentDate.month()) + "."
+                 + QString::number(currentDate.year()));
     QJsonDocument json = QJsonDocument::fromJson(data);
     QJsonObject object = json.object();
-    QJsonValue value = object.value(QString("userId"));
-    userId = value.toInt();
+    QJsonValue value = object.value(QString("userName"));
+    userName = value.toString();
     value = object.value(QString("password"));
     password = value.toString();
     value = object.value(QString("headline"));
     headline = value.toString();
     value = object.value(QString("comment"));
     content = value.toString();
-    value = object.value(QString("rating"));
-    rating = value.toInt();
+    value = object.value(QString("hash"));
+    commentHash = value.toString();
 
-    qDebug()<<data<<endl<<userId<<password<<headline<<content;
+    qDebug()<<data<<endl<<userName<<password<<headline<<content;
 
     commentHash.replace("\r", "");
     commentHash.replace("\n", "");
-    execSqlQuerry("SELECT password FROM users WHERE id LIKE \'" + QString::number(userId) + "\'", nullptr);
-    if(dataBaseQuerryResult.length() < 1)
+    
+    if(!isUserValid(userName, password)){
+        qDebug()<<"Wrong username or password";
         return -1;
-    else{
-        bool correctPassword = false;
-        for(int i = 0; i  < dataBaseQuerryResult.length(); i++){
-            if(dataBaseQuerryResult[i].first().second.contains(password)){
-                correctPassword = true;
-                break;
-            }
-        }
-        if(!correctPassword){
-            qDebug()<<"Wrong password";
-            return -1;
-        }
     }
-    
-    dataBaseQuerryResult.clear();
 
-    execSqlQuerry("SELECT MAX(id) FROM comments", nullptr);
-    id = dataBaseQuerryResult.first().first().second.toInt() + 1;
-    dataBaseQuerryResult.clear();
-
-    execSqlQuerry("SELECT id FROM sites WHERE hash LIKE \'" + commentHash + "\'", nullptr);
-    if(dataBaseQuerryResult.length() < 1){  //new site
-        dataBaseQuerryResult.clear();
-        execSqlQuerry("SELECT MAX(id) FROM sites", nullptr);
-        siteID = dataBaseQuerryResult.first().first().second.toInt() + 1;
-        execSqlQuerry("INSERT INTO sites (id, url, hash) VALUES (" + QString::number(siteID) + ",\'" + url + "\'," + commentHash + ");", nullptr);
-    }
-    dataBaseQuerryResult.clear();
-    qDebug()<<"1";
-    
-    execSqlQuerry("SELECT MAX(id) FROM comments_on_site", nullptr);
-    int cosId = dataBaseQuerryResult.first().first().second.toInt() + 1;    //new id in comments_on_site
-    dataBaseQuerryResult.clear();
-    
+    int id = getCommentId();    
+    int siteID = getSiteId(commentHash, url);
+    int cosId = getCosId();
+    int userId = getUserId(userName);
+    qDebug()<<"Writing...";
     execSqlQuerry("INSERT INTO comments (id, user_id, rating, created_at, content, headline) VALUES (" +
                   QString::number(id) + "," + QString::number(userId) + "," + QString::number(rating) + ",\'" +
                   date + "\',\'" + content + "\',\'" + headline + "\');", nullptr);
@@ -294,4 +265,66 @@ int Server::execSqlQuerry(QString querry, char *data)
         qDebug()<<"Operation done succesfully";
     }
     return 0;
+}
+
+int Server::getUserId(QString userName)
+{
+    int userID = 0;
+    execSqlQuerry("SELECT id FROM users WHERE name LIKE\'" + userName + "\'", nullptr);
+    if(dataBaseQuerryResult.length() > 0)
+        userID = dataBaseQuerryResult.first().first().second.toInt();
+    dataBaseQuerryResult.clear();
+    return userID;
+}
+
+int Server::getCosId()
+{
+    int cosId = 0;
+    execSqlQuerry("SELECT MAX(id) FROM comments_on_site", nullptr);
+    if(dataBaseQuerryResult.length() > 0)
+        cosId = dataBaseQuerryResult.first().first().second.toInt() + 1;    //new id in comments_on_site
+    dataBaseQuerryResult.clear();
+    return cosId;
+}
+
+int Server::getCommentId()
+{
+    int id = 0;
+    execSqlQuerry("SELECT MAX(id) FROM comments", nullptr);
+    if(dataBaseQuerryResult.length() > 0)
+        id = dataBaseQuerryResult.first().first().second.toInt() + 1;
+    dataBaseQuerryResult.clear();
+    return id;
+}
+
+int Server::getSiteId(QString hash, QString url)
+{
+    int siteID = 0;
+    execSqlQuerry("SELECT id FROM sites WHERE hash LIKE \'" + hash + "\'", nullptr);
+    if(dataBaseQuerryResult.length() < 1){  //new site
+        dataBaseQuerryResult.clear();
+        execSqlQuerry("SELECT MAX(id) FROM sites", nullptr);
+        siteID = dataBaseQuerryResult.first().first().second.toInt() + 1;
+        execSqlQuerry("INSERT INTO sites (id, url, hash) VALUES (" + QString::number(siteID) + ",\'" + url + "\'," + hash + ");", nullptr);
+    }
+    dataBaseQuerryResult.clear();
+    return siteID;
+}
+
+bool Server::isUserValid(QString userName, QString password)
+{
+    bool valid = false;
+    execSqlQuerry("SELECT password FROM users WHERE name LIKE \'" + userName + "\'", nullptr);
+    if(dataBaseQuerryResult.length() < 1)
+        qDebug()<<"no User"<<userName;
+    else{
+        for(int i = 0; i  < dataBaseQuerryResult.length(); i++){
+            if(dataBaseQuerryResult[i].first().second.contains(password)){
+                valid = true;
+                break;
+            }
+        }
+    }    
+    dataBaseQuerryResult.clear();
+    return valid;
 }
