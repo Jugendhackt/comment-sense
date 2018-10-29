@@ -3,7 +3,6 @@
 
 #include <QTcpServer>
 #include <QTcpSocket>
-//#include <QtSql>
 #include <QIODevice>
 #include "sqlite3.h"
 
@@ -51,6 +50,7 @@ private:
     int getCommentId();
     int getSiteId(QString hash, QString url);
     bool isUserValid(QString userName, QString password);
+    QString getHashFromData(QString data);
 
     enum Table{
         comments,
