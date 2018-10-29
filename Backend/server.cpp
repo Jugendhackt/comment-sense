@@ -30,12 +30,24 @@ Server::Server(QObject *parent) :
         return;
     }
     zErrMsg = nullptr;
-    //qDebug()<<getDatabaseContent("hash1");
+    /*
     putDatabaseContent("{\"userName\":\"User2\","
                         "\"password\":\"password2\","
                         "\"headline\":\"Header\","
                         "\"comment\":\"this is the comment\","
                         "\"hash\":\"hash1\"}");
+    qDebug()<<getHashFromData("POST /comments/ HTTP/1.1\r\n"
+                              "Host: localhost:12345\r\n"
+                              "Connection: keep-alive\r\n"
+                              "Content-Length: 25\r\n"
+                              "Origin: chrome-extension://dijfcbcnifcppjmmidaijhjkhicolgno\r\n"
+                              "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36 OPR/56.0.3051.52\r\n"
+                              "Content-Type: text/plain;charset=UTF-8\r\n"
+                              "Accept: *//*\r\nAccept-Encoding: gzip, deflate, br\r\n"
+                              "Accept-Language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7\r\n"
+                              "\r\n"
+                              "{\"hash\":\"User2\"}");
+    */
     //initDatabase();
 }
 
@@ -78,17 +90,13 @@ void Server::httpGet(QString data, QTcpSocket *socket)
 {
     qDebug()<<"httpGet request: \""<<data<<" \".";
     QString requestedData, commentHash;
-    QStringList get = data.split('\n').first().split(' ');
-    QStringList url = get[1].split('/');
-    if(url.length() >= 2){
-        if(url[url.length()-2] == "comments"){
-            commentHash = url.last();
-            requestedData = getDatabaseContent(commentHash);
-        }
-        else{
-            requestedData = "that's not a comment";
-        }
+    QStringList lines = data.split("\r\n");
+    if(!lines.first().contains("/comments/")){
+        requestedData = "Thats not a comment";
+        return;
     }
+    else
+        requestedData = getDatabaseContent(getHashFromData(data));
 
     qDebug()<<requestedData;
     socket->write(requestedData.toLatin1());
@@ -104,6 +112,10 @@ void Server::httpPost(QString data, QTcpSocket *socket)
 {
     qDebug()<<"httpPost request: \""<<data<<" \".";
     QStringList lines = data.split("\r\n");
+    if(!lines.first().contains("/comments/")){
+        qDebug()<<"Thats not a comment";
+        return;
+    }
     QString json;
     bool b_json = false;
     for(int i = 0; i < lines.size(); i++){
@@ -147,33 +159,15 @@ void Server::initDatabase()
                   "password TEXT NOT NULL)", nullptr);
 }
 
-QByteArray Server::getDatabaseContent(QString commentHash) //wants commentator names, comments, votes
+QByteArray Server::getDatabaseContent(QString commentHash)
 {
     qDebug()<<commentHash;
-    commentHash.replace("\r", "");
-    commentHash.replace("\n", "");
     QByteArray result = "{Comments:[";
     zErrMsg = nullptr;
     char *data = QByteArray("Callback function called").data();
-    QList<int> commentIds;
-    execSqlQuerry("SELECT comment_id, site_hash FROM comments_on_site WHERE site_hash LIKE \'" + commentHash +"\'", data);
-    qDebug()<<dataBaseQuerryResult.length();
-    for(int i = 0; i < dataBaseQuerryResult.length(); i++){
-        if(dataBaseQuerryResult[i].last().second == commentHash)
-            commentIds.append(dataBaseQuerryResult[i].first().second.toInt());
-    }
-    dataBaseQuerryResult.clear();
-
-    QStringList users;
-    execSqlQuerry("SELECT * FROM users", data);
-    qDebug()<<dataBaseQuerryResult.length();
-    for(int i = 0; i < dataBaseQuerryResult.length(); i++){
-        for(int k = 0; k < dataBaseQuerryResult[i].length(); k++){
-            if(dataBaseQuerryResult[i][k].first.contains("name"))
-                users.append(dataBaseQuerryResult[i][k].second);
-        }
-    }
-    dataBaseQuerryResult.clear();
+    
+    QList<int> commentIds = getCommentIds(commentHash);
+    QStringList users = getUsers();
 
     execSqlQuerry("SELECT * FROM comments", data);
     qDebug()<<dataBaseQuerryResult.length();
@@ -327,4 +321,43 @@ bool Server::isUserValid(QString userName, QString password)
     }    
     dataBaseQuerryResult.clear();
     return valid;
+}
+
+QString Server::getHashFromData(QString data)
+{
+    QJsonDocument json = QJsonDocument::fromJson(data.split("\r\n\r\n").last().toLatin1());
+    QJsonObject object = json.object();
+    QJsonValue value = object.value(QString("hash"));
+    QString hash = value.toString();
+    hash.replace("\r", "");
+    hash.replace("\n", "");
+    return hash;
+}
+
+QStringList Server::getUsers()
+{
+    QStringList users;
+    execSqlQuerry("SELECT * FROM users", nullptr);
+    qDebug()<<dataBaseQuerryResult.length();
+    for(int i = 0; i < dataBaseQuerryResult.length(); i++){
+        for(int k = 0; k < dataBaseQuerryResult[i].length(); k++){
+            if(dataBaseQuerryResult[i][k].first.contains("name"))
+                users.append(dataBaseQuerryResult[i][k].second);
+        }
+    }
+    dataBaseQuerryResult.clear();  
+    return users;
+}
+
+QList<int> Server::getCommentIds(QString hash)
+{
+    QList<int> commentIds;
+    execSqlQuerry("SELECT comment_id, site_hash FROM comments_on_site WHERE site_hash LIKE \'" + hash +"\'", nullptr);
+    qDebug()<<dataBaseQuerryResult.length();
+    for(int i = 0; i < dataBaseQuerryResult.length(); i++){
+        if(dataBaseQuerryResult[i].last().second == hash)
+            commentIds.append(dataBaseQuerryResult[i].first().second.toInt());
+    }
+    dataBaseQuerryResult.clear();    
+    return  commentIds;
 }
