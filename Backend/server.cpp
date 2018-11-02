@@ -31,7 +31,7 @@ Server::Server(QObject *parent) :
 #endif
     port = 12345;
     server->listen(QHostAddress::Any, port);
-    rc = sqlite3_open("mainDataBase.db3", &db);
+    rc = sqlite3_open(dbPath, &db);
     if(rc){
         qDebug()<<"Cant't open database "<<sqlite3_errmsg(db);
         return;
@@ -96,23 +96,24 @@ void Server::readyRead()
     QString httpAction = data.split(' ').first();
     if(httpAction == "POST"){
         httpPost(data, socket);
-    }            // Create file
+    }       // Upload comment
     else if(httpAction == "GET"){
         httpGet(data, socket);
-    }        // Read file
+    }       // Get all comments on site or get file
     else if(httpAction == "PUT"){
         httpPut(data, socket);
-    }        // Replace file
+    }       // Upload file
     else if(httpAction == "PATCH"){
         httpPatch(data, socket);
-    }
+    }       // Edit comment or change votes of comment
     else if(httpAction == "DELETE"){
         httpPatch(data, socket);
-    }
+    }       // Delete comment
 }
 
 void Server::disconnected()
-{
+{   /*  remove the socket from the list
+        and delete it once it isn't needed anymore  */
     Socket *socket = qobject_cast<Socket*>(sender());
     socketList.removeAt(socketList.indexOf(socket));
     delete socket;
@@ -135,75 +136,73 @@ void Server::sslErrors(QList<QSslError> errors)
 
 void Server::httpGet(QString data, Socket *socket)
 {
-    qDebug()<<"httpGet request: \""<<data<<" \".";
+    qDebug()<<"httpGet request: \""<<data<<" \".";      //  print info
     QString requestedData, commentHash;
     QStringList lines = data.split("\r\n");
-    if(!lines.first().contains("/comments/")){
-        requestedData = "Thats not a comment";
-        return;
-    }
-    else
+    if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
+        requestedData = "Thats not a comment";  //  file : later send requested file / 404
+    else                                        //  comment : get all comments for the site
         requestedData = getDatabaseContent(getHashFromData(data));
 
     qDebug()<<requestedData;
-    sendData(socket, requestedData.toLatin1());
+    sendData(socket, requestedData.toLatin1()); //  send the requested data back to the client / plugin
 }
 
 void Server::httpPut(QString data, Socket *socket)
 {
     Q_UNUSED(socket);
-    qDebug()<<"httpPut request: \""<<data<<" \".";
+    qDebug()<<"httpPut request: \""<<data<<" \".";      //  print info
 }
 
 void Server::httpPost(QString data, Socket *socket)
 {
-    qDebug()<<"httpPost request: \""<<data<<" \".";
+    qDebug()<<"httpPost request: \""<<data<<" \".";     //  print info
     QStringList lines = data.split("\r\n");
-    if(!lines.first().contains("/comments/")){
-        qDebug()<<"Thats not a comment";
+    if(!lines.first().contains("/comments/")){  //  check whether comments or a file is requested
+        sendData(socket, "Thats not a comment");//  file : response (no comment) and quit
         return;
+    }                                           //  else : continue
+    QString json;                               //  stores complete json data
+    bool b_json = false;                        //  bool for checking whether current line is json
+    for(int i = 0; i < lines.size(); i++){      //  iterate through all lines of the request
+        if(lines[i].isEmpty())                  //  empty line marks border between header and body
+            b_json = true;                      //  following part is json
+        if(b_json)                              //  if line is jsondata
+            json.append(lines[i]);              //  append it to json
     }
-    QString json;
-    bool b_json = false;
-    for(int i = 0; i < lines.size(); i++){
-        if(lines[i].isEmpty())
-            b_json = true;
-        if(b_json)
-            json.append(lines[i]);
-    }
-    if(putDatabaseContent(json.toLatin1()) == 0)
-        sendData(socket, "posting successfull");
+    if(putDatabaseContent(json.toLatin1()) == 0)//  if post was successfull
+        sendData(socket, "posting successfull");//  response
 }
 
 void Server::httpPatch(QString data, Socket *socket)
 {
     Q_UNUSED(socket);
-    qDebug()<<"httpPost request: \""<<data<<" \".";
+    qDebug()<<"httpPatch request: \""<<data<<" \".";    //  print info
 }
 
 void Server::httpDelete(QString data, Socket *socket)
 {
     Q_UNUSED(socket);
-    qDebug()<<"httpPost request: \""<<data<<" \".";
+    qDebug()<<"httpDelete request: \""<<data<<" \".";   //  print info
 }
 
 void Server::initDatabase()
 {
-    execSqlQuerry("CREATE TABLE comments("
+    execSqlQuerry("CREATE TABLE comments("      //  SQL to create new table (comments)
                   "id INT PRIMARY KEY NOT NULL,"
                   "user_id INT,"
                   "rating INT,"
                   "created_at DATE,"
                   "content TEXT)", nullptr);
-    execSqlQuerry("CREATE TABLE comments_on_site("
+    execSqlQuerry("CREATE TABLE comments_on_site("//  SQL to create new table (comments_on_site)
                   "id INT PRIMARY KEY NOT NULL,"
                   "comment_id INT,"
                   "site_hash TEXT NOT NULL)", nullptr);
-    execSqlQuerry("CREATE TABLE sites("
+    execSqlQuerry("CREATE TABLE sites("         //  SQL to create new table (sites)
                   "id INT PRIMARY KEY NOT NULL,"
                   " url TEXT, "
                   "hash TEXT NOT NULL)", nullptr);
-    execSqlQuerry("CREATE TABLE users("
+    execSqlQuerry("CREATE TABLE users("         //  SQL to create new table (users)
                   "id INT PRIMARY KEY NOT NULL,"
                   "name TEXT NOT NULL,"
                   "password TEXT NOT NULL)", nullptr);
@@ -214,7 +213,7 @@ QByteArray Server::getDatabaseContent(QString commentHash)
     qDebug()<<commentHash;
     QByteArray result = "{Comments:[";
     zErrMsg = nullptr;
-    char *data = QByteArray("Callback function called").data();
+    const char *data = "Callback function called";
     
     QList<int> commentIds = getCommentIds(commentHash);
     QStringList users = getUsers();
@@ -228,11 +227,11 @@ QByteArray Server::getDatabaseContent(QString commentHash)
             QString content, commentator, headline;
             int votes, user_id;
             for(int k = 0; k < querryElement.length(); k++){
-                if(querryElement[k].first.contains("content"))
+                if(querryElement[k].first.contains("content"))              //  get comment text from querry result
                     content = querryElement[k].second;
-                else if(querryElement[k].first.contains("Headline"))
+                else if(querryElement[k].first.contains("Headline"))        //  get headline of comment from querry result
                     headline = querryElement[k].second;
-                else if(querryElement[k].first.contains("rating"))
+                else if(querryElement[k].first.contains("rating"))          //  get rating 
                     votes = querryElement[k].second.toInt();
                 else if (querryElement[k].first.contains("user_id")){
                     commentator = users[querryElement[k].second.toInt()];
@@ -299,16 +298,16 @@ qint64 Server::putDatabaseContent(QByteArray data)
     return 0;
 }
 
-int Server::execSqlQuerry(QString querry, char *data)
+int Server::execSqlQuerry(QString querry, const char *data)
 {
-    rc = sqlite3_exec(db, querry.toLatin1().data(), callback, reinterpret_cast<void*>(data), &zErrMsg);
-    if(rc != SQLITE_OK){
-        qDebug()<<"SQL error: "<<zErrMsg;
-        sqlite3_free(zErrMsg);
+    void *info = reinterpret_cast<void*>(const_cast<char*>(data));              //  conversation from const char * to void *    (c99: (void*)data)  still just for reading
+    rc = sqlite3_exec(db, querry.toLatin1().data(), callback, info, &zErrMsg);  //  execute the querry, callback function to receive results
+    if(rc != SQLITE_OK){                                                        //  if not (no errors)
+        qDebug()<<"SQL error: "<<zErrMsg;                                       //  show errors
+        sqlite3_free(zErrMsg);                                                  //  make space for new errors
     }
-    else{
+    else
         qDebug()<<"Operation done succesfully";
-    }
     return 0;
 }
 

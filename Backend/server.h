@@ -1,5 +1,5 @@
-#ifndef WIDGET_H
-#define WIDGET_H
+#ifndef SERVER_H
+#define SERVER_H
 
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -9,6 +9,11 @@
 #include "sqlite3.h"
 
 #define SSL
+#ifdef SSL
+typedef QSslSocket Socket;
+#else
+typedef QTcpSocket Socket;
+#endif
 
 typedef int (*sqlite3_callback)(
         void *,
@@ -17,12 +22,6 @@ typedef int (*sqlite3_callback)(
         char**
 );
 
-#ifdef SSL
-typedef QSslSocket Socket;
-#else
-typedef QTcpSocket Socket;
-#endif
-
 class Server : public QObject
 {
     Q_OBJECT
@@ -30,50 +29,49 @@ class Server : public QObject
 public:
     explicit Server(QObject *parent = nullptr);
     ~Server();
-public slots:
-    void newConnection();
-    void readyRead();
-    void disconnected();
-    void encrypted();
-    void socketError(QAbstractSocket::SocketError error);
-    void sslErrors(QList<QSslError> errors);
-
-private:
-    //Ui::Widget *ui;
-    QTcpServer *server;
-    QList<Socket*> socketList;
-    sqlite3 *db;
-    int rc;
-    char *zErrMsg;
-
-
-    void httpGet(QString data, Socket *socket);
-    void httpPut(QString data, Socket *socket);
-    void httpPost(QString data, Socket *socket);
-    void httpPatch(QString data, Socket *socket);
-    void httpDelete(QString data, Socket *socket);
-
-    void initDatabase();
-
-    QByteArray getDatabaseContent(QString commentHash);
-    qint64 putDatabaseContent(QByteArray data);
-    int execSqlQuerry(QString querry, char *data);
-    int getUserId(QString userName);
-    int getCosId();
-    int getCommentId();
-    int getSiteId(QString hash, QString url);
-    bool isUserValid(QString userName, QString password);
-    QString getHashFromData(QString data);
-    QStringList getUsers();
-    QList<int> getCommentIds(QString hash);
-    void sendData(Socket *socket, QByteArray data);
-
+    
     enum Table{
         comments,
         comments_on_site,
         site,
         users
     };
+public slots:
+    void readyRead();
+    void encrypted();
+    void disconnected();
+    void newConnection();
+    void sslErrors(QList<QSslError> errors);
+    void socketError(QAbstractSocket::SocketError error);
+
+private:
+    QTcpServer *server;
+    QList<Socket*> socketList;
+    
+    int rc;
+    sqlite3 *db;
+    char *zErrMsg;
+    const char *dbPath = "../mainDataBase.db3";
+    
+    void httpGet(QString data, Socket *socket);
+    void httpPut(QString data, Socket *socket);
+    void httpPost(QString data, Socket *socket);
+    void httpPatch(QString data, Socket *socket);
+    void httpDelete(QString data, Socket *socket);
+    
+    int getCosId();
+    int getCommentId();
+    void initDatabase();
+    QStringList getUsers();
+    int getUserId(QString userName);
+    QString getHashFromData(QString data);
+    QList<int> getCommentIds(QString hash);
+    int getSiteId(QString hash, QString url);
+    qint64 putDatabaseContent(QByteArray data);
+    int execSqlQuerry(QString querry, const char *data);
+    void sendData(Socket *socket, QByteArray data);
+    QByteArray getDatabaseContent(QString commentHash);
+    bool isUserValid(QString userName, QString password);
 };
 
-#endif // WIDGET_H
+#endif // SERVER_H
