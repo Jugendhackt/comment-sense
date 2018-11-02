@@ -23,7 +23,14 @@ Server::Server(QObject *parent) :
 {
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
-    server->listen(QHostAddress::Any, 12345);
+    quint16 port;
+#ifdef SSL
+    port = 443;
+#else
+    port = 80;
+#endif
+    port = 12345;
+    server->listen(QHostAddress::Any, port);
     rc = sqlite3_open("mainDataBase.db3", &db);
     if(rc){
         qDebug()<<"Cant't open database "<<sqlite3_errmsg(db);
@@ -58,14 +65,32 @@ Server::~Server()
 
 void Server::newConnection()
 {
-    QTcpSocket *socket = server->nextPendingConnection();
+#ifdef SSL
+    Socket *socket = new QSslSocket(this);
+    if(!socket->setSocketDescriptor(server->nextPendingConnection()->socketDescriptor())){
+        qDebug()<<"Couldn't set socket descriptor";
+        delete socket;
+        return;
+    }
+#else
+    Socket *socket = server->nextPendingConnection();
+#endif
     socketList.append(socket);
-    connect(socket, &QTcpSocket::readyRead, this, &Server::readyRead);
+    connect(socket, &Socket::readyRead, this, &Server::readyRead);
+    connect(socket, &Socket::disconnected, this, &Server::disconnected);
+    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketError(QAbstractSocket::SocketError)));
+#ifdef SSL
+    connect(socket, &Socket::encrypted, this, &Server::encrypted);
+    connect(socket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(sslErrors(QList<QSslError>)));
+    socket->setPrivateKey(":/Server.key");
+    socket->setLocalCertificate(":/Server.crt");
+    //socket->startServerEncryption();
+#endif
 }
 
 void Server::readyRead()
 {
-    QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+    Socket *socket = qobject_cast<Socket*>(sender());
     QString data = socket->readAll();
     qDebug()<<data;
     QString httpAction = data.split(' ').first();
@@ -86,7 +111,29 @@ void Server::readyRead()
     }
 }
 
-void Server::httpGet(QString data, QTcpSocket *socket)
+void Server::disconnected()
+{
+    Socket *socket = qobject_cast<Socket*>(sender());
+    socketList.removeAt(socketList.indexOf(socket));
+    delete socket;
+}
+
+void Server::encrypted()
+{
+    qDebug()<<"Encrypted!";
+}
+
+void Server::socketError(QAbstractSocket::SocketError error)
+{
+    Q_UNUSED(error)
+}
+
+void Server::sslErrors(QList<QSslError> errors)
+{
+    Q_UNUSED(errors)
+}
+
+void Server::httpGet(QString data, Socket *socket)
 {
     qDebug()<<"httpGet request: \""<<data<<" \".";
     QString requestedData, commentHash;
@@ -99,16 +146,16 @@ void Server::httpGet(QString data, QTcpSocket *socket)
         requestedData = getDatabaseContent(getHashFromData(data));
 
     qDebug()<<requestedData;
-    socket->write(requestedData.toLatin1());
-    socket->flush();
+    sendData(socket, requestedData.toLatin1());
 }
 
-void Server::httpPut(QString data, QTcpSocket *socket)
+void Server::httpPut(QString data, Socket *socket)
 {
+    Q_UNUSED(socket);
     qDebug()<<"httpPut request: \""<<data<<" \".";
 }
 
-void Server::httpPost(QString data, QTcpSocket *socket)
+void Server::httpPost(QString data, Socket *socket)
 {
     qDebug()<<"httpPost request: \""<<data<<" \".";
     QStringList lines = data.split("\r\n");
@@ -124,16 +171,19 @@ void Server::httpPost(QString data, QTcpSocket *socket)
         if(b_json)
             json.append(lines[i]);
     }
-    putDatabaseContent(json.toLatin1());
+    if(putDatabaseContent(json.toLatin1()) == 0)
+        sendData(socket, "posting successfull");
 }
 
-void Server::httpPatch(QString data, QTcpSocket *socket)
+void Server::httpPatch(QString data, Socket *socket)
 {
+    Q_UNUSED(socket);
     qDebug()<<"httpPost request: \""<<data<<" \".";
 }
 
-void Server::httpDelete(QString data, QTcpSocket *socket)
+void Server::httpDelete(QString data, Socket *socket)
 {
+    Q_UNUSED(socket);
     qDebug()<<"httpPost request: \""<<data<<" \".";
 }
 
@@ -245,6 +295,7 @@ qint64 Server::putDatabaseContent(QByteArray data)
     execSqlQuerry("INSERT INTO comments_on_site (id, comment_id, site_hash) VALUES (" +
                   QString::number(cosId) + "," + QString::number(id) + ",\'" + commentHash +"\');", nullptr);
     dataBaseQuerryResult.clear();
+    Q_UNUSED(siteID);
     return 0;
 }
 
@@ -360,4 +411,10 @@ QList<int> Server::getCommentIds(QString hash)
     }
     dataBaseQuerryResult.clear();    
     return  commentIds;
+}
+
+void Server::sendData(Socket *socket, QByteArray data)
+{
+    socket->write(data);
+    socket->flush();
 }
