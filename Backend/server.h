@@ -3,8 +3,12 @@
 
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QSslSocket>
+#include <QSslConfiguration>
 #include <QIODevice>
 #include "sqlite3.h"
+
+#define SSL
 
 typedef int (*sqlite3_callback)(
         void *,
@@ -12,6 +16,12 @@ typedef int (*sqlite3_callback)(
         char**,
         char**
 );
+
+#ifdef SSL
+typedef QSslSocket Socket;
+#else
+typedef QTcpSocket Socket;
+#endif
 
 class Server : public QObject
 {
@@ -23,22 +33,25 @@ public:
 public slots:
     void newConnection();
     void readyRead();
+    void disconnected();
+    void encrypted();
+    void socketError(QAbstractSocket::SocketError error);
+    void sslErrors(QList<QSslError> errors);
 
 private:
     //Ui::Widget *ui;
     QTcpServer *server;
-    QList<QTcpSocket*> socketList;
-//s    QSqlDatabase database;
+    QList<Socket*> socketList;
     sqlite3 *db;
     int rc;
     char *zErrMsg;
 
 
-    void httpGet(QString data, QTcpSocket *socket);
-    void httpPut(QString data, QTcpSocket *socket);
-    void httpPost(QString data, QTcpSocket *socket);
-    void httpPatch(QString data, QTcpSocket *socket);
-    void httpDelete(QString data, QTcpSocket *socket);
+    void httpGet(QString data, Socket *socket);
+    void httpPut(QString data, Socket *socket);
+    void httpPost(QString data, Socket *socket);
+    void httpPatch(QString data, Socket *socket);
+    void httpDelete(QString data, Socket *socket);
 
     void initDatabase();
 
@@ -53,6 +66,7 @@ private:
     QString getHashFromData(QString data);
     QStringList getUsers();
     QList<int> getCommentIds(QString hash);
+    void sendData(Socket *socket, QByteArray data);
 
     enum Table{
         comments,

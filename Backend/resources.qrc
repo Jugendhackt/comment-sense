@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Server.key</file>
+        <file>Server.crt</file>
+    </qresource>
+</RCC>
