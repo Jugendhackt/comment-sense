@@ -21,6 +21,8 @@ static int callback(void *data, int argc, char **argv, char **azColName){
 Server::Server(QObject *parent) :
     QObject(parent)
 {
+    stdOut.open(stdout, QIODevice::WriteOnly);
+    outStream = new QTextStream(stdout);
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
     quint16 port;
@@ -33,17 +35,17 @@ Server::Server(QObject *parent) :
     server->listen(QHostAddress::Any, port);
     rc = sqlite3_open(dbPath, &db);
     if(rc){
-        qDebug()<<"Cant't open database "<<sqlite3_errmsg(db);
+        cout<<"Cant't open database "<<sqlite3_errmsg(db)<<endl;
         return;
     }
     zErrMsg = nullptr;
-    /*
-    putDatabaseContent("{\"userName\":\"User2\","
+    
+    /*putDatabaseContent("{\"userName\":\"User2\","
                         "\"password\":\"password2\","
                         "\"headline\":\"Header\","
                         "\"comment\":\"this is the comment\","
-                        "\"hash\":\"hash1\"}");
-    qDebug()<<getHashFromData("POST /comments/ HTTP/1.1\r\n"
+                        "\"hash\":\"hash1\"}");*/
+    QString hash = getHashFromData("POST /comments/ HTTP/1.1\r\n"
                               "Host: localhost:12345\r\n"
                               "Connection: keep-alive\r\n"
                               "Content-Length: 25\r\n"
@@ -53,8 +55,9 @@ Server::Server(QObject *parent) :
                               "Accept: *//*\r\nAccept-Encoding: gzip, deflate, br\r\n"
                               "Accept-Language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7\r\n"
                               "\r\n"
-                              "{\"hash\":\"User2\"}");
-    */
+                              "{\"hash\":\"hash1\"}");
+    cout<<hash<<"\n"<<getDatabaseContent(hash)<<endl;
+    
     //initDatabase();
 }
 
@@ -66,9 +69,9 @@ Server::~Server()
 void Server::newConnection()
 {
 #ifdef SSL
-    Socket *socket = new QSslSocket(this);
+    Socket *socket = new Socket(this);
     if(!socket->setSocketDescriptor(server->nextPendingConnection()->socketDescriptor())){
-        qDebug()<<"Couldn't set socket descriptor";
+        cout<<"Couldn't set socket descriptor"<<endl;
         delete socket;
         return;
     }
@@ -86,13 +89,14 @@ void Server::newConnection()
     socket->setLocalCertificate(":/Server.crt");
     //socket->startServerEncryption();
 #endif
+    cout<<"connected to :"<<socket->peerAddress().toString() + ":" + QString::number(socket->peerPort())<<endl;
 }
 
 void Server::readyRead()
 {
     Socket *socket = qobject_cast<Socket*>(sender());
     QString data = socket->readAll();
-    qDebug()<<data;
+    cout<<data<<endl;
     QString httpAction = data.split(' ').first();
     if(httpAction == "POST"){
         httpPost(data, socket);
@@ -102,7 +106,7 @@ void Server::readyRead()
     }       // Get all comments on site or get file
     else if(httpAction == "PUT"){
         httpPut(data, socket);
-    }       // Upload file
+    }       // Upload file (e.g: image to embed in comment)
     else if(httpAction == "PATCH"){
         httpPatch(data, socket);
     }       // Edit comment or change votes of comment
@@ -115,53 +119,56 @@ void Server::disconnected()
 {   /*  remove the socket from the list
         and delete it once it isn't needed anymore  */
     Socket *socket = qobject_cast<Socket*>(sender());
-    socketList.removeAt(socketList.indexOf(socket));
-    delete socket;
+    cout<<"dissconected from :"<<socket->peerAddress().toString() + ":" + QString::number(socket->peerPort())<<endl;
+    socketList.removeAll(socket);
+    socket->deleteLater();
 }
 
 void Server::encrypted()
 {
-    qDebug()<<"Encrypted!";
+    cout<<"Encrypted!"<<endl;
 }
 
 void Server::socketError(QAbstractSocket::SocketError error)
 {
-    Q_UNUSED(error)
+    Q_UNUSED(error);
 }
 
 void Server::sslErrors(QList<QSslError> errors)
 {
-    Q_UNUSED(errors)
+    for(int i = 0; i < errors.length(); i++){
+        cout<<errors[i].errorString()<<endl;
+    }
 }
 
 void Server::httpGet(QString data, Socket *socket)
 {
-    qDebug()<<"httpGet request: \""<<data<<" \".";      //  print info
+    cout<<"httpGet request: \""<<data<<" \"."<<endl;      //  print info
     QString requestedData, commentHash;
     QStringList lines = data.split("\r\n");
     if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
-        requestedData = "Thats not a comment";  //  file : later send requested file / 404
+        requestedData = getFile(lines.first()); //  file : later send requested file / 404
     else                                        //  comment : get all comments for the site
         requestedData = getDatabaseContent(getHashFromData(data));
 
-    qDebug()<<requestedData;
+    cout<<requestedData<<endl;
     sendData(socket, requestedData.toLatin1()); //  send the requested data back to the client / plugin
 }
 
 void Server::httpPut(QString data, Socket *socket)
 {
     Q_UNUSED(socket);
-    qDebug()<<"httpPut request: \""<<data<<" \".";      //  print info
+    cout<<"httpPut request: \""<<data<<" \"."<<endl;      //  print info
 }
 
 void Server::httpPost(QString data, Socket *socket)
 {
-    qDebug()<<"httpPost request: \""<<data<<" \".";     //  print info
+    cout<<"httpPost request: \""<<data<<" \"."<<endl;     //  print info
     QStringList lines = data.split("\r\n");
-    if(!lines.first().contains("/comments/")){  //  check whether comments or a file is requested
-        sendData(socket, "Thats not a comment");//  file : response (no comment) and quit
-        return;
-    }                                           //  else : continue
+    QString response;
+    if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
+        response = "Thats not a comment";       //  file : response (no comment)
+    else{
     QString json;                               //  stores complete json data
     bool b_json = false;                        //  bool for checking whether current line is json
     for(int i = 0; i < lines.size(); i++){      //  iterate through all lines of the request
@@ -171,19 +178,28 @@ void Server::httpPost(QString data, Socket *socket)
             json.append(lines[i]);              //  append it to json
     }
     if(putDatabaseContent(json.toLatin1()) == 0)//  if post was successfull
-        sendData(socket, "posting successfull");//  response
+        response = "posting successfull";
+    }
+    sendData(socket, response.toLatin1());      //  response
 }
 
 void Server::httpPatch(QString data, Socket *socket)
 {
     Q_UNUSED(socket);
-    qDebug()<<"httpPatch request: \""<<data<<" \".";    //  print info
+    cout<<"httpPatch request: \""<<data<<" \"."<<endl;    //  print info
 }
 
 void Server::httpDelete(QString data, Socket *socket)
 {
     Q_UNUSED(socket);
-    qDebug()<<"httpDelete request: \""<<data<<" \".";   //  print info
+    cout<<"httpDelete request: \""<<data<<" \"."<<endl;   //  print info
+}
+
+QByteArray Server::getFile(QString url)
+{
+    QByteArray data;
+    cout<<url<<endl;
+    return data;
 }
 
 void Server::initDatabase()
@@ -210,8 +226,8 @@ void Server::initDatabase()
 
 QByteArray Server::getDatabaseContent(QString commentHash)
 {
-    qDebug()<<commentHash;
-    QByteArray result = "{Comments:[";
+    cout<<commentHash<<endl;
+    QByteArray result = "{\"Comments\":[";
     zErrMsg = nullptr;
     const char *data = "Callback function called";
     
@@ -219,35 +235,41 @@ QByteArray Server::getDatabaseContent(QString commentHash)
     QStringList users = getUsers();
 
     execSqlQuerry("SELECT * FROM comments", data);
-    qDebug()<<dataBaseQuerryResult.length();
+    cout<<dataBaseQuerryResult.length()<<endl;
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
         if(commentIds.contains(i)){ //add comments[i].comment & votes to result, get commentator name & add to result
-            result.append("{");
             QList<QPair<QString, QString>> querryElement = dataBaseQuerryResult[i];
             QString content, commentator, headline;
-            int votes, user_id;
+            int votes = 0, user_id = 0;
             for(int k = 0; k < querryElement.length(); k++){
                 if(querryElement[k].first.contains("content"))              //  get comment text from querry result
                     content = querryElement[k].second;
-                else if(querryElement[k].first.contains("Headline"))        //  get headline of comment from querry result
+                else if(querryElement[k].first.contains("headline"))        //  get headline of comment from querry result
                     headline = querryElement[k].second;
                 else if(querryElement[k].first.contains("rating"))          //  get rating 
                     votes = querryElement[k].second.toInt();
                 else if (querryElement[k].first.contains("user_id")){
-                    commentator = users[querryElement[k].second.toInt()];
                     user_id = querryElement[k].second.toInt();
+                    commentator = users[user_id];
                 }
             }
-            result.append("\"headline\":\"" + headline + "\"," +
-                          "\"content\":\""+content+"\",\"votes\":" +
-                          QString::number(votes) + ",\"userID\":"+
-                          QString::number(user_id)+",\"userName\":\""+
-                          commentator + "\"},");
+            result.append("{\"id\":" + QString::number(i) + 
+                          ",\"headline\":\"" + headline + 
+                          "\",\"content\":\"" + content + 
+                          "\",\"votes\":" + QString::number(votes) + 
+                          ",\"userID\":" + QString::number(user_id) +
+                          ",\"userName\":\"" + commentator + 
+                          "\"},");
         }
     }
     dataBaseQuerryResult.clear();
-    result.replace(result.length()-2, 2, "\0\0");
+    result.replace(result.length()-1, 2, "\0");
     result.append("]}");
+    if(isJsonValid(result)){
+        cout<<"json not valid"<<endl;
+        return "";
+    }
+    cout<<"json is valid"<<endl;
     return result;
 }
 
@@ -273,13 +295,13 @@ qint64 Server::putDatabaseContent(QByteArray data)
     value = object.value(QString("hash"));
     commentHash = value.toString();
 
-    qDebug()<<data<<endl<<userName<<password<<headline<<content;
+    cout<<data<<"\n"<<userName<<password<<headline<<content<<endl;
 
     commentHash.replace("\r", "");
     commentHash.replace("\n", "");
     
     if(!isUserValid(userName, password)){
-        qDebug()<<"Wrong username or password";
+        cout<<"Wrong username or password"<<endl;
         return -1;
     }
 
@@ -287,7 +309,7 @@ qint64 Server::putDatabaseContent(QByteArray data)
     int siteID = getSiteId(commentHash, url);
     int cosId = getCosId();
     int userId = getUserId(userName);
-    qDebug()<<"Writing...";
+    cout<<"Writing..."<<endl;
     execSqlQuerry("INSERT INTO comments (id, user_id, rating, created_at, content, headline) VALUES (" +
                   QString::number(id) + "," + QString::number(userId) + "," + QString::number(rating) + ",\'" +
                   date + "\',\'" + content + "\',\'" + headline + "\');", nullptr);
@@ -303,11 +325,12 @@ int Server::execSqlQuerry(QString querry, const char *data)
     void *info = reinterpret_cast<void*>(const_cast<char*>(data));              //  conversation from const char * to void *    (c99: (void*)data)  still just for reading
     rc = sqlite3_exec(db, querry.toLatin1().data(), callback, info, &zErrMsg);  //  execute the querry, callback function to receive results
     if(rc != SQLITE_OK){                                                        //  if not (no errors)
-        qDebug()<<"SQL error: "<<zErrMsg;                                       //  show errors
+        cout<<"SQL error: "<<zErrMsg<<endl;                                       //  show errors
         sqlite3_free(zErrMsg);                                                  //  make space for new errors
     }
-    else
-        qDebug()<<"Operation done succesfully";
+    else{
+        cout<<"Operation done succesfully"<<endl;
+    }
     return 0;
 }
 
@@ -319,6 +342,12 @@ int Server::getUserId(QString userName)
         userID = dataBaseQuerryResult.first().first().second.toInt();
     dataBaseQuerryResult.clear();
     return userID;
+}
+
+bool Server::isJsonValid(QByteArray json)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(json);
+    return !doc.isNull();
 }
 
 int Server::getCosId()
@@ -359,8 +388,9 @@ bool Server::isUserValid(QString userName, QString password)
 {
     bool valid = false;
     execSqlQuerry("SELECT password FROM users WHERE name LIKE \'" + userName + "\'", nullptr);
-    if(dataBaseQuerryResult.length() < 1)
-        qDebug()<<"no User"<<userName;
+    if(dataBaseQuerryResult.length() < 1){
+        cout<<"no User"<<userName<<endl;
+    }
     else{
         for(int i = 0; i  < dataBaseQuerryResult.length(); i++){
             if(dataBaseQuerryResult[i].first().second.contains(password)){
@@ -388,7 +418,7 @@ QStringList Server::getUsers()
 {
     QStringList users;
     execSqlQuerry("SELECT * FROM users", nullptr);
-    qDebug()<<dataBaseQuerryResult.length();
+    cout<<dataBaseQuerryResult.length()<<endl;
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
         for(int k = 0; k < dataBaseQuerryResult[i].length(); k++){
             if(dataBaseQuerryResult[i][k].first.contains("name"))
@@ -403,7 +433,7 @@ QList<int> Server::getCommentIds(QString hash)
 {
     QList<int> commentIds;
     execSqlQuerry("SELECT comment_id, site_hash FROM comments_on_site WHERE site_hash LIKE \'" + hash +"\'", nullptr);
-    qDebug()<<dataBaseQuerryResult.length();
+    cout<<dataBaseQuerryResult.length()<<endl;
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
         if(dataBaseQuerryResult[i].last().second == hash)
             commentIds.append(dataBaseQuerryResult[i].first().second.toInt());

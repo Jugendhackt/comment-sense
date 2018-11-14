@@ -6,7 +6,9 @@
 #include <QSslSocket>
 #include <QSslConfiguration>
 #include <QIODevice>
+#include <QTextStream>
 #include "sqlite3.h"
+#include <QFile>
 
 #define SSL
 #ifdef SSL
@@ -14,6 +16,8 @@ typedef QSslSocket Socket;
 #else
 typedef QTcpSocket Socket;
 #endif
+#define cout (*outStream)               //temporary, later std::cout
+#define endl "\n";outStream->flush();   //
 
 typedef int (*sqlite3_callback)(
         void *,
@@ -36,6 +40,7 @@ public:
         site,
         users
     };
+    
 public slots:
     void readyRead();
     void encrypted();
@@ -52,6 +57,8 @@ private:
     sqlite3 *db;
     char *zErrMsg;
     const char *dbPath = "../mainDataBase.db3";
+    QFile stdOut;
+    QTextStream *outStream;
     
     void httpGet(QString data, Socket *socket);
     void httpPut(QString data, Socket *socket);
@@ -63,6 +70,8 @@ private:
     int getCommentId();
     void initDatabase();
     QStringList getUsers();
+    QTextStream& qStdOut();
+    QByteArray getFile(QString url);
     int getUserId(QString userName);
     QString getHashFromData(QString data);
     QList<int> getCommentIds(QString hash);
