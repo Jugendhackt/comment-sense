@@ -73,6 +73,7 @@ private:
     QTextStream& qStdOut();
     QByteArray getFile(QString url);
     int getUserId(QString userName);
+    bool isJsonValid(QByteArray json);
     QString getHashFromData(QString data);
     QList<int> getCommentIds(QString hash);
     int getSiteId(QString hash, QString url);
