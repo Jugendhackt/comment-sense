@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
-  document.getElementById("submit").addEventListener("click", sendData);
+
   document.getElemts
   function basicDisplay(identifier, attribute) {
     $(identifier).css({
@@ -62,35 +62,9 @@ document.addEventListener("DOMContentLoaded", function(){
   $('footer button').click(function() {
     fadeFooter('extended');
     // });
-  }); 
+  });
   $('.footer-overlay-close').click(function() {
     fadeFooter('basic');
   });
-
-  function sendData() {
-    var nickname = document.getElementById("nicknameInput").value;
-    var headline = document.getElementById("headlineInput").value;
-    var comment = document.getElementById("commentInput").value;
-
-    if(nickname == "" || headline == "" || comment == ""){
-      alert("Es sind nicht alle Felder ausgefüllt!");
-    } else {
-    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-      //alert(tabs[0].url);
-      var url = tabs[0].url;
-      var xhr = new XMLHttpRequest();
-      // let hash = getHash();
-      // console.log('Hash: ' + hash);
-      xhr.open('POST', 'http://192.168.2.114:12345/comments/', true);
-      // xhr.setRequestHeader('Content-type', 'application/commentSense');
-      xhr.onload = function () {
-        console.log(xhr.responseText);
-      };
-      //xhr.send('{\"userName\":\"'+nickname+'\",\"password\":\"password4\",\"headline\":\"'+headline+'\",\"comment\":\"'+comment+'\",\"url\":\"'+url+'\"}');
-      xhr.send(JSON.stringify({userName: nickname.toString(), password: "password4", headline: headline.toString(), url: url.toString()}));
-        //alert("Hi");
-    });
-  }
-}
 
 });
