@@ -1,0 +1,5 @@
+Comment sense:
+Voting
+PATCH request
+json: {"comment-id":123,"user":"name","password":"123","vote":"+1"}
+json: {"comment-id":123,"user":"name","password":"123","vote":"-1"}

@@ -10,7 +10,7 @@
 static QList<QList<QPair<QString, QString>>> dataBaseQuerryResult;
 
 static int callback(void *data, int argc, char **argv, char **azColName){
-    qDebug()<<reinterpret_cast<char*>(data);
+    Q_UNUSED(data);
     QList<QPair<QString, QString>> querryElement;
     for(int i = 0; i < argc; i++)
         querryElement.append(QPair<QString, QString>(QString(azColName[i]), QString(argv[i] ? argv[i] : "NULL")));
@@ -33,11 +33,19 @@ Server::Server(QObject *parent) :
 #endif
     port = 12345;
     server->listen(QHostAddress::Any, port);
+    FILE *f = fopen(dbPath, "r");
+    bool init = false;
+    if(f == NULL){
+        f = fopen(dbPath, "w");
+        init = true;
+    }
     rc = sqlite3_open(dbPath, &db);
     if(rc){
         cout<<"Cant't open database "<<sqlite3_errmsg(db)<<endl;
         return;
     }
+    if(init)
+        initDatabase();
     zErrMsg = nullptr;
     
     /*putDatabaseContent("{\"userName\":\"User2\","
@@ -114,6 +122,7 @@ void Server::readyRead()
     else if(httpAction == "DELETE"){
         httpPatch(data, socket);
     }       // Delete comment
+    cout<<"\n"<<"\n"<<"ENDE"<<"\n"<<endl;
 }
 
 void Server::disconnected()
@@ -149,8 +158,14 @@ void Server::httpGet(QString data, Socket *socket)
     QStringList lines = data.split("\r\n");
     if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
         requestedData = getFile(lines.first()); //  file : later send requested file / 404
-    else                                        //  comment : get all comments for the site
-        requestedData = getDatabaseContent(getUrlFromData(data));
+    else{                                       //  comment : get all comments for the site
+        QString url;                            //GET /comments/http://esprima.org/demo/validate.html HTTP/1.1
+        cout<<lines.first()<<endl;
+        url = lines.first().split(" ")[1];
+        url.remove(0,10);
+        cout<<"URL: \'"<<url<<"\'."<<endl;
+        requestedData = getDatabaseContent(url);
+    }
 
     cout<<requestedData<<endl;
     sendData(socket, requestedData.toLatin1()); //  send the requested data back to the client / plugin
@@ -210,32 +225,37 @@ void Server::initDatabase()
                   "id INT PRIMARY KEY NOT NULL,"
                   "user_id INT,"
                   "rating INT,"
+                  "votes TEXT,"
                   "created_at DATE,"
+                  "headline TEXT,"
                   "content TEXT)", nullptr);
     execSqlQuerry("CREATE TABLE comments_on_site("//  SQL to create new table (comments_on_site)
                   "id INT PRIMARY KEY NOT NULL,"
+                  "url TEXT NOT NULL,"
                   "comment_id INT)", nullptr);
     execSqlQuerry("CREATE TABLE sites("         //  SQL to create new table (sites)
                   "id INT PRIMARY KEY NOT NULL,"
-                  " url TEXT)", nullptr);
+                  "url TEXT)", nullptr);
     execSqlQuerry("CREATE TABLE users("         //  SQL to create new table (users)
                   "id INT PRIMARY KEY NOT NULL,"
                   "name TEXT NOT NULL,"
                   "password TEXT NOT NULL)", nullptr);
+    execSqlQuerry("INSERT INTO users (id, name, password) VALUES (0, \'Nick73\', \'pass0\');", nullptr);
+    cout<<"init finisched"<<endl;
 }
 
 QByteArray Server::getDatabaseContent(QString url)
 {
-    cout<<url<<endl;
+    cout<<"URL: "<<url<<endl;
     QByteArray result = "{\"Comments\":[";
     zErrMsg = nullptr;
-    const char *data = "Callback function called";
     
     QList<int> commentIds = getCommentIds(url);
     QStringList users = getUsers();
-
-    execSqlQuerry("SELECT * FROM comments", data);
-    cout<<dataBaseQuerryResult.length()<<endl;
+    int x = 0;
+    execSqlQuerry("SELECT * FROM comments", nullptr);
+    cout<<dataBaseQuerryResult.length()<<":"<<endl;
+    qDebug()<<commentIds;
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
         if(commentIds.contains(i)){ //add comments[i].comment & votes to result, get commentator name & add to result
             QList<QPair<QString, QString>> querryElement = dataBaseQuerryResult[i];
@@ -260,16 +280,23 @@ QByteArray Server::getDatabaseContent(QString url)
                           ",\"userID\":" + QString::number(user_id) +
                           ",\"userName\":\"" + commentator + 
                           "\"},");
+            x++;
         }
     }
+    //{"Comments":[{"id":0,"headline":"Ich bins","content":"","votes":0,"userID":0,"userName":"Nick73"},
+    //             {"id":1,"headline":"123","content":"","votes":0,"userID":0,"userName":"Nick73"},]}
+    if(x == 0)
+        return "{\"Comments\":0}";
     dataBaseQuerryResult.clear();
-    result.replace(result.length()-1, 2, "\0");
+    if(x > 0)
+        if(result[result.length()-1] == ',')
+            result.remove(result.length()-1, 1);
     result.append("]}");
-    if(isJsonValid(result)){
-        cout<<"json not valid"<<endl;
-        return "";
-    }
-    cout<<"json is valid"<<endl;
+    cout<<"Result:"<<result<<endl;
+    //if(isJsonValid(result)){
+    //    return "json not valid";
+    //}
+    //cout<<"json is valid"<<endl;
     return result;
 }
 
@@ -444,6 +471,7 @@ QList<int> Server::getCommentIds(QString url)
 
 void Server::sendData(Socket *socket, QByteArray data)
 {
+    socket->write(QString("HTTP/1.1 200 OK\nContent-Length: "+ QString::number(data.length()) +"\nContent-Type: text\nConnection: Closed\n\n").toLatin1());
     socket->write(data);
     socket->flush();
 }
