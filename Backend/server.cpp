@@ -105,7 +105,7 @@ void Server::readyRead()
 {
     Socket *socket = qobject_cast<Socket*>(sender());
     QString data = socket->readAll();
-    cout<<data<<endl;
+    cout<<"----------------------------\n\n"<<data<<endl;
     QString httpAction = data.split(' ').first();
     if(httpAction == "POST"){
         httpPost(data, socket);
@@ -122,7 +122,7 @@ void Server::readyRead()
     else if(httpAction == "DELETE"){
         httpPatch(data, socket);
     }       // Delete comment
-    cout<<"\n"<<"\n"<<"ENDE"<<"\n"<<endl;
+    cout<<"\n\n"<<"ENDE"<<"\n\n"<<endl;
 }
 
 void Server::disconnected()
@@ -277,7 +277,7 @@ QByteArray Server::getDatabaseContent(QString url)
                           ",\"headline\":\"" + headline + 
                           "\",\"content\":\"" + content + 
                           "\",\"votes\":" + QString::number(votes) + 
-                          ",\"userID\":" + QString::number(user_id) +
+                          ",\"userId\":" + QString::number(user_id) +
                           ",\"userName\":\"" + commentator + 
                           "\"},");
             x++;
@@ -286,7 +286,9 @@ QByteArray Server::getDatabaseContent(QString url)
     //{"Comments":[{"id":0,"headline":"Ich bins","content":"","votes":0,"userID":0,"userName":"Nick73"},
     //             {"id":1,"headline":"123","content":"","votes":0,"userID":0,"userName":"Nick73"},]}
     if(x == 0)
-        return "{\"Comments\":0}";
+        return "{\"Comments\":[{\"id\":-1,\"headline\":\"Keine Kommentare\",\"content\":\""
+                "F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. "
+                "Du kannst gern damit anfangen.\",\"votes\":0,\"userID\":-1,\"userName\":\"CommentSense\"}]}";
     dataBaseQuerryResult.clear();
     if(x > 0)
         if(result[result.length()-1] == ',')
