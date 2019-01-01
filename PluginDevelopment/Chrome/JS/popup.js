@@ -26,12 +26,8 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   function fadeFooter(mode) {
+    //alert(mode);
     if (mode == 'basic') {
-      console.log('Display: ' + $('.footer-overlay form').css('display'));
-            $('.footer-overlay form').hide('slide', {
-              direction: 'down'
-            }, 200);
-      console.log('Display: ' + $('.footer-overlay form').css('display'));
       $('footer').animate({
         height: '76px'
       }, 350, function() {
@@ -41,10 +37,8 @@ document.addEventListener("DOMContentLoaded", function(){
             $('form').css({
               display: 'block'
             });
-      console.log('Display: ' + $('.footer-overlay form').css('display'));
       // basicDisplay('.footer-overlay form', 'block !important');
       basicDisplay('.footer-overlay-close', 'none');
-      console.log('Display: ' + $('.footer-overlay form').css('display'));
     } else if (mode == 'extended') {
       // Hide ScrollDown button
       $('#scrollDown').hide();

@@ -1,10 +1,8 @@
 document.addEventListener("DOMContentLoaded", function(){
   var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
   document.getElementById("submit").addEventListener("click", sendData);
+  //alert(buttons.length);
 
-  for (var i = 0; i<buttons.length;i++){
-    buttons[i].addEventListener("click", clickvote);
-  }
 
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     //alert(tabs[0].url);
@@ -21,18 +19,21 @@ document.addEventListener("DOMContentLoaded", function(){
       //data = JSON.stringify(data);
       //alert("Data:" + data);
       data = JSON.parse(data);
-      alert(data.Comments.length);
+      //alert(data.Comments.length);
 
 
-        for (var i=0; i<data.Comments.length;i++){
+        for (let i=0; i<data.Comments.length;i++){
           //alert(Object.keys(data.Comments[i]).length);
-          var username = data.Comments[i].userName;
-          var id = data.Comments[i].id;
-          var headline = data.Comments[i].headline;
-          var comment = data.Comments[i].content;
-          var votes = data.Comments[i].votes;
-          var userid = data.Comments[i].userId;
-          displayComment(username, headline, comment, votes);
+          let userid = data.Comments[i].userId;
+          let username = data.Comments[i].userName;
+          let id = data.Comments[i].id;
+          let headline = data.Comments[i].headline;
+          let comment = data.Comments[i].content;
+          let votes = data.Comments[i].votes;
+          buttons = document.getElementsByClassName("btn btn-primary btn-sm");
+          //alert(data.Comments[i].id);
+          displayComment(username, headline, comment, votes, i);
+          buttons[i].addEventListener("click", function(){clickvote(id, username, comment, userid)});
         }
       }
 
@@ -52,25 +53,22 @@ document.addEventListener("DOMContentLoaded", function(){
       //'{\"url\":\"'+url+'\"}'
   });
 
-function clickvote(){
-  var id="1";
-  var username="2";
-  var password="3";
-  var vote=true;
+function clickvote(ide, username, comment, userid){
+  var password="hi";
+  alert("hi");
   var xhr = new XMLHttpRequest();
   xhr.open("PATCH", "http://192.168.2.114:12345/comments/", true);
   xhr.onload = function () {
     data = xhr.responseText;
     //alert(data);
   };
-  xhr.send(JSON.stringify({comment_id: id.toString(), user: username.toString(), password: password.toString(), vote: vote}));
-  alert("clicked");
+  xhr.send(JSON.stringify({id: ide, user: username, password: password, vote: 1, content: comment, userId: userid}));
+  //alert(this.id);
 }
-});
 
-function displayComment(author, headline, comment, liked) {
+function displayComment(author, headline, comment, liked, id) {
   console.log('Author: ' + author + ', Headline: ' + headline + ', Comment: ' + comment + ', Liked: ' + liked);
-  $('#landingpage').append('<div class="card" style="width: 18rem;"> <div class="card-header"> <div class="flex-centered-vertically"> <span class="profile-image"> <img src="./assets/icons/user.svg" alt=""> </span> <h5 class="card-title">' + author + '</h5> </div> <p class="card-title-description">Gefällt ' + liked + ' mal</p> </div> <div class="card-body"> <h6 class="card-subtitle mb-2 text-muted">' + headline + '</h6> <p class="card-text">' + comment + '</p> <button type="button" class="btn btn-primary btn-sm"> <span class="like"> <img src="./assets/icons/like.svg" alt=""> </span> Gefällt mir </button> </div> </div>');
+  $('#landingpage').append('<div class="card" style="width: 18rem;"> <div class="card-header"> <div class="flex-centered-vertically"> <span class="profile-image"> <img src="./assets/icons/user.svg" alt=""> </span> <h5 class="card-title">' + author + '</h5> </div> <p class="card-title-description">Gefällt ' + liked + ' mal</p> </div> <div class="card-body"> <h6 class="card-subtitle mb-2 text-muted">' + headline + '</h6> <p class="card-text">' + comment + '</p> <button type="button" class="btn btn-primary btn-sm" id='+id+'> <span class="like"> <img src="./assets/icons/like.svg" alt=""> </span> Gefällt mir </button> </div> </div>');
   if ($('footer').css('height') == '450px') {
     $('#scrollDown').addClass('visible');
   } else {
@@ -103,3 +101,4 @@ function sendData() {
   });
 }
 }
+});
