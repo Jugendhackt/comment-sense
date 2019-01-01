@@ -3,8 +3,9 @@ document.addEventListener("DOMContentLoaded", function(){
   document.getElementById("submit").addEventListener("click", sendData);
   //alert(buttons.length);
 
-
-  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+  function refresh(){
+    //delete all displayed comments
+    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     //alert(tabs[0].url);
     var url = tabs[0].url;
     var xhr = new XMLHttpRequest();
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function(){
       //alert(data.Comments.length);
 
 
+      document.getElementById("landingpage").innerHTML = "";
         for (let i=0; i<data.Comments.length;i++){
           //alert(Object.keys(data.Comments[i]).length);
           let userid = data.Comments[i].userId;
@@ -36,22 +38,16 @@ document.addEventListener("DOMContentLoaded", function(){
           buttons[i].addEventListener("click", function(){clickvote(id, username, comment, userid)});
         }
       }
+      xhr.send();
+    });
+  }
 
 
-
-      /*if(data.Comments > 0){
-        alert("HI");
-      }*/
-      //{"Comments":"no comments found"}
-      //alert(data);
-    //alert(xhr.responseText);
-    //var json = JSON.stringify({url: url.toString()});
-    //alert(json);
-    xhr.send();
-      //'{\"userName\":\"'+nickname+'\",\"password\":\"password4\",\"headline\":\"'+headline+'\",\"comment\":\"'+comment+'\",\"url\":\"'+url+'\"}');
-      //alert("Hi");
-      //'{\"url\":\"'+url+'\"}'
-  });
+  function delay(){
+    setInterval(refresh, 10000);
+  }
+delay();
+//refresh();
 
 function clickvote(ide, username, comment, userid){
   var password="hi";
@@ -63,6 +59,7 @@ function clickvote(ide, username, comment, userid){
     //alert(data);
   };
   xhr.send(JSON.stringify({id: ide, user: username, password: password, vote: 1, content: comment, userId: userid}));
+  refresh();
   //alert(this.id);
 }
 

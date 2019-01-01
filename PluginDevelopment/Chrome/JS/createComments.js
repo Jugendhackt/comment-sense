@@ -20,12 +20,6 @@ $(document).ready(function() {
     }, random_delay);
   }
 
-  let comments = [
-    ["Arthur", "Dabei sein ist alles!", "Follow the white Alpaka. It will lead you to JugendHackt.", "9"],
-    ["Georg", "Teamwork", "Wir haben in unserem Team ein richtig cooles Plugin entwickelt!", "14"],
-    ["Lara", "Cooler code!", "Some quick example text to build on the card title and make up the bulk of the card's content.", "4"],
-    ["Darius", "Kann ich nur empfehlen!", "Some quick example text to build on the card title and make up the bulk of the card's content.", "7"]
-  ]
 
   startInterval(comments[0]);
   startInterval(comments[1]);
