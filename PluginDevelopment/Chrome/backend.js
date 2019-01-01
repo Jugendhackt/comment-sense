@@ -26,5 +26,7 @@ function sendRequest(nickname, headline, content) {
 
  sendRequest('nickname', 'headline', 'comment');
 
-  //console.log(chrome.tabs.getCurrent(console.log(this)));
+console.log(chrome.tabs.getCurrent(console.log(this)));
+
+
 });
