@@ -10,7 +10,7 @@
 #include "sqlite3.h"
 #include <QFile>
 
-#define SSL
+//#define SSL
 #ifdef SSL
 typedef QSslSocket Socket;
 #else
@@ -74,13 +74,13 @@ private:
     QByteArray getFile(QString url);
     int getUserId(QString userName);
     bool isJsonValid(QByteArray json);
-    QString getHashFromData(QString data);
-    QList<int> getCommentIds(QString hash);
-    int getSiteId(QString hash, QString url);
+    QString getUrlFromData(QString data);
+    QList<int> getCommentIds(QString url);
+    int getSiteId(QString url);
     qint64 putDatabaseContent(QByteArray data);
     int execSqlQuerry(QString querry, const char *data);
     void sendData(Socket *socket, QByteArray data);
-    QByteArray getDatabaseContent(QString commentHash);
+    QByteArray getDatabaseContent(QString url);
     bool isUserValid(QString userName, QString password);
 };
 

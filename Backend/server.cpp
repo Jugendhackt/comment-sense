@@ -45,6 +45,7 @@ Server::Server(QObject *parent) :
                         "\"headline\":\"Header\","
                         "\"comment\":\"this is the comment\","
                         "\"hash\":\"hash1\"}");*/
+    /*
     QString hash = getHashFromData("POST /comments/ HTTP/1.1\r\n"
                               "Host: localhost:12345\r\n"
                               "Connection: keep-alive\r\n"
@@ -57,7 +58,7 @@ Server::Server(QObject *parent) :
                               "\r\n"
                               "{\"hash\":\"hash1\"}");
     cout<<hash<<"\n"<<getDatabaseContent(hash)<<endl;
-    
+    */
     //initDatabase();
 }
 
@@ -144,12 +145,12 @@ void Server::sslErrors(QList<QSslError> errors)
 void Server::httpGet(QString data, Socket *socket)
 {
     cout<<"httpGet request: \""<<data<<" \"."<<endl;      //  print info
-    QString requestedData, commentHash;
+    QString requestedData;
     QStringList lines = data.split("\r\n");
     if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
         requestedData = getFile(lines.first()); //  file : later send requested file / 404
     else                                        //  comment : get all comments for the site
-        requestedData = getDatabaseContent(getHashFromData(data));
+        requestedData = getDatabaseContent(getUrlFromData(data));
 
     cout<<requestedData<<endl;
     sendData(socket, requestedData.toLatin1()); //  send the requested data back to the client / plugin
@@ -180,6 +181,7 @@ void Server::httpPost(QString data, Socket *socket)
     if(putDatabaseContent(json.toLatin1()) == 0)//  if post was successfull
         response = "posting successfull";
     }
+    cout<<response<<endl;
     sendData(socket, response.toLatin1());      //  response
 }
 
@@ -212,26 +214,24 @@ void Server::initDatabase()
                   "content TEXT)", nullptr);
     execSqlQuerry("CREATE TABLE comments_on_site("//  SQL to create new table (comments_on_site)
                   "id INT PRIMARY KEY NOT NULL,"
-                  "comment_id INT,"
-                  "site_hash TEXT NOT NULL)", nullptr);
+                  "comment_id INT)", nullptr);
     execSqlQuerry("CREATE TABLE sites("         //  SQL to create new table (sites)
                   "id INT PRIMARY KEY NOT NULL,"
-                  " url TEXT, "
-                  "hash TEXT NOT NULL)", nullptr);
+                  " url TEXT)", nullptr);
     execSqlQuerry("CREATE TABLE users("         //  SQL to create new table (users)
                   "id INT PRIMARY KEY NOT NULL,"
                   "name TEXT NOT NULL,"
                   "password TEXT NOT NULL)", nullptr);
 }
 
-QByteArray Server::getDatabaseContent(QString commentHash)
+QByteArray Server::getDatabaseContent(QString url)
 {
-    cout<<commentHash<<endl;
+    cout<<url<<endl;
     QByteArray result = "{\"Comments\":[";
     zErrMsg = nullptr;
     const char *data = "Callback function called";
     
-    QList<int> commentIds = getCommentIds(commentHash);
+    QList<int> commentIds = getCommentIds(url);
     QStringList users = getUsers();
 
     execSqlQuerry("SELECT * FROM comments", data);
@@ -277,7 +277,7 @@ qint64 Server::putDatabaseContent(QByteArray data)
 {
     int rating = 0;
     QString date, content, password, url, headline;
-    QString commentHash, userName;
+    QString userName;
     QDate currentDate = QDate::currentDate();
     date = QString(QString::number(currentDate.day()) + "."
                  + QString::number(currentDate.month()) + "."
@@ -292,13 +292,10 @@ qint64 Server::putDatabaseContent(QByteArray data)
     headline = value.toString();
     value = object.value(QString("comment"));
     content = value.toString();
-    value = object.value(QString("hash"));
-    commentHash = value.toString();
+    value = object.value(QString("url"));
+    url = value.toString();
 
     cout<<data<<"\n"<<userName<<password<<headline<<content<<endl;
-
-    commentHash.replace("\r", "");
-    commentHash.replace("\n", "");
     
     if(!isUserValid(userName, password)){
         cout<<"Wrong username or password"<<endl;
@@ -306,15 +303,15 @@ qint64 Server::putDatabaseContent(QByteArray data)
     }
 
     int id = getCommentId();    
-    int siteID = getSiteId(commentHash, url);
+    int siteID = getSiteId(url);
     int cosId = getCosId();
     int userId = getUserId(userName);
     cout<<"Writing..."<<endl;
     execSqlQuerry("INSERT INTO comments (id, user_id, rating, created_at, content, headline) VALUES (" +
                   QString::number(id) + "," + QString::number(userId) + "," + QString::number(rating) + ",\'" +
                   date + "\',\'" + content + "\',\'" + headline + "\');", nullptr);
-    execSqlQuerry("INSERT INTO comments_on_site (id, comment_id, site_hash) VALUES (" +
-                  QString::number(cosId) + "," + QString::number(id) + ",\'" + commentHash +"\');", nullptr);
+    execSqlQuerry("INSERT INTO comments_on_site (id, comment_id, url) VALUES (" +
+                  QString::number(cosId) + "," + QString::number(id) + ",\'" + url + "\');", nullptr);
     dataBaseQuerryResult.clear();
     Q_UNUSED(siteID);
     return 0;
@@ -370,15 +367,15 @@ int Server::getCommentId()
     return id;
 }
 
-int Server::getSiteId(QString hash, QString url)
+int Server::getSiteId(QString url)
 {
     int siteID = 0;
-    execSqlQuerry("SELECT id FROM sites WHERE hash LIKE \'" + hash + "\'", nullptr);
+    execSqlQuerry("SELECT id FROM sites WHERE url LIKE \'" + url + "\'", nullptr);
     if(dataBaseQuerryResult.length() < 1){  //new site
         dataBaseQuerryResult.clear();
         execSqlQuerry("SELECT MAX(id) FROM sites", nullptr);
         siteID = dataBaseQuerryResult.first().first().second.toInt() + 1;
-        execSqlQuerry("INSERT INTO sites (id, url, hash) VALUES (" + QString::number(siteID) + ",\'" + url + "\'," + hash + ");", nullptr);
+        execSqlQuerry("INSERT INTO sites (id, url) VALUES (" + QString::number(siteID) + ",\'" + url + "\');", nullptr);
     }
     dataBaseQuerryResult.clear();
     return siteID;
@@ -388,30 +385,33 @@ bool Server::isUserValid(QString userName, QString password)
 {
     bool valid = false;
     execSqlQuerry("SELECT password FROM users WHERE name LIKE \'" + userName + "\'", nullptr);
+    cout<<"checking user..."<<endl;
     if(dataBaseQuerryResult.length() < 1){
-        cout<<"no User"<<userName<<endl;
+        cout<<"no User named :\""<<userName<<"\""<<endl;
     }
     else{
         for(int i = 0; i  < dataBaseQuerryResult.length(); i++){
+            cout<<password<<":"<<dataBaseQuerryResult[i].first().second<<endl;
             if(dataBaseQuerryResult[i].first().second.contains(password)){
                 valid = true;
                 break;
             }
         }
     }    
+    cout<<"finished checking user "<<valid<<endl;
     dataBaseQuerryResult.clear();
     return valid;
 }
 
-QString Server::getHashFromData(QString data)
+QString Server::getUrlFromData(QString data)
 {
     QJsonDocument json = QJsonDocument::fromJson(data.split("\r\n\r\n").last().toLatin1());
     QJsonObject object = json.object();
-    QJsonValue value = object.value(QString("hash"));
-    QString hash = value.toString();
-    hash.replace("\r", "");
-    hash.replace("\n", "");
-    return hash;
+    QJsonValue value = object.value(QString("url"));
+    QString url = value.toString();
+    url.replace("\r", "");
+    url.replace("\n", "");
+    return url;
 }
 
 QStringList Server::getUsers()
@@ -429,13 +429,13 @@ QStringList Server::getUsers()
     return users;
 }
 
-QList<int> Server::getCommentIds(QString hash)
+QList<int> Server::getCommentIds(QString url)
 {
     QList<int> commentIds;
-    execSqlQuerry("SELECT comment_id, site_hash FROM comments_on_site WHERE site_hash LIKE \'" + hash +"\'", nullptr);
+    execSqlQuerry("SELECT comment_id, url FROM comments_on_site WHERE url LIKE \'" + url +"\'", nullptr);
     cout<<dataBaseQuerryResult.length()<<endl;
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
-        if(dataBaseQuerryResult[i].last().second == hash)
+        if(dataBaseQuerryResult[i].last().second == url)
             commentIds.append(dataBaseQuerryResult[i].first().second.toInt());
     }
     dataBaseQuerryResult.clear();    

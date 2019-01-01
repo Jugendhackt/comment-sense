@@ -1,5 +1,11 @@
 $(document).ready(function() {
-
+  function getUrl(){
+    chrome.tabs.getSelected(null, function(tab) {
+      var link = document.createElement('a');
+      link.href = tab.url;
+      console.log('url:' + link.hostname);
+    })
+  }
   function basicDisplay(identifier, attribute) {
     $(identifier).css({
       display: attribute
@@ -65,5 +71,5 @@ $(document).ready(function() {
   $('.footer-overlay-close').click(function() {
     fadeFooter('basic');
   });
-
+  getUrl();
 });
