@@ -183,9 +183,12 @@ void Server::httpPost(QString data, Socket *socket)
     QStringList lines = data.split("\r\n");
     QString response;
     data.replace("\r", "");
-    if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
-        response = "Thats not a comment";       //  file : response (no comment)
-    else{
+    if(lines.first().contains("/users/")){
+        if(lines.first().contains("/create/")){
+            createUser(data.split("\n\n").last().toLatin1());
+        }
+    }
+    else if(lines.first().contains("/comments/")){
         QString json = data.split("\n\n").last();                               //  stores complete json data
         if(putDatabaseContent(json.toLatin1()) == 0)//  if post was successfull
             response = "posting successfull";
@@ -518,6 +521,22 @@ QStringList Server::getUsers()
     }
     dataBaseQuerryResult.clear();  
     return users;
+}
+
+void Server::createUser(QByteArray json)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(json);
+    QJsonObject object = doc.object();
+    QString password = object.value("password").toString();
+    QString username = object.value("username").toString();
+    qDebug()<<username<<":"<<password;
+    QString id;
+    execSqlQuerry("SELECT max(id) FROM users", nullptr);
+    if(dataBaseQuerryResult.length() != 1)
+        return;
+    id = QString::number(dataBaseQuerryResult.last().last().second.toInt()+1);
+    execSqlQuerry("INSERT INTO users (id, name, password) VALUES (" + id + ", \'" + username + "\',\'" + password + "\');", nullptr);
+    dataBaseQuerryResult.clear();
 }
 
 QList<int> Server::getCommentIds(QString url)

@@ -71,6 +71,7 @@ private:
     void initDatabase();
     QStringList getUsers();
     QTextStream& qStdOut();
+    void createUser(QByteArray json);
     QByteArray getFile(QString url, QByteArray *type);
     int getUserId(QString userName);
     bool isJsonValid(QByteArray json);
