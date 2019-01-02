@@ -71,7 +71,7 @@ private:
     void initDatabase();
     QStringList getUsers();
     QTextStream& qStdOut();
-    QByteArray getFile(QString url);
+    QByteArray getFile(QString url, QByteArray *type);
     int getUserId(QString userName);
     bool isJsonValid(QByteArray json);
     QString getUrlFromData(QString data);
@@ -79,7 +79,7 @@ private:
     int getSiteId(QString url);
     qint64 putDatabaseContent(QByteArray data);
     int execSqlQuerry(QString querry, const char *data);
-    void sendData(Socket *socket, QByteArray data);
+    void sendData(Socket *socket, QByteArray data, QByteArray type);
     QByteArray getDatabaseContent(QString url);
     bool isUserValid(QString userName, QString password);
 };

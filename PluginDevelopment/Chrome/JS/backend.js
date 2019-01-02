@@ -1,3 +1,5 @@
+var ipAdress = '192.168.56.1';
+var port = '12345';
 document.addEventListener("DOMContentLoaded", function(){
   var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
   document.getElementById("submit").addEventListener("click", sendData);
@@ -12,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function(){
     var data;
     // let hash = getHash();
     // console.log('Hash: ' + hash);
-    xhr.open('GET', 'http://192.168.2.114:12345/comments/' + url, true);
+    xhr.open('GET', 'http://'+ipAdress+':'+port+'/comments/' + url, true);
     // xhr.setRequestHeader('Content-type', 'application/commentSense');
     xhr.onload = function () {
       data = xhr.responseText;
@@ -47,13 +49,13 @@ document.addEventListener("DOMContentLoaded", function(){
     setInterval(refresh, 10000);
   }
 delay();
-//refresh();
+refresh();
 
 function clickvote(ide, username, comment, userid){
-  var password="hi";
+  var password="pass0";
   alert("hi");
   var xhr = new XMLHttpRequest();
-  xhr.open("PATCH", "http://192.168.2.114:12345/comments/", true);
+  xhr.open("PATCH", 'http://'+ipAdress+':'+port+'/comments/', true);
   xhr.onload = function () {
     data = xhr.responseText;
     //alert(data);
@@ -87,7 +89,7 @@ function sendData() {
     var xhr = new XMLHttpRequest();
     // let hash = getHash();
     // console.log('Hash: ' + hash);
-    xhr.open('POST', 'http://192.168.2.114:12345/comments/', true);
+    xhr.open('POST', 'http://'+ipAdress+':'+port+'/comments/', true);
     // xhr.setRequestHeader('Content-type', 'application/commentSense');
     xhr.onload = function () {
       console.log(xhr.responseText);

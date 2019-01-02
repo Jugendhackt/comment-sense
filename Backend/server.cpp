@@ -35,7 +35,7 @@ Server::Server(QObject *parent) :
     server->listen(QHostAddress::Any, port);
     FILE *f = fopen(dbPath, "r");
     bool init = false;
-    if(f == NULL){
+    if(f == nullptr){
         f = fopen(dbPath, "w");
         init = true;
     }
@@ -156,9 +156,11 @@ void Server::httpGet(QString data, Socket *socket)
     cout<<"httpGet request: \""<<data<<" \"."<<endl;      //  print info
     QString requestedData;
     QStringList lines = data.split("\r\n");
+    QByteArray type;
     if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
-        requestedData = getFile(lines.first()); //  file : later send requested file / 404
-    else{                                       //  comment : get all comments for the site
+        requestedData = getFile(lines.first().split(" ")[1], &type); //  file : later send requested file / 404
+    else{    
+        type = "text/html";//  comment : get all comments for the site
         QString url;                            //GET /comments/http://esprima.org/demo/validate.html HTTP/1.1
         cout<<lines.first()<<endl;
         url = lines.first().split(" ")[1];
@@ -166,9 +168,7 @@ void Server::httpGet(QString data, Socket *socket)
         cout<<"URL: \'"<<url<<"\'."<<endl;
         requestedData = getDatabaseContent(url);
     }
-
-    cout<<requestedData<<endl;
-    sendData(socket, requestedData.toLatin1()); //  send the requested data back to the client / plugin
+    sendData(socket, requestedData.toLatin1(), type); //  send the requested data back to the client / plugin
 }
 
 void Server::httpPut(QString data, Socket *socket)
@@ -182,28 +182,47 @@ void Server::httpPost(QString data, Socket *socket)
     cout<<"httpPost request: \""<<data<<" \"."<<endl;     //  print info
     QStringList lines = data.split("\r\n");
     QString response;
+    data.replace("\r", "");
     if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
         response = "Thats not a comment";       //  file : response (no comment)
     else{
-    QString json;                               //  stores complete json data
-    bool b_json = false;                        //  bool for checking whether current line is json
-    for(int i = 0; i < lines.size(); i++){      //  iterate through all lines of the request
-        if(lines[i].isEmpty())                  //  empty line marks border between header and body
-            b_json = true;                      //  following part is json
-        if(b_json)                              //  if line is jsondata
-            json.append(lines[i]);              //  append it to json
-    }
-    if(putDatabaseContent(json.toLatin1()) == 0)//  if post was successfull
-        response = "posting successfull";
+        QString json = data.split("\n\n").last();                               //  stores complete json data
+        if(putDatabaseContent(json.toLatin1()) == 0)//  if post was successfull
+            response = "posting successfull";
     }
     cout<<response<<endl;
-    sendData(socket, response.toLatin1());      //  response
+    sendData(socket, response.toLatin1(), "text/html");      //  response
 }
 
 void Server::httpPatch(QString data, Socket *socket)
-{
+{   //{"id":0,"user":"Nick73","password":"hi","vote":1,"userId":0}
+    //{\"id\":-1,\"user\":\"CommentSense\",\"password\":\"hi\",\"vote\":1,\"content\":\"F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. Du kannst gern damit anfangen.\"}
     Q_UNUSED(socket);
     cout<<"httpPatch request: \""<<data<<" \"."<<endl;    //  print info
+    data.replace("\r", "");
+    QByteArray json = data.split("\n\n").last().toLatin1();
+    qDebug()<<"\'"<<json<<"\'";
+    QJsonDocument doc = QJsonDocument::fromJson(json);
+    QJsonObject object = doc.object();
+    QString id = QString::number(object.value(QString("id")).toInt());
+    QString userId = QString::number(object.value(QString("userId")).toInt());
+    QString password = object.value(QString("password")).toString();
+    QString vote = object.value(QString("vote")).toString();
+    QString userName = object.value(QString("user")).toString();
+    
+    if(!isUserValid(userName, password))
+        return;
+    execSqlQuerry("SELECT votes FROM comments WHERE id LIKE " + id + ";", nullptr);
+    qDebug()<<dataBaseQuerryResult.length()<<id<<"SELECT votes FROM comments WHERE id LIKE " + id + ";";
+    if(dataBaseQuerryResult.length() < 1)
+        return;
+    QString votes = dataBaseQuerryResult[0][0].second;
+    if(votes == "NULL" || votes.isEmpty())
+        votes = userId;
+    else if(!votes.contains(userId))
+        votes.append(","+userId);
+    execSqlQuerry("UPDATE comments SET votes = \'" + votes + "\' WHERE id LIKE " + id + ";", nullptr);
+    dataBaseQuerryResult.clear();
 }
 
 void Server::httpDelete(QString data, Socket *socket)
@@ -212,10 +231,49 @@ void Server::httpDelete(QString data, Socket *socket)
     cout<<"httpDelete request: \""<<data<<" \"."<<endl;   //  print info
 }
 
-QByteArray Server::getFile(QString url)
+QByteArray getType(QByteArray ending){
+    if(ending == "txt")
+        return "text/plain";
+    else if(ending == "html")
+        return "text/html";
+    else if(ending == "css")
+        return "text/css";
+    else if(ending == "csv")
+        return "text/csv";
+    else if(ending == "js")
+        return "text/javascript";
+    else if(ending == "xml")
+        return "text/xml";
+    
+    else if(ending == "json")
+        return "application/json";
+    else if(ending == "pdf")
+        return "application/pdf";
+    else if(ending == "zip")
+        return "application/zip";
+    
+    else if(ending == "png")
+        return "image/png";
+    else if(ending == "ico")
+        return "image/x-icon";
+    else if(ending == "svg")
+        return "image/svg+xml";
+    return "text/plain";
+}
+
+QByteArray Server::getFile(QString url, QByteArray *type)
 {
     QByteArray data;
     cout<<url<<endl;
+    if(url == "/")
+        url = "/index.html";
+    QString ending = url.split(".").last();
+    *type = getType(ending.toLatin1());
+    QFile f("."+url);
+    f.open(QIODevice::ReadOnly);
+    data = f.readAll();
+    qDebug()<<*type;
+    f.close();
     return data;
 }
 
@@ -266,8 +324,12 @@ QByteArray Server::getDatabaseContent(QString url)
                     content = querryElement[k].second;
                 else if(querryElement[k].first.contains("headline"))        //  get headline of comment from querry result
                     headline = querryElement[k].second;
-                else if(querryElement[k].first.contains("rating"))          //  get rating 
-                    votes = querryElement[k].second.toInt();
+                else if(querryElement[k].first.contains("votes")){         //  get rating 
+                    if(!querryElement[k].second.isEmpty())
+                        votes = querryElement[k].second.split(",").length();
+                    else
+                        votes = 0;
+                }
                 else if (querryElement[k].first.contains("user_id")){
                     user_id = querryElement[k].second.toInt();
                     commentator = users[user_id];
@@ -471,9 +533,9 @@ QList<int> Server::getCommentIds(QString url)
     return  commentIds;
 }
 
-void Server::sendData(Socket *socket, QByteArray data)
+void Server::sendData(Socket *socket, QByteArray data, QByteArray type)
 {
-    socket->write(QString("HTTP/1.1 200 OK\nContent-Length: "+ QString::number(data.length()) +"\nContent-Type: text\nConnection: Closed\n\n").toLatin1());
+    socket->write(QString("HTTP/1.1 200 OK\nContent-Length: "+ QString::number(data.length()) +"\nContent-Type: "+type+"\nConnection: Closed\n\n").toLatin1());
     socket->write(data);
     socket->flush();
 }
