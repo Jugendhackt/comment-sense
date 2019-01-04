@@ -29,7 +29,7 @@ Server::Server(QObject *parent) :
 #else
     port = 80;
 #endif
-    port = 12345;
+    port = 80;
     server->listen(QHostAddress::Any, port);
     FILE *f = fopen(dbPath, "r");
     bool init = false;
@@ -256,7 +256,7 @@ QByteArray getType(QByteArray ending){
     else if(ending == "png")
         return "image/png";
     else if(ending == "ico")
-        return "image/x-icon";
+        return "image/ico";
     else if(ending == "svg")
         return "image/svg+xml";
     return "text/plain";
