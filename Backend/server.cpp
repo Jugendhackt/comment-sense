@@ -21,8 +21,6 @@ static int callback(void *data, int argc, char **argv, char **azColName){
 Server::Server(QObject *parent) :
     QObject(parent)
 {
-    stdOut.open(stdout, QIODevice::WriteOnly);
-    outStream = new QTextStream(stdout);
     server = new QTcpServer(this);
     connect(server, &QTcpServer::newConnection, this, &Server::newConnection);
     quint16 port;
@@ -41,7 +39,7 @@ Server::Server(QObject *parent) :
     }
     rc = sqlite3_open(dbPath, &db);
     if(rc){
-        cout<<"Cant't open database "<<sqlite3_errmsg(db)<<endl;
+        qDebug()<<"Cant't open database "<<sqlite3_errmsg(db)<<endl;
         return;
     }
     if(init)
@@ -98,14 +96,14 @@ void Server::newConnection()
     socket->setLocalCertificate(":/Server.crt");
     //socket->startServerEncryption();
 #endif
-    cout<<"connected to :"<<socket->peerAddress().toString() + ":" + QString::number(socket->peerPort())<<endl;
+    qDebug()<<"connected to :"<<socket->peerAddress().toString() + ":" + QString::number(socket->peerPort())<<endl;
 }
 
 void Server::readyRead()
 {
     Socket *socket = qobject_cast<Socket*>(sender());
     QString data = socket->readAll();
-    cout<<"----------------------------\n\n"<<data<<endl;
+    qDebug()<<"----------------------------\n\n"<<data<<endl;
     QString httpAction = data.split(' ').first();
     if(httpAction == "POST"){
         httpPost(data, socket);
@@ -122,21 +120,21 @@ void Server::readyRead()
     else if(httpAction == "DELETE"){
         httpPatch(data, socket);
     }       // Delete comment
-    cout<<"\n\n"<<"ENDE"<<"\n\n"<<endl;
+    qDebug()<<"\n\n"<<"ENDE"<<"\n\n"<<endl;
 }
 
 void Server::disconnected()
 {   /*  remove the socket from the list
         and delete it once it isn't needed anymore  */
     Socket *socket = qobject_cast<Socket*>(sender());
-    cout<<"dissconected from :"<<socket->peerAddress().toString() + ":" + QString::number(socket->peerPort())<<endl;
+    qDebug()<<"dissconected from :"<<socket->peerAddress().toString() + ":" + QString::number(socket->peerPort())<<endl;
     socketList.removeAll(socket);
     socket->deleteLater();
 }
 
 void Server::encrypted()
 {
-    cout<<"Encrypted!"<<endl;
+    qDebug()<<"Encrypted!"<<endl;
 }
 
 void Server::socketError(QAbstractSocket::SocketError error)
@@ -147,13 +145,13 @@ void Server::socketError(QAbstractSocket::SocketError error)
 void Server::sslErrors(QList<QSslError> errors)
 {
     for(int i = 0; i < errors.length(); i++){
-        cout<<errors[i].errorString()<<endl;
+        qDebug()<<errors[i].errorString()<<endl;
     }
 }
 
 void Server::httpGet(QString data, Socket *socket)
 {
-    cout<<"httpGet request: \""<<data<<" \"."<<endl;      //  print info
+    qDebug()<<"httpGet request: \""<<data<<" \"."<<endl;      //  print info
     QString requestedData;
     QStringList lines = data.split("\r\n");
     QByteArray type;
@@ -162,10 +160,10 @@ void Server::httpGet(QString data, Socket *socket)
     else{    
         type = "text/html";//  comment : get all comments for the site
         QString url;                            //GET /comments/http://esprima.org/demo/validate.html HTTP/1.1
-        cout<<lines.first()<<endl;
+        qDebug()<<lines.first()<<endl;
         url = lines.first().split(" ")[1];
         url.remove(0,10);
-        cout<<"URL: \'"<<url<<"\'."<<endl;
+        qDebug()<<"URL: \'"<<url<<"\'."<<endl;
         requestedData = getDatabaseContent(url);
     }
     sendData(socket, requestedData.toLatin1(), type); //  send the requested data back to the client / plugin
@@ -174,17 +172,17 @@ void Server::httpGet(QString data, Socket *socket)
 void Server::httpPut(QString data, Socket *socket)
 {
     Q_UNUSED(socket);
-    cout<<"httpPut request: \""<<data<<" \"."<<endl;      //  print info
+    qDebug()<<"httpPut request: \""<<data<<" \"."<<endl;      //  print info
 }
 
 void Server::httpPost(QString data, Socket *socket)
 {
-    cout<<"httpPost request: \""<<data<<" \"."<<endl;     //  print info
+    qDebug()<<"httpPost request: \""<<data<<" \"."<<endl;     //  print info
     QStringList lines = data.split("\r\n");
     QString response;
     data.replace("\r", "");
     if(lines.first().contains("/users/")){
-        if(lines.first().contains("/create/")){
+        if(lines.first().contains("/create")){
             createUser(data.split("\n\n").last().toLatin1());
         }
     }
@@ -193,7 +191,7 @@ void Server::httpPost(QString data, Socket *socket)
         if(putDatabaseContent(json.toLatin1()) == 0)//  if post was successfull
             response = "posting successfull";
     }
-    cout<<response<<endl;
+    qDebug()<<response<<endl;
     sendData(socket, response.toLatin1(), "text/html");      //  response
 }
 
@@ -201,7 +199,7 @@ void Server::httpPatch(QString data, Socket *socket)
 {   //{"id":0,"user":"Nick73","password":"hi","vote":1,"userId":0}
     //{\"id\":-1,\"user\":\"CommentSense\",\"password\":\"hi\",\"vote\":1,\"content\":\"F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. Du kannst gern damit anfangen.\"}
     Q_UNUSED(socket);
-    cout<<"httpPatch request: \""<<data<<" \"."<<endl;    //  print info
+    qDebug()<<"httpPatch request: \""<<data<<" \"."<<endl;    //  print info
     data.replace("\r", "");
     QByteArray json = data.split("\n\n").last().toLatin1();
     qDebug()<<"\'"<<json<<"\'";
@@ -231,7 +229,7 @@ void Server::httpPatch(QString data, Socket *socket)
 void Server::httpDelete(QString data, Socket *socket)
 {
     Q_UNUSED(socket);
-    cout<<"httpDelete request: \""<<data<<" \"."<<endl;   //  print info
+    qDebug()<<"httpDelete request: \""<<data<<" \"."<<endl;   //  print info
 }
 
 QByteArray getType(QByteArray ending){
@@ -267,7 +265,7 @@ QByteArray getType(QByteArray ending){
 QByteArray Server::getFile(QString url, QByteArray *type)
 {
     QByteArray data;
-    cout<<url<<endl;
+    qDebug()<<url<<endl;
     if(url == "/")
         url = "/index.html";
     QString ending = url.split(".").last();
@@ -299,15 +297,15 @@ void Server::initDatabase()
                   "url TEXT)", nullptr);
     execSqlQuerry("CREATE TABLE users("         //  SQL to create new table (users)
                   "id INT PRIMARY KEY NOT NULL,"
-                  "name TEXT NOT NULL,"
+                  "name TEXT UNIQUE NOT NULL,"
                   "password TEXT NOT NULL)", nullptr);
     execSqlQuerry("INSERT INTO users (id, name, password) VALUES (0, \'Nick73\', \'pass0\');", nullptr);
-    cout<<"init finisched"<<endl;
+    qDebug()<<"init finisched"<<endl;
 }
 
 QByteArray Server::getDatabaseContent(QString url)
 {
-    cout<<"URL: "<<url<<endl;
+    qDebug()<<"URL: "<<url<<endl;
     QByteArray result = "{\"Comments\":[";
     zErrMsg = nullptr;
     
@@ -315,7 +313,7 @@ QByteArray Server::getDatabaseContent(QString url)
     QStringList users = getUsers();
     int x = 0;
     execSqlQuerry("SELECT * FROM comments", nullptr);
-    cout<<dataBaseQuerryResult.length()<<":"<<endl;
+    qDebug()<<dataBaseQuerryResult.length()<<":"<<endl;
     qDebug()<<commentIds;
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
         if(commentIds.contains(i)){ //add comments[i].comment & votes to result, get commentator name & add to result
@@ -359,7 +357,7 @@ QByteArray Server::getDatabaseContent(QString url)
         if(result[result.length()-1] == ',')
             result.remove(result.length()-1, 1);
     result.append("]}");
-    cout<<"Result:"<<result<<endl;
+    qDebug()<<"Result:"<<result<<endl;
     //if(isJsonValid(result)){
     //    return "json not valid";
     //}
@@ -389,10 +387,10 @@ qint64 Server::putDatabaseContent(QByteArray data)
     value = object.value(QString("url"));
     url = value.toString();
 
-    cout<<data<<"\n"<<userName<<password<<headline<<content<<endl;
+    qDebug()<<data<<"\n"<<userName<<password<<headline<<content<<endl;
     
     if(!isUserValid(userName, password)){
-        cout<<"Wrong username or password"<<endl;
+        qDebug()<<"Wrong username or password"<<endl;
         return -1;
     }
 
@@ -400,7 +398,7 @@ qint64 Server::putDatabaseContent(QByteArray data)
     int siteID = getSiteId(url);
     int cosId = getCosId();
     int userId = getUserId(userName);
-    cout<<"Writing..."<<endl;
+    qDebug()<<"Writing..."<<endl;
     execSqlQuerry("INSERT INTO comments (id, user_id, rating, created_at, content, headline) VALUES (" +
                   QString::number(id) + "," + QString::number(userId) + "," + QString::number(rating) + ",\'" +
                   date + "\',\'" + content + "\',\'" + headline + "\');", nullptr);
@@ -416,11 +414,11 @@ int Server::execSqlQuerry(QString querry, const char *data)
     void *info = reinterpret_cast<void*>(const_cast<char*>(data));              //  conversation from const char * to void *    (c99: (void*)data)  still just for reading
     rc = sqlite3_exec(db, querry.toLatin1().data(), callback, info, &zErrMsg);  //  execute the querry, callback function to receive results
     if(rc != SQLITE_OK){                                                        //  if not (no errors)
-        cout<<"SQL error: "<<zErrMsg<<endl;                                       //  show errors
+        qDebug()<<"SQL error: "<<zErrMsg<<endl;                                       //  show errors
         sqlite3_free(zErrMsg);                                                  //  make space for new errors
     }
     else{
-        cout<<"Operation done succesfully"<<endl;
+        qDebug()<<"Operation done succesfully"<<endl;
     }
     return 0;
 }
@@ -479,20 +477,20 @@ bool Server::isUserValid(QString userName, QString password)
 {
     bool valid = false;
     execSqlQuerry("SELECT password FROM users WHERE name LIKE \'" + userName + "\'", nullptr);
-    cout<<"checking user..."<<endl;
+    qDebug()<<"checking user..."<<endl;
     if(dataBaseQuerryResult.length() < 1){
-        cout<<"no User named :\""<<userName<<"\""<<endl;
+        qDebug()<<"no User named :\""<<userName<<"\""<<endl;
     }
     else{
         for(int i = 0; i  < dataBaseQuerryResult.length(); i++){
-            cout<<password<<":"<<dataBaseQuerryResult[i].first().second<<endl;
+            qDebug()<<password<<":"<<dataBaseQuerryResult[i].first().second<<endl;
             if(dataBaseQuerryResult[i].first().second.contains(password)){
                 valid = true;
                 break;
             }
         }
     }    
-    cout<<"finished checking user "<<valid<<endl;
+    qDebug()<<"finished checking user "<<valid<<endl;
     dataBaseQuerryResult.clear();
     return valid;
 }
@@ -512,7 +510,7 @@ QStringList Server::getUsers()
 {
     QStringList users;
     execSqlQuerry("SELECT * FROM users", nullptr);
-    cout<<dataBaseQuerryResult.length()<<endl;
+    qDebug()<<dataBaseQuerryResult.length()<<endl;
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
         for(int k = 0; k < dataBaseQuerryResult[i].length(); k++){
             if(dataBaseQuerryResult[i][k].first.contains("name"))
@@ -543,7 +541,7 @@ QList<int> Server::getCommentIds(QString url)
 {
     QList<int> commentIds;
     execSqlQuerry("SELECT comment_id, url FROM comments_on_site WHERE url LIKE \'" + url +"\'", nullptr);
-    cout<<dataBaseQuerryResult.length()<<endl;
+    qDebug()<<dataBaseQuerryResult.length()<<endl;
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
         if(dataBaseQuerryResult[i].last().second == url)
             commentIds.append(dataBaseQuerryResult[i].first().second.toInt());

@@ -16,8 +16,6 @@ typedef QSslSocket Socket;
 #else
 typedef QTcpSocket Socket;
 #endif
-#define cout (*outStream)               //temporary, later std::cout
-#define endl "\n";outStream->flush();   //
 
 typedef int (*sqlite3_callback)(
         void *,
@@ -57,8 +55,6 @@ private:
     sqlite3 *db;
     char *zErrMsg;
     const char *dbPath = "../mainDataBase.db3";
-    QFile stdOut;
-    QTextStream *outStream;
     
     void httpGet(QString data, Socket *socket);
     void httpPut(QString data, Socket *socket);
