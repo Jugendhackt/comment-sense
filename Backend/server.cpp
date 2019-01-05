@@ -152,7 +152,7 @@ void Server::sslErrors(QList<QSslError> errors)
 void Server::httpGet(QString data, Socket *socket)
 {
     qDebug()<<"httpGet request: \""<<data<<" \"."<<endl;      //  print info
-    QString requestedData;
+    QByteArray requestedData;
     QStringList lines = data.split("\r\n");
     QByteArray type;
     if(!lines.first().contains("/comments/"))   //  check whether comments or a file is requested
@@ -166,7 +166,7 @@ void Server::httpGet(QString data, Socket *socket)
         qDebug()<<"URL: \'"<<url<<"\'."<<endl;
         requestedData = getDatabaseContent(url);
     }
-    sendData(socket, requestedData.toLatin1(), type); //  send the requested data back to the client / plugin
+    sendData(socket, requestedData, type); //  send the requested data back to the client / plugin
 }
 
 void Server::httpPut(QString data, Socket *socket)
@@ -552,7 +552,9 @@ QList<int> Server::getCommentIds(QString url)
 
 void Server::sendData(Socket *socket, QByteArray data, QByteArray type)
 {
+    qDebug()<<data.length();
     socket->write(QString("HTTP/1.1 200 OK\nContent-Length: "+ QString::number(data.length()) +"\nContent-Type: "+type+"\nConnection: Closed\n\n").toLatin1());
     socket->write(data);
+    socket->waitForBytesWritten();
     socket->flush();
 }
