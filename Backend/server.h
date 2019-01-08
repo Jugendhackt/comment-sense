@@ -9,6 +9,7 @@
 #include <QTextStream>
 #include "sqlite3.h"
 #include <QFile>
+#include <QDir>
 
 //#define SSL
 #ifdef SSL
@@ -55,6 +56,7 @@ private:
     sqlite3 *db;
     char *zErrMsg;
     QString dataPath;
+    QDir bin, dir, data;
     const char *dbPath = "../data/mainDatabase.db3";
     
     void httpGet(QString data, Socket *socket);
@@ -68,18 +70,19 @@ private:
     void initDatabase();
     QStringList getUsers();
     QTextStream& qStdOut();
-    void createUser(QByteArray json);
+    QByteArray createUser(QByteArray json);
     QByteArray getFile(QString url, QByteArray *type);
+    QByteArray getType(QByteArray ending);
     int getUserId(QString userName);
     bool isJsonValid(QByteArray json);
     QString getUrlFromData(QString data);
     QList<int> getCommentIds(QString url);
     int getSiteId(QString url);
-    qint64 putDatabaseContent(QByteArray data);
+    QByteArray putDatabaseContent(QByteArray data);
     int execSqlQuerry(QString querry, const char *data);
     void sendData(Socket *socket, QByteArray data, QByteArray type);
     QByteArray getDatabaseContent(QString url);
-    bool isUserValid(QString userName, QString password);
+    QByteArray isUserValid(QString userName, QString password);
 };
 
 #endif // SERVER_H

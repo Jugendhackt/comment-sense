@@ -1,11 +1,8 @@
 QT       += core network
 
-
 TARGET = Server
 TEMPLATE = app
 CONFIG += console
-
-DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
         server.cpp \
