@@ -6,6 +6,7 @@
 #include <QJsonValue>
 #include <QTime>
 #include <QDate>
+#include <QDir>
 
 static QList<QList<QPair<QString, QString>>> dataBaseQuerryResult;
 
@@ -29,8 +30,16 @@ Server::Server(QObject *parent) :
 #else
     port = 80;
 #endif
-    port = 80;
-    server->listen(QHostAddress::Any, port);
+    QDir bin = QDir::current();
+    qDebug()<<bin.path();
+    QDir dir = bin;
+    dir.cd("../");
+    qDebug()<<dir.path();
+    dir.mkdir("data");
+    QDir data = dir;
+    data.cd("data");
+    qDebug()<<data.path();
+    dataPath = data.path();
     FILE *f = fopen(dbPath, "r");
     bool init = false;
     if(f == nullptr){
@@ -45,6 +54,8 @@ Server::Server(QObject *parent) :
     if(init)
         initDatabase();
     zErrMsg = nullptr;
+    
+    server->listen(QHostAddress::Any, port);
     
     /*putDatabaseContent("{\"userName\":\"User2\","
                         "\"password\":\"password2\","
@@ -139,7 +150,7 @@ void Server::encrypted()
 
 void Server::socketError(QAbstractSocket::SocketError error)
 {
-    Q_UNUSED(error);
+    qDebug()<<error;
 }
 
 void Server::sslErrors(QList<QSslError> errors)
@@ -182,8 +193,12 @@ void Server::httpPost(QString data, Socket *socket)
     QString response;
     data.replace("\r", "");
     if(lines.first().contains("/users/")){
-        if(lines.first().contains("/create")){
+        QString action = lines.first().split("/users/").last().split(" ").first();
+        if(lines.first().contains("create")){
             createUser(data.split("\n\n").last().toLatin1());
+        }
+        else{
+            qDebug()<<"unknown usermanagement request";
         }
     }
     else if(lines.first().contains("/comments/")){
@@ -233,6 +248,7 @@ void Server::httpDelete(QString data, Socket *socket)
 }
 
 QByteArray getType(QByteArray ending){
+    ending = ending.toLower();
     if(ending == "txt")
         return "text/plain";
     else if(ending == "html")
@@ -255,6 +271,8 @@ QByteArray getType(QByteArray ending){
     
     else if(ending == "png")
         return "image/png";
+    else if(ending == "jpg")
+        return "image/jpm";
     else if(ending == "ico")
         return "image/ico";
     else if(ending == "svg")
@@ -270,7 +288,7 @@ QByteArray Server::getFile(QString url, QByteArray *type)
         url = "/index.html";
     QString ending = url.split(".").last();
     *type = getType(ending.toLatin1());
-    QFile f("."+url);
+    QFile f(dataPath+url);
     f.open(QIODevice::ReadOnly);
     data = f.readAll();
     qDebug()<<*type;

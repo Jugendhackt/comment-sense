@@ -54,7 +54,8 @@ private:
     int rc;
     sqlite3 *db;
     char *zErrMsg;
-    const char *dbPath = "../mainDataBase.db3";
+    QString dataPath;
+    const char *dbPath = "../data/mainDatabase.db3";
     
     void httpGet(QString data, Socket *socket);
     void httpPut(QString data, Socket *socket);
