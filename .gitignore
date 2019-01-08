@@ -7,14 +7,10 @@ Backend/sqlite3.c
 Backend/sqlite3.h
 clear.sql
 *.crt
-
 *.key
-
 *.pem
-
 *.srl
 *.csr
-
 build-Server*
 data/*
 old versions/*
