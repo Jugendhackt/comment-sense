@@ -13,5 +13,3 @@ SOURCES += main.cpp \
 
 HEADERS += server.h \
         sqlite3.h
-
-RESOURCES += resources.qrc
