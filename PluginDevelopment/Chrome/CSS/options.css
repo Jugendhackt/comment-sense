@@ -33,3 +33,7 @@
 .button:hover {
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+#error {
+  font-size: 13px;
+}

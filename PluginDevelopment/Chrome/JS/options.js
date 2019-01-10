@@ -5,14 +5,21 @@ document.addEventListener("DOMContentLoaded", function(){
 	var ipAdress = '192.168.56.1'
 	var port = "12345";
 
+	var error = document.getElementById("error");
+	var inputUsername = document.getElementById("inputUsername");
+	var inputPassword = document.getElementById("inputPassword");
+
+
 	function sendsaveData(){
-		var username = document.getElementById("inputUserName").value;
-		var password = document.getElementById("inputPassword").value;
+		var username = inputUsername.value;
+		var password = inputPassword.value;
 		if(username == "" || password == ""){
-			document.getElementById("inputUserName").value = "Es sind nicht alle Felder ausgefüllt";
+			error.innerHTML = "Es sind nicht alle Felder ausgefüllt!";
 		} else if (username.length > 20 || password.length > 20){
-			document.getElementById("inputUserName").value = "Nickname oder Passwort ist zu lang";
+			error.innerHTML = "Nickname oder Passwort ist zu lang!";
 		} else {
+			error.innerHTML = "";
+
 			//get Username or set it for the first time
 			chrome.storage.sync.get(["username"], function(result){
 			 if(typeof result.username === "undefined" || result.username == "")
@@ -39,7 +46,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		chrome.storage.sync.set({password: ""});
 		var username = "";
 		var password = "";
-		document.getElementById("inputUserName").value = "";
-		document.getElementById("inputPassword").value = "";
+		error.innerHTML = "";
+		inputUsername.value = "";
+		inputPassword.value = "";
 	}
 });
