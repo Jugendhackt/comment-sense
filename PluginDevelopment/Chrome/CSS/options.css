@@ -17,19 +17,17 @@
 }
 
 .input {
-  width: 200px;
+  width: 250px;
 }
 
 .button {
   font-size: 15px;
   padding: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
   background-color: rgba(49, 175, 145, 1);
   border: none;
   color: white;
   transition: 0.2s;
-  width: 200px;
+  width: 250px;
 }
 
 .button:hover {

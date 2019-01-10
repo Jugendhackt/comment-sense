@@ -8,9 +8,11 @@ document.addEventListener("DOMContentLoaded", function(){
 	function sendsaveData(){
 		var username = document.getElementById("inputUserName").value;
 		var password = document.getElementById("inputPassword").value;
-		if(username == "" || password == "")
+		if(username == "" || password == ""){
 			document.getElementById("inputUserName").value = "Es sind nicht alle Felder ausgefüllt";
-		else {
+		} else if (username.length > 20 || password.length > 20){
+			document.getElementById("inputUserName").value = "Nickname oder Passwort ist zu lang";
+		} else {
 			//get Username or set it for the first time
 			chrome.storage.sync.get(["username"], function(result){
 			 if(typeof result.username === "undefined" || result.username == "")
@@ -21,6 +23,8 @@ document.addEventListener("DOMContentLoaded", function(){
 			  if(typeof result.password === "undefined" || result.password == "")
 					chrome.storage.sync.set({password: password});
 			});
+
+
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "http://"+ipAdress + ":" + port + "/users/create/", true);
 			xhr.onload = function(){
