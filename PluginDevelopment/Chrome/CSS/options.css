@@ -18,6 +18,8 @@
 
 .input {
   width: 250px;
+  font-family: 'Roboto', sans-serif;
+  padding: 5px;
 }
 
 .button {
