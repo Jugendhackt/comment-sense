@@ -1,5 +1,5 @@
-var ipAdress = '192.168.56.1';
 document.addEventListener("DOMContentLoaded", function(){
+  var ipAdress = '192.168.56.1';
   var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
   document.getElementById("submit").addEventListener("click", sendData);
   //alert(buttons.length);
