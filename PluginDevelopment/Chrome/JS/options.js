@@ -9,14 +9,15 @@ document.addEventListener("DOMContentLoaded", function(){
 	var inputUsername = document.getElementById("inputUsername");
 	var inputPassword = document.getElementById("inputPassword");
 
-
 	function sendsaveData(){
 		var username = inputUsername.value;
 		var password = inputPassword.value;
 		if(username == "" || password == ""){
 			error.innerHTML = "Es sind nicht alle Felder ausgefüllt!";
-		} else if (username.length > 20 || password.length > 20){
-			error.innerHTML = "Nickname oder Passwort ist zu lang!";
+		} else if (username.length > 20){
+			error.innerHTML = "Nickname ist zu lang!" + "<br>" + "Maximal 20 Zeichen!";
+		} else if (password.length > 20){
+			error.innerHTML = "Passwort ist zu lang!" + "<br>" + "Maximal 20 Zeichen!";
 		} else {
 			error.innerHTML = "";
 
@@ -31,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function(){
 					chrome.storage.sync.set({password: password});
 			});
 
-
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "http://"+ipAdress + ":" + port + "/users/create/", true);
 			xhr.onload = function(){
@@ -44,8 +44,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	function clearData(){
 		chrome.storage.sync.set({username: ""});
 		chrome.storage.sync.set({password: ""});
-		var username = "";
-		var password = "";
 		error.innerHTML = "";
 		inputUsername.value = "";
 		inputPassword.value = "";
