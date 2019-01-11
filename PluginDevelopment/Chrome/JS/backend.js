@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function(){
 	var ipAdress = '192.168.56.1';
+	var password = "pass0";
+	var username = "Nick73";
 	var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
 	document.getElementById("submit").addEventListener("click", sendData);
 
@@ -39,8 +41,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	refresh();
 
 	function clickvote(id){
-		var password = "pass0";
-		var username = "Nick73";
 		var xhr = new XMLHttpRequest();
 		xhr.open("PATCH", 'http://'+ipAdress+'/comments/vote', true);
 		xhr.onload = function () {
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				xhr.onload = function () {
 					console.log(xhr.responseText);
 				};
-				xhr.send(JSON.stringify({userName: nickname.toString(), password: "pass0", headline: headline.toString(), comment: comment.toString(), url: url.toString()}));
+				xhr.send(JSON.stringify({userName: nickname.toString(), password: password, headline: headline.toString(), comment: comment.toString(), url: url.toString()}));
 			});
 		}
 	}
