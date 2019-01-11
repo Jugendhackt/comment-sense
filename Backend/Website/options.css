@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+
+.flexbox {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flexbox>div {
+  margin: 7px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.label {
+  font-size: 15px;
+}
+
+.input {
+  width: 200px;
+  font-family: 'Roboto', sans-serif;
+  padding: 5px;
+  transition: 0.2s;
+}
+
+.input:focus {
+  width: 250px;
+}
+
+.button {
+  font-size: 15px;
+  padding: 5px;
+  background-color: rgba(49, 175, 145, 1);
+  border: none;
+  color: white;
+  transition: 0.2s;
+  width: 200px;
+}
+
+.button:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 250px;
+}
+
+#error {
+  font-size: 13px;
+}
