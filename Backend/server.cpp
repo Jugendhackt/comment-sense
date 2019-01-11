@@ -202,7 +202,7 @@ QByteArray Server::httpPatch(QString data, QString url, QByteArray *type)
     if(url.contains("/users/manage")){
         return manageUser(data.split("\n\n").last().toLatin1());
     }
-    else{
+    else if(url.contains("/comments/vote")){
         data.replace("\r", "");
         QByteArray json = data.split("\n\n").last().toLatin1();
         return voteComment(json);

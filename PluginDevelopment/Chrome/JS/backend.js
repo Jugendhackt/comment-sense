@@ -54,7 +54,7 @@ function clickvote(id){
   var password = "pass0";
   var username = "Nick73";
   var xhr = new XMLHttpRequest();
-  xhr.open("PATCH", 'http://'+ipAdress+'/comments/', true);
+  xhr.open("PATCH", 'http://'+ipAdress+'/comments/vote', true);
   xhr.onload = function () {
     data = xhr.responseText;
     //alert(data);
