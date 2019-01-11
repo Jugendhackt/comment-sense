@@ -18,7 +18,6 @@ $(document).ready(function() {
 		}
 	}
 
-
 	var allComments = $('#landingpage').children();
 
 	function fadeFooter(mode) {
