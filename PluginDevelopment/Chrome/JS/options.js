@@ -61,7 +61,12 @@ document.addEventListener("DOMContentLoaded", function(){
 	function checkPasswordvalue(){
 		chrome.storage.sync.get(["PasswordState"], function(result){
 			if(result.PasswordState == true){
-				window.location.href = "alloptions.html";
+				chrome.tabs.query({title: "Erweiterte Optionen"}, function(tabs){
+					if(tabs.length < 1){
+						window.location.href = "./HTML/login.html";
+						window.open("./HTML/alloptions.html", "_blank");
+					}
+				});
 			}
 		});
 	}
