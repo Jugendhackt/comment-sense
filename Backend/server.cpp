@@ -594,7 +594,9 @@ QList<int> Server::getCommentIds(QString url)
 
 void Server::sendData(Socket *socket, QByteArray data, QByteArray type)
 {
-    qDebug()<<"Sending data : "<<data.length()<<" bytes"<<endl<<data;
+    qDebug()<<"Sending data : "<<data.length()<<" bytes";
+    if(data.length() < 1000)
+        qDebug()<<data;
     socket->write(QString("HTTP/1.1 200 OK\nContent-Length: "+ QString::number(data.length()) +"\nContent-Type: "+type+"\nConnection: Closed\n\n").toLatin1());
     socket->write(data);
     socket->waitForBytesWritten();

@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	document.getElementById("button-clear").addEventListener("click", clearData);
 
 	var ipAdress = '192.168.56.1'
-	var port = "12345";
 
 	var error = document.getElementById("error");
 	var inputUsername = document.getElementById("inputUsername");
@@ -18,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			error.innerHTML = "";
 
 			var xhr = new XMLHttpRequest();
-			xhr.open("POST", "http://"+ipAdress + ":" + port + "/users/create/", true);
+			xhr.open("POST", "http://" + ipAdress + "/users/create/", true);
 			xhr.onload = function(){
 				data = xhr.responseText;
 			}
