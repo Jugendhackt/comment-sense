@@ -199,17 +199,17 @@ void Server::httpPatch(QString data, Socket *socket)
     QJsonDocument doc = QJsonDocument::fromJson(json);
     QJsonObject object = doc.object();
     QString id = QString::number(object.value(QString("id")).toInt());
-    QString userId = QString::number(object.value(QString("userId")).toInt());
     QString password = object.value(QString("password")).toString();
     QString vote = object.value(QString("vote")).toString();
     QString userName = object.value(QString("user")).toString();
-    
+    qDebug()<<userName;
     QByteArray validUser = isUserValid(userName, password);
     if(!validUser.contains("valid")){
         response = validUser;
         sendData(socket, response, getType("json"));
         return;
     }
+    QString userId = QString::number(getUserId(userName));
     
     execSqlQuerry("SELECT votes FROM comments WHERE id LIKE " + id + ";", nullptr);
     if(dataBaseQuerryResult.length() < 1){
@@ -498,7 +498,7 @@ int Server::getSiteId(QString url)
 
 QByteArray Server::isUserValid(QString userName, QString password)
 {
-    qDebug()<<"checking user...";
+    qDebug()<<"checking user..."<<userName<<password;
     execSqlQuerry("SELECT password FROM users WHERE name LIKE \'" + userName + "\'", nullptr);
     
     if(dataBaseQuerryResult.length() < 1){
@@ -510,12 +510,14 @@ QByteArray Server::isUserValid(QString userName, QString password)
         dataBaseQuerryResult.clear();
         return "{\"error\":\"somehow there are multiple users with this nickname\"}";
     }*/
-    else{
+    else if(dataBaseQuerryResult.length() == 1){
         bool valid = false;
         for(int i = 0; i < dataBaseQuerryResult.length(); i++){
             qDebug()<<password<<":"<<dataBaseQuerryResult[i].first().second;
-            if(dataBaseQuerryResult[i].first().second.contains(password))
+            if(dataBaseQuerryResult[i].first().second.compare(password, Qt::CaseSensitive) == 0)
                 valid = true;
+            else
+                qDebug()<<dataBaseQuerryResult[i].first().second.compare(password, Qt::CaseSensitive);
         }
         if(valid){
             dataBaseQuerryResult.clear();

@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function(){
           buttons = document.getElementsByClassName("btn btn-primary btn-sm");
           //alert(data.Comments[i].id);
           displayComment(username, headline, comment, votes, i);
-          buttons[i].addEventListener("click", function(){clickvote(id, username, comment, userid)});
+          buttons[i].addEventListener("click", function(){clickvote(id)});
         }
       }
       xhr.send();
@@ -50,16 +50,16 @@ document.addEventListener("DOMContentLoaded", function(){
 delay();
 refresh();
 
-function clickvote(ide, username, comment, userid){
-  var password="pass0";
-  alert("hi");
+function clickvote(id){
+  var password = "pass0";
+  var username = "Nick73";
   var xhr = new XMLHttpRequest();
   xhr.open("PATCH", 'http://'+ipAdress+'/comments/', true);
   xhr.onload = function () {
     data = xhr.responseText;
     //alert(data);
   };
-  xhr.send(JSON.stringify({id: ide, user: username, password: password, vote: 1, content: comment, userId: userid}));
+  xhr.send(JSON.stringify({id: id, user: username, password: password, vote: 1}));
   refresh();
   //alert(this.id);
 }
