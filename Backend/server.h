@@ -64,8 +64,7 @@ private:
     QByteArray httpPost(QString data, QString url, QByteArray *type);
     QByteArray httpPatch(QString data, QString url, QByteArray *type);
     QByteArray httpDelete(QString data, QString url, QByteArray *type);
-    
-    int getCosId();
+
     int getCommentId();
     void initDatabase();
     QStringList getUsers();
@@ -84,6 +83,8 @@ private:
     void sendData(Socket *socket, QByteArray data, QByteArray type);
     QByteArray getDatabaseContent(QString url);
     QByteArray isUserValid(QString userName, QString password);
+    QByteArray calcTrustLevel(int userId);
+    QByteArray addCommentToSite(QString url, int commentId);
 };
 
 #endif // SERVER_H

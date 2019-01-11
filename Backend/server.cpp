@@ -275,10 +275,6 @@ void Server::initDatabase()
                   "created_at DATE,"
                   "headline TEXT,"
                   "content TEXT)", nullptr);
-    execSqlQuerry("CREATE TABLE comments_on_site("//  SQL to create new table (comments_on_site)
-                  "id INT PRIMARY KEY NOT NULL,"
-                  "url TEXT NOT NULL,"
-                  "comment_id INT)", nullptr);
     execSqlQuerry("CREATE TABLE sites("         //  SQL to create new table (sites)
                   "id INT PRIMARY KEY NOT NULL,"
                   "url TEXT,"
@@ -286,7 +282,9 @@ void Server::initDatabase()
     execSqlQuerry("CREATE TABLE users("         //  SQL to create new table (users)
                   "id INT PRIMARY KEY NOT NULL,"
                   "name TEXT UNIQUE NOT NULL,"
-                  "password TEXT NOT NULL)", nullptr);
+                  "password TEXT NOT NULL,"
+                  "email TEXT,"
+                  "trustLevel REAL NOT NULL)", nullptr);
     execSqlQuerry("INSERT INTO users (id, name, password) VALUES (0, \'Nick73\', \'pass0\');", nullptr);
     qDebug()<<"init finisched";
 }
@@ -380,19 +378,14 @@ QByteArray Server::postComment(QByteArray data)
         return validUser;
     }
 
-    int id = getCommentId();    
-    int siteID = getSiteId(url);
-    int cosId = getCosId();
+    int id = getCommentId();
     int userId = getUserId(userName);
     qDebug()<<"Writing...";
     execSqlQuerry("INSERT INTO comments (id, user_id, rating, created_at, content, headline) VALUES (" +
                   QString::number(id) + "," + QString::number(userId) + "," + QString::number(rating) + ",\'" +
                   date + "\',\'" + content + "\',\'" + headline + "\');", nullptr);
-    execSqlQuerry("INSERT INTO comments_on_site (id, comment_id, url) VALUES (" +
-                  QString::number(cosId) + "," + QString::number(id) + ",\'" + url + "\');", nullptr);
     dataBaseQuerryResult.clear();
-    Q_UNUSED(siteID);
-    return "{\"status\":\"everything worked\"}";
+    return addCommentToSite(url, id);
 }
 
 int Server::execSqlQuerry(QString querry, const char *data)
@@ -421,21 +414,6 @@ bool Server::isJsonValid(QByteArray json)
 {
     QJsonDocument doc = QJsonDocument::fromJson(json);
     return !doc.isNull();
-}
-
-int Server::getCosId()
-{
-    int cosId = 0;
-    execSqlQuerry("SELECT MAX(id) FROM comments_on_site", nullptr);
-    if(dataBaseQuerryResult.length() > 0){
-        QString id = dataBaseQuerryResult.first().first().second;
-        if(id.isEmpty() || id == "NULL")
-            cosId = 0;
-        else
-            cosId = id.toInt() + 1;
-    }
-    dataBaseQuerryResult.clear();
-    return cosId;
 }
 
 int Server::getCommentId()
@@ -502,6 +480,34 @@ QByteArray Server::isUserValid(QString userName, QString password)
     return "{\"error\":\"unknown error(isUserValid unexpected end)\"}";
 }
 
+QByteArray Server::calcTrustLevel(int userId)   //calc trustLevel, lower trust -> easier to delete comment / account
+{                                               //gets calculated from amount of information given, amount of comments,
+                                                //quality of posts (likes user got per comment and who liked(their trustLevel))
+    return "{\"status\":\"everything worked\"}";
+}
+
+QByteArray Server::addCommentToSite(QString url, int commentId)
+{
+    execSqlQuerry("SELECT comments FROM sites WHERE url LIKE \'" + url + "\';", nullptr);
+    if(dataBaseQuerryResult.length() < 1){
+        dataBaseQuerryResult.clear();
+        return "{\"error\":\"this comment is not in the database\"}";
+    }
+    
+    QString comments = dataBaseQuerryResult[0][0].second;
+    QString id = QString::number(commentId);
+    if(comments == "NULL" || comments.isEmpty())
+        comments = id;
+    else if(!comments.split(",").contains(id))
+        comments.append("," + id);
+    else{
+        return "{\"error\":\"this user has already voted\"}";
+    }
+    execSqlQuerry("UPDATE sites SET comments = \'" + comments + "\' WHERE url LIKE \'" + url + "\';", nullptr);
+    dataBaseQuerryResult.clear();
+    return "{\"status\":\"everything worked\"}";
+}
+
 QString Server::getUrlFromData(QString data)
 {
     QJsonDocument json = QJsonDocument::fromJson(data.split("\r\n\r\n").last().toLatin1());
@@ -533,6 +539,7 @@ QByteArray Server::createUser(QByteArray json)
     QJsonObject object = doc.object();
     QString password = object.value("password").toString();
     QString username = object.value("username").toString();
+    QString trustLevel = QString::number(0.0);
     qDebug()<<"new User is beeing registered: username: "<<username<<" password: "<<password<<"";
     QString id;
     QStringList users = getUsers();
@@ -543,9 +550,9 @@ QByteArray Server::createUser(QByteArray json)
     if(dataBaseQuerryResult.length() != 1)
         return "{\"error\":\"unknown error (creating User)\"}";
     id = QString::number(dataBaseQuerryResult.last().last().second.toInt()+1);
-    execSqlQuerry("INSERT INTO users (id, name, password) VALUES (" + id + ", \'" + username + "\',\'" + password + "\');", nullptr);
+    execSqlQuerry("INSERT INTO users (id, name, password, trustLevel) VALUES (" + id + ", \'" + username + "\',\'" + password + "\',\'" + trustLevel + "\');", nullptr);
     dataBaseQuerryResult.clear();
-    return "{\"status\":\"everything worked\"}";
+    return calcTrustLevel(id.toInt());
 }
 
 QByteArray Server::manageUser(QByteArray json)
@@ -589,14 +596,17 @@ QByteArray Server::voteComment(QByteArray json)
     }
     QString userId = QString::number(getUserId(userName));
     
-    execSqlQuerry("SELECT votes FROM comments WHERE id LIKE " + id + ";", nullptr);
+    execSqlQuerry("SELECT votes, user_id FROM comments WHERE id LIKE " + id + ";", nullptr);
     if(dataBaseQuerryResult.length() < 1){
         dataBaseQuerryResult.clear();
         return "{\"error\":\"this comment is not in the database\"}";
     }
     
     QString votes = dataBaseQuerryResult[0][0].second;
-    if(votes == "NULL" || votes.isEmpty())
+    QString user = dataBaseQuerryResult[0][1].second;
+    if(user.compare(userId) == 0)
+        return "{\"error\":\"you can't vote on your own comment\"}";
+    else if(votes == "NULL" || votes.isEmpty())
         votes = userId;
     else if(!votes.split(",").contains(userId))
         votes.append(","+userId);

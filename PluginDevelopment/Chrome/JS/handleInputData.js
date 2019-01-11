@@ -18,7 +18,6 @@ $(document).ready(function() {
 		}
 	}
 
-
 	var allComments = $('#landingpage').children();
 
 	function fadeFooter(mode) {
@@ -45,14 +44,8 @@ $(document).ready(function() {
 		console.log('Author: ' + author + ', Headline: ' + headline + ', Comment: ' + comment + ', Liked: ' + liked);
 		$('#landingpage').append('<div class="card" style="width: 18rem;"> <div class="card-header"> <div class="flex-centered-vertically"> <span class="profile-image"> <img src="./assets/icons/user.svg" alt=""> </span> <h5 class="card-title">' + author + '</h5> </div> <p class="card-title-description">Gefällt ' + liked + ' mal</p> </div> <div class="card-body"> <h6 class="card-subtitle mb-2 text-muted">' + headline + '</h6> <p class="card-text">' + comment + '</p> <button type="button" class="btn btn-primary btn-sm"> <span class="like"> <img src="./assets/icons/like.svg" alt=""> </span> Gefällt mir </button> </div> </div>');
 	}
+	
 	$("form#postComment").submit(function(event) {
-		event.preventDefault();
-		let information = [
-				$('#nicknameInput').val(),
-				$('#headlineInput').val(),
-				$('#commentInput').val(),
-				'0']
-		displayComment(information[0], information[1], information[2], information[3]);
 		fadeFooter('basic');
 	});
 });
