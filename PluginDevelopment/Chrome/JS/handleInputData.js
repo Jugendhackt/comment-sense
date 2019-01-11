@@ -22,17 +22,14 @@ $(document).ready(function() {
 
 	function fadeFooter(mode) {
 		if (mode == 'basic') {
-			console.log('Display: ' + $('.footer-overlay form').css('display'));
 			$('.footer-overlay form').hide('slide', {
 				direction: 'down'
 			}, 200);
-			console.log('Display: ' + $('.footer-overlay form').css('display'));
 			$('footer').animate({
 				height: '76px'
 			}, 250, function() {
 				$('footer button[name="writeComment"]').show("slide", { direction: "left" }, 300);
 			});
-			// basicDisplay('.footer-overlay form', 'block !important');
 			$('.footer-overlay-close').hide();
 			if ($('#landingpage').children() != allComments) {
 				$('#scrollDown').show();
@@ -41,7 +38,6 @@ $(document).ready(function() {
 	}
 
 	function displayComment(author, headline, comment, liked) {
-		console.log('Author: ' + author + ', Headline: ' + headline + ', Comment: ' + comment + ', Liked: ' + liked);
 		$('#landingpage').append('<div class="card" style="width: 18rem;"> <div class="card-header"> <div class="flex-centered-vertically"> <span class="profile-image"> <img src="./assets/icons/user.svg" alt=""> </span> <h5 class="card-title">' + author + '</h5> </div> <p class="card-title-description">Gefällt ' + liked + ' mal</p> </div> <div class="card-body"> <h6 class="card-subtitle mb-2 text-muted">' + headline + '</h6> <p class="card-text">' + comment + '</p> <button type="button" class="btn btn-primary btn-sm"> <span class="like"> <img src="./assets/icons/like.svg" alt=""> </span> Gefällt mir </button> </div> </div>');
 	}
 	
