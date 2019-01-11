@@ -1,75 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="CSS/style.css">
-</head>
-<body>
-  <nav class="nav">
-    <li>
-      <img src="./assets/icons/comment_icon.svg" alt="">
-    </li>
-    <li>
-      <p class="navbar-brand" href="#">CommentSense</p>
-    </li>
-  </nav>
-  <main>
-    <div id="landingpage">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>Document</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" href="CSS/style.css">
+	</head>
+	<body>
+		<nav class="nav">
+			<li>
+				<img src="./assets/icons/comment_icon.svg" alt="">
+			</li>
+			<li>
+				<p class="navbar-brand" href="#">CommentSense</p>
+			</li>
+		</nav>
+		<main>
+			<div id="landingpage"></div>
+		</main>
+		<button id="scrollDown" class="btn btn-primary new-comment-overlay">Neue Kommentare</button>
+		<footer>
+			<span class="fade-out-gradient"></span>
+			<hr>
+			<div class="flex-centered">
+				<button name="writeComment" type="button" class="btn btn-secondary" id="btn-ccreate">
+					<span class="writeComment">
+						<img src="./assets/icons/comment.svg" alt="">
+					</span>
+					Kommentiere ...
+				</button>
+			</div>
+			<div class="footer-overlay-close">
+				<img src="./assets/icons/ArrowDown.svg" alt="">
+			</div>
+			<div class="footer-overlay">
+				<form id="postComment">
+					<div class="form-description">
+					<h1>Dein Kommentar</h1>
+					<p>Bitte fülle alle Felder aus!</p>
+					<hr>
+					</div>
+					<div class="form-group">
+						<label for="nicknameInput">Nickname</label>
+						<input type="text" class="form-control" id="nicknameInput" aria-describedby="nicknameHelp" placeholder="Dein Nickname">
+						<small id="nicknameHelp" class="form-text text-muted"></small>
+					</div>
+					<div class="form-group">
+						<label for="headlineInput">Headline</label>
+						<input type="text" class="form-control" id="headlineInput" aria-describedby="headliineHelp" placeholder="Überschrift">
+						<small id="headlineInput" class="form-text text-muted"></small>
+					</div>
+					<div class="form-group">
+						<label for="exampleFormControlTextarea1">Dein Kommentar</label>
+						<textarea class="form-control" id="commentInput" placeholder="Tolle Website!" rows="5"></textarea>
+						<small id="emailHelp" class="form-text text-muted"></small>
+					</div>
+					<button id="submit" type="submit" class="btn btn-primary">Kommentar veröffentlichen</button>
+				</form>
+			</div>
+		</footer>
 
-    </div>
-  </main>
-  <button id="scrollDown" class="btn btn-primary new-comment-overlay">Neue Kommentare</button>
-  <footer>
-    <span class="fade-out-gradient"></span>
-    <hr>
-    <div class="flex-centered">
-      <button name="writeComment" type="button" class="btn btn-secondary" id="btn-ccreate">
-        <span class="writeComment">
-          <img src="./assets/icons/comment.svg" alt="">
-        </span>
-        Kommentiere ...
-      </button>
-    </div>
-    <div class="footer-overlay-close">
-      <img src="./assets/icons/ArrowDown.svg" alt="">
-    </div>
-    <div class="footer-overlay">
-      <form id="postComment">
-        <div class="form-description">
-          <h1>Dein Kommentar</h1>
-          <p>Bitte fülle alle Felder aus!</p>
-          <hr>
-        </div>
-        <div class="form-group">
-          <label for="nicknameInput">Nickname</label>
-          <input type="text" class="form-control" id="nicknameInput" aria-describedby="nicknameHelp" placeholder="Dein Nickname">
-          <small id="nicknameHelp" class="form-text text-muted"></small>
-        </div>
-        <div class="form-group">
-          <label for="headlineInput">Headline</label>
-          <input type="text" class="form-control" id="headlineInput" aria-describedby="headliineHelp" placeholder="Überschrift">
-          <small id="headlineInput" class="form-text text-muted"></small>
-        </div>
-        <div class="form-group">
-          <label for="exampleFormControlTextarea1">Dein Kommentar</label>
-          <textarea class="form-control" id="commentInput" placeholder="Tolle Website!" rows="5"></textarea>
-          <small id="emailHelp" class="form-text text-muted"></small>
-        </div>
-        <button id="submit" type="submit" class="btn btn-primary">Kommentar veröffentlichen</button>
-      </form>
-    </div>
-  </footer>
-
-  <!-- JavaScript Includes -->
-  <script src="./assets/js/jquery-3.3.1.min.js"></script>
-  <script src="./assets/js/jquery-ui.min.js" charset="utf-8"></script>
-  <script src="JS/popup.js" charset="utf-8"></script>
-  <script src="JS/backend.js" charset="utf-8"></script>
-  <script src="JS/autoscroll.js" charset="utf-8"></script>
-  <script src="JS/handleInputData.js" charset="utf-8"></script>
-</body>
+		<!-- JavaScript Includes -->
+		<script src="./assets/js/jquery-3.3.1.min.js"></script>
+		<script src="./assets/js/jquery-ui.min.js" charset="utf-8"></script>
+		<script src="JS/popup.js" charset="utf-8"></script>
+		<script src="JS/backend.js" charset="utf-8"></script>
+		<script src="JS/autoscroll.js" charset="utf-8"></script>
+		<script src="JS/handleInputData.js" charset="utf-8"></script>
+	</body>
 </html>

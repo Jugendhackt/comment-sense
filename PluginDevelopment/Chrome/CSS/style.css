@@ -1,9 +1,9 @@
 /* ##### Table of contents #####
-  1. General
-    1.1 Includes
-    1.2 Basic declarations
-  2. Navbar
-  3. Main (Cards including comments)
+	1. General
+		1.1 Includes
+		1.2 Basic declarations
+	2. Navbar
+	3. Main (Cards including comments)
 /* #################### */
 
 
@@ -14,137 +14,137 @@
 
 /* ##### 1.2 Basic declarations ##### */
 * {
-  margin: 0;
-  padding: 0;
+	margin: 0;
+	padding: 0;
 }
 html {
-  width: 250px;
-  height: 600px;
-  margin: 0 !important;
+	width: 250px;
+	height: 600px;
+	margin: 0 !important;
 }
 
 h1, h2, h3, h4 {
-  font-family: 'Roboto', sans-serif;
+	font-family: 'Roboto', sans-serif;
 }
 
 
 .flex-centered-vertically {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 }
 .flex-centered {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .btn-primary {
-  background-color: #0077D2;
+	background-color: #0077D2;
 }
 
 /* ##### 2. Navbar ##### */
 nav {
-  width: 100%;
-  height: 50px;
-  position: fixed;
-  top: 0;
-  z-index: 9;
-  display: flex;
-  align-items: center;
-  background-color: #FFF;
-  border-radius: 5px 5px 0 0;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+	width: 100%;
+	height: 50px;
+	position: fixed;
+	top: 0;
+	z-index: 9;
+	display: flex;
+	align-items: center;
+	background-color: #FFF;
+	border-radius: 5px 5px 0 0;
+	box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
 }
 .nav li {
-  height: 40px;
-  padding: 0 auto;
+	height: 40px;
+	padding: 0 auto;
 }
 .nav li:nth-child(1) {
-  display: flex;
-  align-items: center;
-  margin-left: 25px;
-  width: 20px;
-  height: 20px;
+	display: flex;
+	align-items: center;
+	margin-left: 25px;
+	width: 20px;
+	height: 20px;
 }
 .nav li:last-of-type {
-  padding-left: 10px;
+	padding-left: 10px;
 }
 .nav img {
-  width: 24px;
-  height: 24px;
+	width: 24px;
+	height: 24px;
 }
 .navbar-brand {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-  color: #000;
+	margin: 0;
+	font-size: 18px;
+	font-weight: 500;
+	color: #000;
 }
 
 
 /* ##### 3. Main ##### */
 main {
-  width: 100%;
-  height: auto;
-  display: flex;
-  margin: 50px 0 100px 0;
-  justify-content: center;
-  flex-wrap: wrap;
+	width: 100%;
+	height: auto;
+	display: flex;
+	margin: 50px 0 100px 0;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 .card {
-  width: 230px !important;
-  margin-top: 15px;
-  border: none;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+	width: 230px !important;
+	margin-top: 15px;
+	border: none;
+	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
 }
 .card-header {
-  border: none;
-  background-color: #f9f9f9;
+	border: none;
+	background-color: #f9f9f9;
 }
 .card .profile-image {
-  width: 35px;
-  height: 35px;
-  border-radius: 100%;
+	width: 35px;
+	height: 35px;
+	border-radius: 100%;
 }
 .card-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0;
-  padding-left: 12px;
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0;
+	padding-left: 12px;
 }
 .card .profile-image img {
-  width: 35px;
-  height: 35px;
+	width: 35px;
+	height: 35px;
 }
 .card-title-description {
-  font-size: 13px;
-  color: #A5A5A5;
-  margin: -8px 0 0 0;
-  padding-left: 47px;
+	font-size: 13px;
+	color: #A5A5A5;
+	margin: -8px 0 0 0;
+	padding-left: 47px;
 }
 .card-subtitle {
-  font-weight: 700;
-  color: #171717 !important;
-  margin-bottom: .3rem !important;
+	font-weight: 700;
+	color: #171717 !important;
+	margin-bottom: .3rem !important;
 }
 .card-text {
-  font-size: 14px;
-  letter-spacing: -.2px;
+	font-size: 14px;
+	letter-spacing: -.2px;
 }
 .card-body button {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 .like img {
-  width: 22px;
-  height: 22px;
-  stroke: #FFF;
-  margin-top: -2px;
-  padding-right: 5px;
+	width: 22px;
+	height: 22px;
+	stroke: #FFF;
+	margin-top: -2px;
+	padding-right: 5px;
 
 }
 
 #scrollDown {
-  display: none;
+	display: none;
 }
 
 #commentInput {
@@ -152,164 +152,164 @@ main {
 
 
 .new-comment-overlay {
-  width: 200px;
-  height: 40px;
-  position: fixed;
-  z-index: 15;
-  top: 450px;
-  left: 50%;
-  margin-left: -100px;
-  border-radius: 10px;
-  background-color: #262D4A;
-  box-shadow: 0px 0px 15px rgba(0,0,0,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #FFF;
-  border: none;
+	width: 200px;
+	height: 40px;
+	position: fixed;
+	z-index: 15;
+	top: 450px;
+	left: 50%;
+	margin-left: -100px;
+	border-radius: 10px;
+	background-color: #262D4A;
+	box-shadow: 0px 0px 15px rgba(0,0,0,0.25);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: #FFF;
+	border: none;
 }
 .new-comment-overlay:hover {
-  background-color: #1C2340;
+	background-color: #1C2340;
 }
 .new-comment-overlay:focus {
-  outline: none;
+	outline: none;
 }
 
 /* ##### 4. Create a comment Overlay ##### */
 #create-comment-overlay {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  z-index: 10;
-  background-color: #FFF;
-  display: none;
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	z-index: 10;
+	background-color: #FFF;
+	display: none;
 }
 
 
 /* ##### 5. Footer ##### */
 /* ##### 5.1 Footer Basic ##### */
 footer {
-  width: 100%;
-  height: 76px;
-  position: fixed;
-  bottom: 0;
-  background-color: #FFF;
-  box-shadow: 0px -5px 10px rgba(255,255,255,0.8);
+	width: 100%;
+	height: 76px;
+	position: fixed;
+	bottom: 0;
+	background-color: #FFF;
+	box-shadow: 0px -5px 10px rgba(255,255,255,0.8);
 }
 footer hr {
-  width: 100%;
-  display: block;
-  margin: 0 auto 0 auto;
-  background-color: #DFDFDF;
-  border-color: #DFDFDF;
+	width: 100%;
+	display: block;
+	margin: 0 auto 0 auto;
+	background-color: #DFDFDF;
+	border-color: #DFDFDF;
 }
 footer .flex-centered {
-  height: 100%;
+	height: 100%;
 }
 footer .flex-centered button {
-  width: 230px;
-  height: 40px;
-  font-size: 16px;
-  font-weight: 700;
-  background-color: #31AF91;
-  border: none;
-  border-radius: 0;
-  box-shadow: 0px 0px 8px rgba(0,0,0,0.15);
+	width: 230px;
+	height: 40px;
+	font-size: 16px;
+	font-weight: 700;
+	background-color: #31AF91;
+	border: none;
+	border-radius: 0;
+	box-shadow: 0px 0px 8px rgba(0,0,0,0.15);
 }
 footer .flex-centered .writeComment img {
-  width: 20px;
-  height: 18px;
-  margin-right: 5px;
+	width: 20px;
+	height: 18px;
+	margin-right: 5px;
 }
 
 /* ##### 5.2 Footer Overlay ##### */
 .footer-overlay-close {
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  margin-top: -16px;
-  margin-left: -16px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background-color: #FFF;
-  border-radius: 100%;
-  box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	margin-top: -16px;
+	margin-left: -16px;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	background-color: #FFF;
+	border-radius: 100%;
+	box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
 }
 .footer-overlay-close:hover {
-  cursor: pointer;
-  animation: bounce ease-out;
-  animation-duration: .5s;
+	cursor: pointer;
+	animation: bounce ease-out;
+	animation-duration: .5s;
 }
 .footer-overlay-close img {
-  width: 16px;
-  height: 16px;
-  border-radius: 100%;
+	width: 16px;
+	height: 16px;
+	border-radius: 100%;
 }
 .footer-overlay {
-  position: absolute;
-  top: 0;
+	position: absolute;
+	top: 0;
 }
 .footer-overlay form {
-  padding-top: 30px;
-  margin: 0 25px;
+	padding-top: 30px;
+	margin: 0 25px;
 }
 .footer-overlay h1, .footer-overlay p {
-  margin: 0;
-  padding: 0;
-  display: none;
+	margin: 0;
+	padding: 0;
+	display: none;
 }
 .footer-overlay h1 {
-  font-size: 22px;
-  font-weight: 700;
+	font-size: 22px;
+	font-weight: 700;
 }
 .footer-overlay p {
-  font-size: 14px;
+	font-size: 14px;
 }
 .footer-overlay hr {
-  margin: 10px auto;
+	margin: 10px auto;
 }
 .footer-overlay form label {
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: .1rem;
+	font-size: 15px;
+	font-weight: 700;
+	margin-bottom: .1rem;
 }
 .footer-overlay .form-group,
 .footer-overlay .form-check,
 .footer-overlay button[type="submit"] {
-  display: none;
+	display: none;
 }
 .footer-overlay button[type="submit"] {
-  background-color: #31af91;
-  border: none;
+	background-color: #31af91;
+	border: none;
 }
 .form-control {
-  font-size: 14px;
-  transition: 0.2s;
-  width: 200px;
-  align-items: center!important;
+	font-size: 14px;
+	transition: 0.2s;
+	width: 200px;
+	align-items: center!important;
 }
 
 #btn-ccreate {
-  width: 200px;
-  transition: 0.2s;
+	width: 200px;
+	transition: 0.2s;
 }
 
 #btn-ccreate:hover {
-  width: 230px;
+	width: 230px;
 }
 
 .form-control:focus {
-  width: 220px;
+	width: 220px;
 }
 
 .form-control::selection {
-  color: black;
-  background-color: rgba(0, 0, 0, 0.5);
+	color: black;
+	background-color: rgba(0, 0, 0, 0.5);
 }
 #submit:hover {
-  background-color: rgba(0,0,0,0.5);
+	background-color: rgba(0,0,0,0.5);
 }

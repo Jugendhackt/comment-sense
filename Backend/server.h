@@ -79,7 +79,7 @@ private:
     QList<int> getCommentIds(QString url);
     QByteArray voteComment(QByteArray json);
     int getSiteId(QString url);
-    QByteArray putDatabaseContent(QByteArray data);
+    QByteArray postComment(QByteArray data);
     int execSqlQuerry(QString querry, const char *data);
     void sendData(Socket *socket, QByteArray data, QByteArray type);
     QByteArray getDatabaseContent(QString url);

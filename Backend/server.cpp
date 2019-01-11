@@ -153,7 +153,7 @@ QByteArray Server::httpGet(QString data, QString url, QByteArray *type)
     qDebug()<<"URL: "<<url<<endl;
     QStringList lines = data.split("\n");
     if(url.contains("/comments/"))   //  check whether comments or a file is requested
-        return getDatabaseContent(url);        
+        return getDatabaseContent(url.split("/comments/").last());        
     else{
         return getFile(url, type);
         //sendData(socket, getFile(url, &type), type);
@@ -189,7 +189,7 @@ QByteArray Server::httpPost(QString data, QString url, QByteArray *type)
     }
     else if(lines.first().contains("/comments/")){
         QByteArray json = data.split("\n\n").last().toLatin1();                               //  stores complete json data
-        return putDatabaseContent(json);
+        return postComment(json);
     }
     return "{\"error\":\"unknown post action\"}";
 }
@@ -281,7 +281,8 @@ void Server::initDatabase()
                   "comment_id INT)", nullptr);
     execSqlQuerry("CREATE TABLE sites("         //  SQL to create new table (sites)
                   "id INT PRIMARY KEY NOT NULL,"
-                  "url TEXT)", nullptr);
+                  "url TEXT,"
+                  "comments TEXT)", nullptr);
     execSqlQuerry("CREATE TABLE users("         //  SQL to create new table (users)
                   "id INT PRIMARY KEY NOT NULL,"
                   "name TEXT UNIQUE NOT NULL,"
@@ -350,7 +351,7 @@ QByteArray Server::getDatabaseContent(QString url)
     return result;
 }
 
-QByteArray Server::putDatabaseContent(QByteArray data)
+QByteArray Server::postComment(QByteArray data)
 {
     int rating = 0;
     QString date, content, password, url, headline;
@@ -556,10 +557,16 @@ QByteArray Server::manageUser(QByteArray json)
 QList<int> Server::getCommentIds(QString url)
 {
     QList<int> commentIds;
-    execSqlQuerry("SELECT comment_id, url FROM comments_on_site WHERE url LIKE \'" + url +"\'", nullptr);
+    execSqlQuerry("SELECT comments FROM sites WHERE url LIKE \'" + url +"\'", nullptr);
     for(int i = 0; i < dataBaseQuerryResult.length(); i++){
-        if(dataBaseQuerryResult[i].last().second == url)
-            commentIds.append(dataBaseQuerryResult[i].first().second.toInt());
+        QString result = dataBaseQuerryResult[i].first().second;
+        QStringList commentids;
+        if(result == "NULL" || result.isEmpty())
+            ;
+        else 
+            commentids = result.split(",");
+        for(int i = 0; i < commentids.length(); i++)
+            commentIds.append(commentids[i].toInt());
     }
     dataBaseQuerryResult.clear();    
     return  commentIds;
@@ -604,7 +611,7 @@ QByteArray Server::voteComment(QByteArray json)
 void Server::sendData(Socket *socket, QByteArray data, QByteArray type)
 {
     qDebug()<<endl<<"Sending data ("<<data.length()<<" bytes) of type :"<<type;
-    if(data.length() < 1000)
+    if(data.length() < 250)
         qDebug()<<data;
     socket->write(QString("HTTP/1.1 200 OK\nContent-Length: "+ QString::number(data.length()) +"\nContent-Type: "+type+"\nConnection: Closed\n\n").toLatin1());
     socket->write(data);
