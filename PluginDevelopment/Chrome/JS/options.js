@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		var password = inputPassword.value;
 		if(username == "" || password == ""){
 			error.innerHTML = "Es sind nicht alle Felder ausgefüllt!";
-		} 
+		}
 		else {
 			//get Username or set it for the first time
 			chrome.storage.sync.get(["username"], function(result){
@@ -58,6 +58,8 @@ document.addEventListener("DOMContentLoaded", function(){
 					if(tabs.length < 1){
 						window.location.href = "./HTML/login.html";
 						window.open("./HTML/alloptions.html", "_blank");
+					} else {
+						window.location.href = "./HTML/login.html";
 					}
 				});
 			}
