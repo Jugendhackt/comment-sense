@@ -28,13 +28,14 @@
 }
 
 .button {
-	font-size: 15px;
-	padding: 5px;
-	background-color: rgba(49, 175, 145, 1);
-	border: none;
-	color: white;
-	transition: 0.2s;
-	width: 200px;
+  font-size: 15px;
+  padding: 5px;
+  background-color: rgba(49, 175, 145, 1);
+  border: none;
+  color: white;
+  transition: 0.2s;
+  width: 200px;
+  cursor: pointer;
 }
 
 .button:hover {
