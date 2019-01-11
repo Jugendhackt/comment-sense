@@ -59,24 +59,25 @@ private:
     QDir bin, dir, data;
     const char *dbPath = "../data/mainDatabase.db3";
     
-    void httpGet(QString data, Socket *socket);
-    void httpPut(QString data, Socket *socket);
-    void httpPost(QString data, Socket *socket);
-    void httpPatch(QString data, Socket *socket);
-    void httpDelete(QString data, Socket *socket);
+    QByteArray httpGet(QString data, QString url, QByteArray *type);
+    QByteArray httpPut(QString data, QString url, QByteArray *type);
+    QByteArray httpPost(QString data, QString url, QByteArray *type);
+    QByteArray httpPatch(QString data, QString url, QByteArray *type);
+    QByteArray httpDelete(QString data, QString url, QByteArray *type);
     
     int getCosId();
     int getCommentId();
     void initDatabase();
     QStringList getUsers();
-    QTextStream& qStdOut();
     QByteArray createUser(QByteArray json);
+    QByteArray manageUser(QByteArray json);
     QByteArray getFile(QString url, QByteArray *type);
     QByteArray getType(QByteArray ending);
     int getUserId(QString userName);
     bool isJsonValid(QByteArray json);
     QString getUrlFromData(QString data);
     QList<int> getCommentIds(QString url);
+    QByteArray voteComment(QByteArray json);
     int getSiteId(QString url);
     QByteArray putDatabaseContent(QByteArray data);
     int execSqlQuerry(QString querry, const char *data);
