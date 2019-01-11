@@ -17,9 +17,14 @@
 }
 
 .input {
-  width: 250px;
+  width: 200px;
   font-family: 'Roboto', sans-serif;
   padding: 5px;
+  transition: 0.2s;
+}
+
+.input:focus {
+  width: 250px;
 }
 
 .button {
@@ -29,11 +34,12 @@
   border: none;
   color: white;
   transition: 0.2s;
-  width: 250px;
+  width: 200px;
 }
 
 .button:hover {
   background-color: rgba(0, 0, 0, 0.5);
+  width: 250px;
 }
 
 #error {
