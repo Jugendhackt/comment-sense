@@ -2,44 +2,49 @@ document.addEventListener("DOMContentLoaded", function(){
   document.getElementById("showHidePassword").addEventListener("click", showHidePassword);
   document.getElementById("edit").addEventListener("click", showEditPage);
 
-  var username = document.getElementById("inputUserName");
-  var password = document.getElementById("inputPassword");
-  var email = document.getElementById("inputEmail");
+  var inputusername = document.getElementById("inputUserName");
+  var inputpassword = document.getElementById("inputPassword");
+  var inputemail = document.getElementById("inputEmail");
+  var error = document.getElementById("error");
 
-  chrome.storage.sync.get(["username"], function(result){
-    if(typeof result.username === "undefined"){
-      username.value = "username existiert nicht!";
-    } else {
-      username.value = result.username;
-    }
-  });
+  function showOptions(){
+    chrome.storage.sync.get(["username"], function(result){
+      if(typeof result.username === "undefined"){
+        error.innerHTML += "Nickname existiert nicht!";
+      } else {
+        inputusername.value = result.username;
+      }
+    });
 
-  chrome.storage.sync.get(["password"], function(result){
-    if(typeof result.password === "undefined"){
-      password.value = "Passwort existiert nicht!";
-    } else {
-      password.value = result.password;
-    }
-  });
+    chrome.storage.sync.get(["password"], function(result){
+      if(typeof result.password === "undefined"){
+        error.innerHTML += "Passwort existiert nicht!";
+      } else {
+        inputpassword.value = result.password;
+      }
+    });
 
-  chrome.storage.sync.get(["email"], function(result){
-    if(typeof result.email === "undefined"){
-      email.value = "keine Email hinterlegt";
-    } else {
-      email.value = result.email;
-    }
-  });
-
-function showHidePassword(){
-  if(password.type == "text") {
-    password.type = "password";
-  } else {
-    password.type = "text";
+    chrome.storage.sync.get(["email"], function(result){
+      if(typeof result.email === "undefined"){
+        error.innerHTML += "Keine Email hinterlegt!";
+      } else {
+        inputemail.value = result.email;
+      }
+    });
   }
-}
 
-function showEditPage(){
-  window.location.href = "/HTML/editoptions.html";
-}
+  function showHidePassword(){
+    if(inputpassword.type == "text") {
+      inputpassword.type = "password";
+    } else {
+      inputpassword.type = "text";
+    }
+  }
+
+  function showEditPage(){
+    window.location.href = "/HTML/editoptions.html";
+  }
+
+  showOptions();
 
 });

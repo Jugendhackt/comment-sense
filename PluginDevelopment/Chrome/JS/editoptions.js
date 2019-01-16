@@ -1,19 +1,50 @@
 document.addEventListener("DOMContentLoaded", function(){
   document.getElementById("showHidePassword").addEventListener("click", showHidePassword);
   document.getElementById("save").addEventListener("click", saveOptions);
+  document.getElementById("savePassword").addEventListener("click", savePassword);
+
+  var inputusername = document.getElementById("inputUserName");
+  var inputpassword = document.getElementById("inputPassword");
+  var inputpassword2 = document.getElementById("inputPasswordSec");
+  var inputemail = document.getElementById("inputEmail");
+  var error = document.getElementById("error");
 
 
-  var iusername = document.getElementById("inputUserName");
-  var ipassword = document.getElementById("inputPassword");
-  var ipassword2 = document.getElementById("inputPasswordSec");
-  var iemail = document.getElementById("inputEmail");
+  function showOptions(){
+    chrome.storage.sync.get(["username"], function(result){
+      if(typeof result.username === "undefined"){
+        error.innerHTML += "Nickname existiert nicht!";
+      } else {
+        inputusername.value = result.username;
+      }
+    });
+
+    chrome.storage.sync.get(["password"], function(result){
+      if(typeof result.password === "undefined"){
+        error.innerHTML += "Passwort existiert nicht!";
+      } else {
+        inputpassword.value = result.password;
+        inputpassword2.value = result.password;
+      }
+    });
+
+    chrome.storage.sync.get(["email"], function(result){
+      if(typeof result.email === "undefined"){
+        error.innerHTML += "Keine Email hinterlegt!";
+      } else {
+        inputemail.value = result.email;
+      }
+    });
+  }
+
+
 
   function saveOptions(){
-    var username = iusername.value;
-    var password = ipassword.value;
-    var email = iemail.value;
+    var username = inputusername.value;
+    var password = inputpassword.value;
+    var email = inputemail.value;
 
-    if(ipassword.value == ipassword2.value){
+    if(inputpassword.value == inputpassword2.value && inputpassword.value != "" && inputpassword2 != ""){
       if (email == ""){
         chrome.storage.sync.set({username: username});
         chrome.storage.sync.set({password: password});
@@ -24,17 +55,29 @@ document.addEventListener("DOMContentLoaded", function(){
       }
       window.location.href = "../HTML/showoptions.html";
     } else {
-      iusername.value = "Passwörter nicht gleich";
+      error.innerHTML =+ "Passwörter nicht gleich";
     }
   }
 
   function showHidePassword(){
-    if(ipassword.type == "text") {
-      ipassword.type = "password";
-      ipassword2.type = "password";
+    if(inputpassword.type == "text") {
+      inputpassword.type = "password";
+      inputpassword2.type = "password";
     } else {
-      ipassword.type = "text";
-      ipassword2.type = "password";
+      inputpassword.type = "text";
+      inputpassword2.type = "text";
     }
   }
+
+  function savePassword(){
+    chrome.storage.sync.get(["PasswordState"], function(result){
+      if(result.PasswordState == true){
+        chrome.storage.sync.set({PasswordState: false});
+      } else {
+        chrome.storage.sync.set({PasswordState: true});
+      }
+    });
+  }
+
+  showOptions();
 });
