@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(){
   document.getElementById("showHidePassword").addEventListener("click", showHidePassword);
+  document.getElementById("edit").addEventListener("click", showEditPage);
 
   var username = document.getElementById("inputUserName");
   var password = document.getElementById("inputPassword");
@@ -35,6 +36,10 @@ function showHidePassword(){
   } else {
     password.type = "text";
   }
+}
+
+function showEditPage(){
+  window.location.href = "/HTML/editoptions.html";
 }
 
 });
