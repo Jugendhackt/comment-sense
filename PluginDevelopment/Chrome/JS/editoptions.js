@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function(){
   var inputemail = document.getElementById("inputEmail");
   var error = document.getElementById("error");
 
+  var ipAdress = "";
+
 
   function showOptions(){
     chrome.storage.sync.get(["username"], function(result){
@@ -52,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function(){
         chrome.storage.sync.set({username: username});
         chrome.storage.sync.set({password: password});
         chrome.storage.sync.set({email: email});
+        chrome.storage.sync.set({PasswordState: false});
       }
       window.location.href = "../HTML/showoptions.html";
     } else {
@@ -77,6 +80,15 @@ document.addEventListener("DOMContentLoaded", function(){
         chrome.storage.sync.set({PasswordState: true});
       }
     });
+  }
+
+  function sendData(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function(){
+
+    }
+    xhr.open("POST", ipAdress, true);
+    xhr.send();
   }
 
   showOptions();

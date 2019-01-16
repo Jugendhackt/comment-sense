@@ -40,14 +40,14 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	function PasswordStatefnc() {
-		if(stateSavePassword == false) {
+		if(PasswordState == false) {
 			error.innerHTML = "Passwort wird gespeichert!";
-			stateSavePassword = true;
-			chrome.storage.sync.set({PasswordState: stateSavePassword});
+			PasswordState = true;
+			chrome.storage.sync.set({PasswordState: PasswordState});
 		} else {
 			error.innerHTML = "";
-			stateSavePassword = false;
-			chrome.storage.sync.set({PasswordState: stateSavePassword});
+			PasswordState = false;
+			chrome.storage.sync.set({PasswordState: PasswordState});
 		}
 	}
 
