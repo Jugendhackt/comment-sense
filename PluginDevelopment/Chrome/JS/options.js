@@ -56,10 +56,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			if(result.PasswordState == true){
 				chrome.tabs.query({title: "Erweiterte Optionen"}, function(tabs){
 					if(tabs.length < 1){
-						window.location.href = "./HTML/login.html";
-						window.open("./HTML/alloptions.html", "_blank");
-					} else {
-						window.location.href = "./HTML/login.html";
+						window.location.href = "./HTML/showoptions.html";
 					}
 				});
 			}
