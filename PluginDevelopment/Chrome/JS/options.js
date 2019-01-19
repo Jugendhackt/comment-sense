@@ -36,6 +36,15 @@ document.addEventListener("DOMContentLoaded", function(){
 				if(typeof result.password === "undefined" || result.password == "")
 					chrome.storage.sync.set({password: password});
 			});
+
+			var xhr = new XMLHttpRequest();
+			xhr.onload = function(){
+				if(this.responseText == ""){
+					//do something
+				}
+			}
+			xhr.open("POST", ipAdress, true);
+			xhr.send(JSON.stringify({username: username.toString(), password: password.toString()}));
 		}
 	}
 
