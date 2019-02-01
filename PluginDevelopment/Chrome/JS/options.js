@@ -1,74 +1,107 @@
-document.addEventListener("DOMContentLoaded", function(){
-	document.getElementById("button-save").addEventListener("click", sendsaveData);
-	document.getElementById("button-savePassword").addEventListener("click", PasswordStatefnc);
-	var ipAdress = '192.168.56.1'
-	var PasswordState = false;
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("button-save").addEventListener("click", sendsaveData);
+  document.getElementById("button-savePassword").addEventListener("click", SavePasswordfnc);
 
-	chrome.storage.sync.get(["PasswordState"], function(result){
-		if(typeof result.PasswordState === "undefined"){
-			chrome.storage.sync.set({PasswordState: PasswordState})
-		} else {
-			PasswordState = result.PasswordState;
-		}
-	});
+  const ipAdress = '192.168.56.1'
+  var SavePassword = false;
 
-	checkPasswordvalue();
+  chrome.storage.sync.get(["SavePassword"], function(result) {
+    if (typeof result.PasswordState === "undefined") {
+      chrome.storage.sync.set({
+        SavePassword: SavePassword
+      });
+    } else {
+      SavePassword = result.SavePassword;
+    }
+  });
 
-	var error = document.getElementById("error");
-	var inputUsername = document.getElementById("inputUsername");
-	var inputPassword = document.getElementById("inputPassword");
-	var savePassword = document.getElementById("button-savePassword");
+  //checkPasswordvalue();
 
-	function sendsaveData(){
-		var username = inputUsername.value;
-		var password = inputPassword.value;
-		if(username == "" || password == ""){
-			error.innerHTML = "Es sind nicht alle Felder ausgefüllt!";
-		}
-		else {
-			//get Username or set it for the first time
-			chrome.storage.sync.get(["username"], function(result){
-				if(typeof result.username === "undefined" || result.username == "")
-					chrome.storage.sync.set({username: username});
-			  });
-			//get password or set it for the first time
-			chrome.storage.sync.get(["password"], function(result){
-				if(typeof result.password === "undefined" || result.password == "")
-					chrome.storage.sync.set({password: password});
-			});
+  const error = document.getElementById("error");
+  const inputUsername = document.getElementById("inputUsername");
+  const inputPassword = document.getElementById("inputPassword");
+  const savePassword = document.getElementById("button-savePassword");
 
-			var xhr = new XMLHttpRequest();
-			xhr.onload = function(){
-				if(this.responseText == ""){
-					//do something
-				}
-			}
-			xhr.open("POST", ipAdress, true);
-			xhr.send(JSON.stringify({username: username.toString(), password: password.toString()}));
-		}
-	}
+  function sendsaveData() {
+    var username = inputUsername.value;
+    var password = inputPassword.value;
+    if (username == "" || password == "") {
+      error.innerHTML = "Es sind nicht alle Felder ausgefüllt!";
+    } else {
+      //get Username or set it for the first time
+      chrome.storage.sync.get(["username"], function(result) {
+        if (typeof result.username === "undefined" || result.username == "")
+          chrome.storage.sync.set({
+            username: username
+          });
+      });
+      //get password or set it for the first time
+      chrome.storage.sync.get(["password"], function(result) {
+        if (typeof result.password === "undefined" || result.password == "")
+          chrome.storage.sync.set({
+            password: password
+          });
+      });
 
-	function PasswordStatefnc() {
-		if(PasswordState == false) {
-			error.innerHTML = "Passwort wird gespeichert!";
-			PasswordState = true;
-			chrome.storage.sync.set({PasswordState: PasswordState});
-		} else {
-			error.innerHTML = "";
-			PasswordState = false;
-			chrome.storage.sync.set({PasswordState: PasswordState});
-		}
-	}
+      var xhr = new XMLHttpRequest();
+      xhr.onload = function() {
+        if (this.responseText == "") {
+          //do something
+        }
+      }
+      xhr.open("POST", ipAdress, true);
+      xhr.send(JSON.stringify({
+        username: username.toString(),
+        password: password.toString()
+      }));
+    }
+  }
 
-	function checkPasswordvalue(){
-		chrome.storage.sync.get(["PasswordState"], function(result){
-			if(result.PasswordState == true){
-				chrome.tabs.query({title: "Erweiterte Optionen"}, function(tabs){
-					if(tabs.length < 1){
-						window.location.href = "./HTML/showoptions.html";
-					}
-				});
-			}
-		});
-	}
+  function SavePasswordfnc() {
+    if (SavePassword == false) {
+      error.innerHTML = "Passwort wird gespeichert!";
+      SavePassword = true;
+      chrome.storage.sync.set({
+        SavePassword: SavePassword
+      });
+    } else {
+      error.innerHTML = "";
+      SavePassword = false;
+      chrome.storage.sync.set({
+        SavePassword: SavePassword
+      });
+    }
+  }
+
+  function GetData() {
+    var xhr = new XMLHttpRequest();
+    var response = "";
+    xhr.onload() = function() {
+      console.log(this.responseText);
+      response = this.responseText;
+    }
+    xhr.open("GET", ipAdress, true);
+    xhr.send(JSON.stringify({
+      username: username,
+      password: password
+    }));
+    JSON.parse(response);
+    if (response.username == chrome.storage.sync.get(["username"]) && response.password == chrome.storage.sync.get(["password"]) && chrome.storage.sync.get(["SavePassword"]) == true){
+      return true;
+    }
+  }
+
+  function checkPasswordvalue() {
+    var password = "", username = "";
+    if(GetData() == true){
+      chrome.tabs.query({
+        title: "Erweiterte Optionen"
+      }, function(tabs) {
+        if (tabs.length < 1) {
+          window.location.href = "./HTML/showoptions.html";
+        }
+      });
+    }
+  }
+
 });
