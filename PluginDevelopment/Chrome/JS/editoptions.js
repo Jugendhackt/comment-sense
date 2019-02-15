@@ -85,7 +85,11 @@ document.addEventListener("DOMContentLoaded", function(){
   function sendData(){
     var xhr = new XMLHttpRequest();
     xhr.onload = function(){
-
+      if(this.status === 200){
+        console.log(this.responseText);
+      } else {
+        alert(this.status);
+      }
     }
     xhr.open("POST", ipAdress, true);
     xhr.send();

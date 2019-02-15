@@ -77,8 +77,12 @@ document.addEventListener("DOMContentLoaded", function() {
     var xhr = new XMLHttpRequest();
     var response = "";
     xhr.onload() = function() {
-      console.log(this.responseText);
-      response = this.responseText;
+      if(this.status === 200){
+        console.log(this.responseText);
+        response = JSON.pars(this.responseText);
+      } else {
+        alert(this.status);
+      }
     }
     xhr.open("GET", ipAdress, true);
     xhr.send(JSON.stringify({
