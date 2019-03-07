@@ -70,7 +70,7 @@ private:
     QString getUrlFromData(QString data);
     QByteArray getType(QByteArray ending);
     QByteArray getFile(QString url, QByteArray *type);
-    void sendData(Socket *socket, QByteArray data, QByteArray type);
+    void sendData(Socket *socket, QByteArray data, QByteArray type, QByteArray status);
     QByteArray httpGet(QString data, QString url, QByteArray *type);
     QByteArray httpPut(QString data, QString url, QByteArray *type);
     QByteArray httpPost(QString data, QString url, QByteArray *type);

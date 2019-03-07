@@ -116,17 +116,23 @@ QByteArray Server::getFile(QString url, QByteArray *type)
     *type = getType(ending.toLatin1());
     QFile f(data_d.path()+url);
     f.open(QIODevice::ReadOnly);
+    if(!f.isOpen())
+        return "404";
     data = f.readAll();
     f.close();
     return data;
 }
 
-void Server::sendData(Socket *socket, QByteArray data, QByteArray type)
+void Server::sendData(Socket *socket, QByteArray data, QByteArray type, QByteArray status = "200 OK")
 {
+    if(data == "404"){
+        status = "404";
+        data = "";
+    }
     qDebug()<<endl<<"Sending data ("<<data.length()<<" bytes) of type :"<<type;
     if(data.length() < 250)
         qDebug()<<data;
-    socket->write(QString("HTTP/1.1 200 OK\nContent-Length: "+ QString::number(data.length()) +"\nContent-Type: "+type+"\nConnection: Closed\n\n").toLatin1());
+    socket->write(QString("HTTP/1.1 " + status + "\nContent-Length: "+ QString::number(data.length()) +"\nContent-Type: "+type+"\nConnection: Closed\n\n").toLatin1());
     socket->write(data);
     socket->waitForBytesWritten();
     socket->flush();

@@ -83,7 +83,7 @@ void Server::readyRead()
     QStringList lines = data.split("\n");
     QString url = lines.first().split(" ")[1];
     qDebug()<<"----------------------------\n\n";
-    QString httpAction = data.split(' ').first();
+    QString httpAction = data.split(' ')[0];
     QByteArray response;
     QByteArray type = getType("json");
     if(httpAction == "POST"){
@@ -102,6 +102,7 @@ void Server::readyRead()
         response = httpDelete(data, url, &type);
     }       // Delete comment
     sendData(socket, response, type);
+    socket->disconnectFromHost();
     qDebug()<<"\n"<<"finished work on request\n----------------------------\n";
 }
 
