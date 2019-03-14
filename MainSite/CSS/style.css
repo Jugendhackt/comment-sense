@@ -1,40 +1,65 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
 * {
-    padding: 0;
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
 }
 
 .button {
-    border: none;
-    color: white;
-    background-color: rgba(49, 175, 145, 1);
+  border: none;
+  color: white;
+  background-color: rgba(49, 175, 145, 1);
 }
 
-
-@media only screen and (max-width: 1060px){
-    * {
-        font-size: 40px;
-    }
-
+.input {
+  border: none;
+  border-bottom: 2px solid gray;
 }
 
-@media only screen and (min-width: 1060px){
-    * {
-        font-size: 18px;
-    }
-    .button {
-        transition: 0.2s;
-    }
-    
-    .button:hover {
-        background-color: rgba(0, 0, 0, 0.5);
-        width: 40%;
+/*Handy/Tablet*/
+@media only screen and (max-width: 1060px) {
+  * {
+    font-size: 40px;
+  }
 
-    }
-    
-    .input {
-        transition: 0.2s;
-        <
-    }
+  .button, .input {
+      width: 50%;
+      height: 7%;
+  }
+
+  #error {
+    font-size: 18px;
+  }
+}
+
+/*Desktop*/
+@media only screen and (min-width: 1060px) {
+  * {
+    font-size: 18px;
+  }
+
+  .button, .input {
+    transition: 0.2s;
+    width: 30%;
+    height: 4%;
+  }
+
+  .button:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 40%;
+  }
+
+  .input:focus {
+    width: 40%;
+  }
+
+  #error {
+    font-size: 13px;
+  }
 }

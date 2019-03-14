@@ -1,39 +1,23 @@
 .flexbox {
-  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  height: 80%;
 }
 
-.flexbox>div {
-  margin: 7px;
-  font-family: 'Roboto', sans-serif;
+.input, .button {
+  padding: 0.5%;
 }
 
-.label {
-  font-size: 15px;
+@media only screen and (min-width: 1060px) {
+  .flexbox>* {
+    margin: 1%;
+  }
 }
 
-.input {
-  width: 200px;
-  font-family: 'Roboto', sans-serif;
-  padding: 5px;
-}
-
-.input:focus {
-  width: 250px;
-}
-
-.button {
-  font-size: 15px;
-  padding: 5px;
-  background-color: rgba(49, 175, 145, 1);
-  border: none;
-  color: white;
-  transition: 0.2s;
-  width: 200px;
-}
-
-#error {
-  font-size: 13px;
+@media only screen and (max-width: 1060px) {
+  .flexbox>* {
+    margin: 2%;
+  }
 }
