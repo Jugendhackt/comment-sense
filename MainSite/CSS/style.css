@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.button {
+    border: none;
+    color: white;
+    background-color: rgba(49, 175, 145, 1);
+}
+
+
+@media only screen and (max-width: 1060px){
+    * {
+        font-size: 40px;
+    }
+
+}
+
+@media only screen and (min-width: 1060px){
+    * {
+        font-size: 18px;
+    }
+    .button {
+        transition: 0.2s;
+    }
+    
+    .button:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 40%;
+
+    }
+    
+    .input {
+        transition: 0.2s;
+        <
+    }
+}
