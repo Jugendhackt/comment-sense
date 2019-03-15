@@ -2,5 +2,21 @@
   display: flex;
   justify-content: center;
   margin-top: 5%;
+  margin-bottom: 5%;
   width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  width: 100%;
+  margin: auto;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
 }
