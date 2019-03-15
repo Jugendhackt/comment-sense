@@ -55,7 +55,7 @@ html {
     width: 40%;
   }
 
-  .input:focus {
+  .input:focus, .input:hover {
     width: 40%;
   }
 
