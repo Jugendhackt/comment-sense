@@ -5,12 +5,16 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "sqlite3.h"
-#include "socket.h"
 #include "string.h"
-#include "commentSense.h"
+#include "socket.h"
 
 #define MAX_CONNECTIONS 100
+
+typedef struct dbResult{
+    int rows;
+    int columns;
+    String **data;
+} dbResult;
 
 typedef struct Connection{
     socket_t socket;
@@ -18,6 +22,7 @@ typedef struct Connection{
     pthread_t thread;
     int state;
     bool exit;
+    dbResult result;
 } Connection;
 
 Connection connections[MAX_CONNECTIONS];
@@ -34,6 +39,7 @@ String handleDeleteRequest(int index, StringList request);
 
 
 
+#include "commentSense.h"
 
 String getType(String filename){
     StringList parts = splitString(filename, '.');
@@ -139,15 +145,13 @@ String handleGetRequest(int index, StringList request){
     String content = newString("");
     int status = 200;
     String type;
-    //char *error;
-    //sqlite3_exec(db, "SELECT * FROM users", callback, NULL, &error);
 
     /// handling the request
     //printStringList(request);
     if(containsString(request[1].data, "/comments/")){    //client wants comments
         type = newString("application/json");
         deleteString(content);
-        content = getComments(request[1]);
+        content = getComments(index, request[1]);
     }
     else{   //client wants file
         String file = newString("./data");

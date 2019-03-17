@@ -7,16 +7,6 @@
 
 #include "httpHandler.h"
 
-volatile sqlite3 *db;
-
-int callback(void *data, int argc, char **argv, char **azColName){
-    for(int i = 0; i < argc; i++){
-        printf("| %s ", argv[i]);
-    }
-    printf("|\n");
-    return 0;
-}
-
 void* checkSockets(void *data){
     while(1){
         clock_t current = clock();
@@ -31,12 +21,14 @@ void* checkSockets(void *data){
 
 int main()
 {
-    //testJson();
     for(int i = 0; i < MAX_CONNECTIONS; i++){
         connections[i].state = 0;
         connections[i].exit = false;
+        connections[i].result.rows = 0;
+        connections[i].result.data = malloc(0);
     }
-    //sqlite3_open("./data/mainDataBase.db3", &db);
+
+    sqlite3_open("./data/mainDataBase.db3", &db);
 
     pthread_t check;
     pthread_create(&check, NULL, checkSockets, NULL);
