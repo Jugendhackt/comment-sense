@@ -24,8 +24,6 @@ int main()
     for(int i = 0; i < MAX_CONNECTIONS; i++){
         connections[i].state = 0;
         connections[i].exit = false;
-        connections[i].result.rows = 0;
-        connections[i].result.data = malloc(0);
     }
 
     sqlite3_open("./data/mainDataBase.db3", &db);

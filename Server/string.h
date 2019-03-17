@@ -151,6 +151,15 @@ void printStringList(StringList list){
     }
 }
 
+int stringListLen(StringList list){
+    int len = 0;
+    for(int i = 0; list[i].data != NULL; i++,len++){
+        if(list[i].data[0] == 0)
+            len--;
+    }
+    return len;
+}
+
 void deleteStringList(StringList list){
     for(int i = 0; list[i].data != 0; i++){
         deleteString(list[i]);

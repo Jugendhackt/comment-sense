@@ -10,19 +10,12 @@
 
 #define MAX_CONNECTIONS 100
 
-typedef struct dbResult{
-    int rows;
-    int columns;
-    String **data;
-} dbResult;
-
 typedef struct Connection{
     socket_t socket;
     clock_t connectionTime;
     pthread_t thread;
     int state;
     bool exit;
-    dbResult result;
 } Connection;
 
 Connection connections[MAX_CONNECTIONS];
@@ -43,7 +36,7 @@ String handleDeleteRequest(int index, StringList request);
 
 String getType(String filename){
     StringList parts = splitString(filename, '.');
-    char *data;
+    char *data = "";
     for(int i = 0; parts[i].data != NULL; i++)
         data = parts[i].data;
     String type;
@@ -124,6 +117,8 @@ void* handleClient(void *arg){
                 else if(compareString(request[0].data, "DELETE")){
                     response = handleDeleteRequest(index, request);
                 }
+                else
+                    response = newString("Unknown request");
             }
             TCPSend(socket, response.data, response.length);
             deleteString(response);
@@ -140,17 +135,14 @@ void* handleClient(void *arg){
 }
 
 String handleGetRequest(int index, StringList request){
-    //printf("get request\n");
     String response = newString("HTTP/1.1 ");
-    String content = newString("");
+    String content;
     int status = 200;
     String type;
 
     /// handling the request
-    //printStringList(request);
     if(containsString(request[1].data, "/comments/")){    //client wants comments
         type = newString("application/json");
-        deleteString(content);
         content = getComments(index, request[1]);
     }
     else{   //client wants file
@@ -173,12 +165,11 @@ String handleGetRequest(int index, StringList request){
                 fread(buffer, size, 1, f);
                 fclose(f);
                 buffer[size] = 0;
-                deleteString(content);
                 content.data = buffer;
                 content.length = size;
             }
-            //else
-                //printf("data == NULL");
+            else
+                content = newString("error, data == NULL");
             if(content.length > 0)
                 content.data[content.length-1] = 0;
         }
