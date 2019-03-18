@@ -17,8 +17,13 @@ typedef struct dbResult{
     String **data;
 } dbResult;
 
-String getComments(int index, String request);
-String getUserName(int id);
+String getComments(String request);
+String postComment(String json);
+String getDate();
+String getUserName(unsigned int id);
+int isUserValid(String userName, String password);
+int addCommentToSite(int commentId, String url);
+unsigned int getUserId(String userName);
 
 char *noComments = "{\"Comments\":[{\"id\":-1,\"headline\":\"Keine Kommentare\",\"content\":\""
                    "F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. "
@@ -26,6 +31,8 @@ char *noComments = "{\"Comments\":[{\"id\":-1,\"headline\":\"Keine Kommentare\",
 sqlite3 *db;
 
 int callback(void *data, int argc, char **argv, char **azColName){
+    if(data == NULL)
+        return 0;
     dbResult *result = data;
     int len = result->rows++;
     result->columns = argc;
@@ -53,10 +60,20 @@ void clearResult(dbResult *result){
     result->data = malloc(0);
 }
 
-String getComments(int index, String request){
+void deleteResult(dbResult result){
+    String **data = result.data;
+    for(int i = 0; i < result.rows; i++){
+        for(int k = 0; k < result.columns; k++){
+            deleteString(data[i][k]);
+        }
+        free(data[i]);
+    }
+    free(data);
+}
+
+String getComments(String request){
     String content;
     String site = newString(request.data+10);
-
     String getIDs = newString("SELECT * FROM sites WHERE url LIKE \'");
     appendStringStr(&getIDs, site);
     appendString(&getIDs, '\'');
@@ -76,13 +93,13 @@ String getComments(int index, String request){
         clearResult(&result);
         sqlite3_exec(db, querry.data, callback, &result, NULL);
 
-        if(result.rows > 0 && result.columns == 7){
+        if(result.rows > 0 && result.columns == 6){
             for(int i = 0; i < result.rows; i++){
                 int id = intFromString(result.data[i][0]);
                 int userId = intFromString(result.data[i][1]);
                 StringList votes = splitString(result.data[i][3], ',');
-                String headline = result.data[i][5];
-                String content = result.data[i][6];
+                String headline = result.data[i][4];
+                String content = result.data[i][5];
                 String userName = getUserName(userId);
 
                 cJSON *comment = cJSON_CreateObject();
@@ -114,7 +131,61 @@ String getComments(int index, String request){
     return content;
 }
 
-String getUserName(int userId){
+String postComment(String json){
+    String response = newString("");
+
+    cJSON *root = cJSON_Parse(json.data);
+
+    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
+    String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
+
+    if(isUserValid(userName, password)){
+        String headline = newString(cJSON_GetObjectItem(root, "headline")->valuestring);
+        String comment = newString(cJSON_GetObjectItem(root, "comment")->valuestring);
+        String url = newString(cJSON_GetObjectItem(root, "url")->valuestring);
+
+        unsigned int userId = getUserId(userName);
+        String tmp = stringFromInt(userId);
+        String date = getDate();
+        String querry = newString("INSERT INTO comments (userId, votes, date, headline, content) VALUES (\"");
+        appendStringStr(&querry, tmp);
+        appendStringStdStr(&querry, "\",\"\",\"");
+        appendStringStr(&querry, date);
+        appendStringStdStr(&querry, "\",\"");
+        appendStringStr(&querry, headline);
+        appendStringStdStr(&querry, "\",\"");
+        appendStringStr(&querry, comment);
+        appendStringStdStr(&querry, "\")");
+
+        sqlite3_exec(db, querry.data, callback, NULL, NULL);
+        int commentId = sqlite3_last_insert_rowid(db);
+
+        if(!addCommentToSite(commentId, url))
+            printf("could't add the comment %i to the site\n", commentId);
+
+        deleteString(tmp);
+        deleteString(date);
+        deleteString(querry);
+        deleteString(headline);
+        deleteString(comment);
+        deleteString(url);
+    }
+    else{
+        deleteString(response);
+        response = newString("{\"error\":\"User not valid\"");
+        printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
+    }
+
+    deleteString(userName);
+    deleteString(password);
+    cJSON_Delete(root);
+
+    return response;
+}
+
+String getUserName(unsigned int userId){
+    if(userId == -1)
+        return newString("Unknown User");
     String userName;
     dbResult result = (dbResult){0,0,malloc(0)};
     String querry = newString("SELECT name FROM users WHERE id LIKE ");
@@ -130,6 +201,85 @@ String getUserName(int userId){
     deleteString(id);
     clearResult(&result);
     return userName;
+}
+
+unsigned int getUserId(String userName){
+    int id = -1;
+    dbResult result = (dbResult){0,0,malloc(0)};
+    String querry = newString("SELECT id FROM users WHERE name LIKE \'");
+    appendStringStr(&querry, userName);
+    appendString(&querry, '\'');
+
+    sqlite3_exec(db, querry.data, callback, &result, NULL);
+    if(result.columns == 1 && result.rows == 1)
+        id = intFromString(result.data[0][0]);
+    deleteString(querry);
+    clearResult(&result);
+    return id;
+}
+
+String getDate(){
+    time_t t = time(NULL);
+    char *str = malloc(11);
+    strftime(str, 11, "%d.%m.%Y", localtime(&t));
+    return (String){str, 10};
+}
+
+int addCommentToSite(int commentId, String url){
+    dbResult result = (dbResult){0,0,malloc(0)};
+    String id = stringFromInt(commentId);
+    String querry = newString("SELECT comments FROM sites WHERE url LIKE \'");
+    appendStringStr(&querry, url);
+    appendString(&querry, '\'');
+
+    sqlite3_exec(db, querry.data, callback, &result, NULL);
+    deleteString(querry);
+    if(result.rows == 0){// site isn't in db --> create entry
+        querry = newString("INSERT INTO sites (url, comments) VALUES (\'");
+        appendStringStr(&querry, url);
+        appendStringStdStr(&querry, "\', \'");
+        appendStringStr(&querry, id);
+        appendStringStdStr(&querry, "\')");
+        sqlite3_exec(db, querry.data, callback, NULL, NULL);
+    }
+    else if(result.rows > 0 && result.columns == 1){
+        String comments = result.data[0][0];
+        appendString(&comments, ',');
+        appendStringStr(&comments, id);
+
+        querry = newString("UPDATE sites SET comments = \'");
+        appendStringStr(&querry, comments);
+        appendStringStdStr(&querry, "\' WHERE url LIKE \'");
+        appendStringStr(&querry, url);
+        appendString(&querry, '\'');
+
+        sqlite3_exec(db, querry.data, callback, NULL, NULL);
+
+        deleteString(comments);
+    }
+    else
+        querry = newString("");
+
+    deleteString(id);
+    deleteString(querry);
+    clearResult(&result);
+    return 1;
+}
+
+int isUserValid(String userName, String password){
+    String querry = newString("SELECT password FROM users WHERE name LIKE \'");
+    appendStringStr(&querry, userName);
+    appendString(&querry, '\'');
+    dbResult result = (dbResult){0,0,malloc(0)};
+    sqlite3_exec(db, querry.data, callback, &result, NULL);
+    int isValid = 0;
+    if(result.rows == 1 && result.columns == 1){
+        if(compareString(result.data[0][0].data, password.data))
+            isValid = 1;
+    }
+    deleteString(querry);
+    clearResult(&result);
+    return isValid;
 }
 
 #endif // COMMENTSENSE_H_INCLUDED
