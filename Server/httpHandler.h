@@ -79,6 +79,7 @@ void* handleClient(void *arg){
     socket_t *socket = &connections[index].socket;
     char buffer;
     if(TCPRecv(socket, &buffer, 0) != -1){
+        usleep(1000);
         char tmp = 0;
         String line = newString("");
         StringList header = malloc(sizeof(String));

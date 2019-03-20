@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  var ipAdress = '192.168.56.1';
+  var ipAdress = 'localhost';
   var password = "pass0";
   var username = "Nick73";
   var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
@@ -40,14 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
       xhr.send();
     });
   }
-
-  function delay() {
-    setInterval(refresh, 10000);
-  }
-
-  delay();
-  refresh();
-
+	refresh();
   function clickvote(id) {
     var xhr = new XMLHttpRequest();
     xhr.open("PATCH", 'http://' + ipAdress + '/comments/vote', true);
@@ -60,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
       password: password,
       vote: 1
     }));
-    refresh();
+    //refresh();
   }
 
   function displayComment(author, headline, comment, liked, id) {

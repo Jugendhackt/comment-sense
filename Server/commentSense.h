@@ -195,8 +195,32 @@ String createUser(String json, int *status){
     String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
     String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
 
-    printf("creating user ...\n%s\n", json.data);
+    String querry = newString("SELECT id FROM users WHERE name LIKE \'");
+    appendStringStr(&querry, userName);
+    appendString(&querry, '\'');
 
+    dbResult result = (dbResult){0,0,malloc(0)};
+    sqlite3_exec(db, querry.data, callback, &result, NULL);
+
+    if(result.rows == 0){//create the account
+        deleteString(querry);
+        querry = newString("INSERT INTO users (name, password) VALUES (\'");
+        appendStringStr(&querry, userName);
+        appendStringStdStr(&querry, "\',\'");
+        appendStringStr(&querry, password);
+        appendStringStdStr(&querry, "\')");
+
+        sqlite3_exec(db, querry.data, callback, NULL, NULL);
+    }
+    else{   // this username is already in use
+        *status = 403;
+        printf("username already used\n");
+    }
+
+    deleteString(userName);
+    deleteString(password);
+    deleteString(querry);
+    clearResult(&result);
     cJSON_Delete(root);
     return response;
 }
@@ -214,13 +238,11 @@ String voteComment(String json, int *status){
         int userId = getUserId(userName);
         String querry = newString("SELECT votes FROM comments WHERE id LIKE ");
         appendStringInt(&querry, id);
-        printf("%s\n", querry.data);
 
         dbResult result = (dbResult){0,0,malloc(0)};
         sqlite3_exec(db, querry.data, callback, &result, NULL);
         if(result.rows == 1 && result.columns == 1){
             String votes = newString(result.data[0][0].data);
-            printf("%s\n", votes.data);
             if(vote == 1){  //vote
                 if(votes.length == 0){
                     deleteString(votes);
@@ -232,7 +254,6 @@ String voteComment(String json, int *status){
                     appendStringStdStr(&querry, "\' WHERE id LIKE \'");
                     appendStringInt(&querry, id);
                     appendString(&querry, '\'');
-                    printf("%s\n", querry.data);
                     sqlite3_exec(db, querry.data, callback, NULL, NULL);
                 }
                 else{
@@ -255,7 +276,6 @@ String voteComment(String json, int *status){
                         appendStringStdStr(&querry, "\' WHERE id LIKE \'");
                         appendStringInt(&querry, id);
                         appendString(&querry, '\'');
-                        printf("%s\n", querry.data);
                         sqlite3_exec(db, querry.data, callback, NULL, NULL);
                     }
                     else{// the user has already voted
@@ -370,8 +390,6 @@ int addCommentToSite(int commentId, String url){
         appendString(&querry, '\'');
 
         sqlite3_exec(db, querry.data, callback, NULL, NULL);
-
-        deleteString(comments);
     }
     else
         querry = newString("");
