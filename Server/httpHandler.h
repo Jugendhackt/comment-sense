@@ -78,76 +78,73 @@ void* handleClient(void *arg){
     int index = (long)arg;
     socket_t *socket = &connections[index].socket;
     char buffer;
-    if(TCPRecv(socket, &buffer, 0) != -1){
-        usleep(1000);
-        char tmp = 0;
-        String line = newString("");
-        StringList header = malloc(sizeof(String));
-        header[0].data = NULL;
-        while(read(*socket, &buffer, 1) > 0){
-            if(buffer == '\r')
-                continue;
-            if(tmp == '\n' && buffer == '\n')
+    char tmp = 0;
+    String line = newString("");
+    StringList header = malloc(sizeof(String));
+    header[0].data = NULL;
+    while(TCPRecv(socket, &buffer, 1) != -1){
+        if(buffer == '\r')
+            continue;
+        if(tmp == '\n' && buffer == '\n')
+            break;
+        tmp = buffer;
+        appendString(&line, buffer);
+        if(buffer == '\n'){
+            header = stringListAppend(header, line);
+            line = newString("");
+        }
+    }
+    if(header != NULL && header[0].data != 0 && header[0].length > 0){
+        int len = 0;
+
+        for(int i = 0; header[i].data != NULL; i++){
+            if(containsString(header[i].data, "Content-Length:")){
+                String contentLength = newString(header[i].data+16);
+                len = intFromString(contentLength);
+                deleteString(contentLength);
                 break;
-            tmp = buffer;
-            appendString(&line, buffer);
-            if(buffer == '\n'){
-                header = stringListAppend(header, line);
-                line = newString("");
             }
         }
-        if(header != NULL && header[0].data != 0 && header[0].length > 0){
-            int len = 0;
 
-            for(int i = 0; header[i].data != NULL; i++){
-                if(containsString(header[i].data, "Content-Length:")){
-                    String contentLength = newString(header[i].data+16);
-                    len = intFromString(contentLength);
-                    deleteString(contentLength);
-                    break;
-                }
+        String payload;
+        if(len > 0){
+            payload.length = len;
+            payload.data = malloc(len+1);
+            if(read(*socket, payload.data, len) < 0)
+                fprintf(stderr, "error: couldn't read payload\n");
+            payload.data[len] = 0;
+        }
+        else
+            payload = newString("");
+
+        String response;
+        StringList request = splitString(header[0], ' ');
+
+        if(connections[index].exit)
+            response = newString("");
+        else{
+            if(compareString(request[0].data, "GET")){
+                response = handleGetRequest(index, request);
             }
-
-            String payload;
-            if(len > 0){
-                payload.length = len;
-                payload.data = malloc(len+1);
-                if(read(*socket, payload.data, len) < 0)
-                    fprintf(stderr, "error: couldn't read payload\n");
-                payload.data[len] = 0;
+            else if(compareString(request[0].data, "PUT")){
+                response = handlePutRequest(index, request, payload);
+            }
+            else if(compareString(request[0].data, "POST")){
+                response = handlePostRequest(index, request, payload);
+            }
+            else if(compareString(request[0].data, "PATCH")){
+                response = handlePatchRequest(index, request, payload);
+            }
+            else if(compareString(request[0].data, "DELETE")){
+                response = handleDeleteRequest(index, request);
             }
             else
-                payload = newString("");
-
-            String response;
-            StringList request = splitString(header[0], ' ');
-
-            if(connections[index].exit)
-                response = newString("");
-            else{
-                if(compareString(request[0].data, "GET")){
-                    response = handleGetRequest(index, request);
-                }
-                else if(compareString(request[0].data, "PUT")){
-                    response = handlePutRequest(index, request, payload);
-                }
-                else if(compareString(request[0].data, "POST")){
-                    response = handlePostRequest(index, request, payload);
-                }
-                else if(compareString(request[0].data, "PATCH")){
-                    response = handlePatchRequest(index, request, payload);
-                }
-                else if(compareString(request[0].data, "DELETE")){
-                    response = handleDeleteRequest(index, request);
-                }
-                else
-                    response = newString("Unknown request");
-            }
-            TCPSend(socket, response.data, response.length);
-            deleteString(payload);
-            deleteString(response);
-            deleteStringList(request);
+                response = newString("Unknown request");
         }
+        TCPSend(socket, response.data, response.length);
+        deleteString(payload);
+        deleteString(response);
+        deleteStringList(request);
         closeSocket(socket);
         deleteString(line);
         deleteStringList(header);
