@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     xhr.send(JSON.stringify({
       id: id,
-      user: username,
+      userName: username,
       password: password,
       vote: 1
     }));
