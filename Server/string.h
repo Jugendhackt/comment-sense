@@ -11,6 +11,10 @@ typedef struct String{
 
 typedef String* StringList;
 
+
+String stringFromInt(int i);
+
+
 void deleteString(String str){
     free(str.data);
 }
@@ -106,6 +110,12 @@ void appendStringStdStr(String *str, char *str2){
 
 void appendStringStr(String *str, String str2){
     appendStringStdStr(str, str2.data);
+}
+
+void appendStringInt(String *str, int i){
+    String number = stringFromInt(i);
+    appendStringStr(str, number);
+    deleteString(number);
 }
 
 void appendStringByteArray(String *str, String byteArray){

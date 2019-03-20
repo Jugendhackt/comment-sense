@@ -107,14 +107,16 @@ void* handleClient(void *arg){
                 }
             }
 
-            String payload = newString("");
+            String payload;
             if(len > 0){
-                deleteString(payload);
                 payload.length = len;
                 payload.data = malloc(len+1);
-                read(*socket, payload.data, len);
+                if(read(*socket, payload.data, len) < 0)
+                    fprintf(stderr, "error: couldn't read payload\n");
                 payload.data[len] = 0;
             }
+            else
+                payload = newString("");
 
             String response;
             StringList request = splitString(header[0], ' ');
@@ -165,7 +167,7 @@ String handleGetRequest(int index, StringList request){
     /// handling the request
     if(containsString(request[1].data, "/comments/")){    //client wants comments
         type = newString("application/json");
-        content = getComments(request[1]);
+        content = getComments(request[1], &status);
     }
     else{   //client wants file
         String file = newString("./data");
@@ -184,7 +186,8 @@ String handleGetRequest(int index, StringList request){
             fseek(f, 0, SEEK_SET);
             char *buffer = malloc(size+1);
             if(buffer != NULL){
-                fread(buffer, size, 1, f);
+                if(!fread(buffer, size, 1, f))
+                    fprintf(stderr, "error: couldn't read file: %s\n", file.data);
                 fclose(f);
                 buffer[size] = 0;
                 content.data = buffer;
@@ -199,7 +202,7 @@ String handleGetRequest(int index, StringList request){
             status = 404;
             deleteString(content);
             content = newString("Error: File not found");
-            type = newString("text/html");
+            type = newString("text/plain");
         }
         deleteString(file);
     }
@@ -233,7 +236,7 @@ String handlePutRequest(int index, StringList request, String payload){
     String type;
 
     /// handling the request
-    type = newString("text/html");
+    type = newString("text/plain");
 
     /// creating the response
     String length = stringFromInt(content.length);
@@ -265,10 +268,14 @@ String handlePostRequest(int index, StringList request, String payload){
     /// handling the request
     if(containsString(request[1].data, "/comments/")){    //client wants comments
         type = newString("application/json");
-        content = postComment(payload);
+        content = postComment(payload, &status);
+    }
+    else if(containsString(request[1].data, "/users/create")){    //client wants comments
+        type = newString("application/json");
+        content = createUser(payload, &status);
     }
     else{
-        type = newString("text/html");
+        type = newString("text/plain");
         content = newString("");
     }
 
@@ -295,12 +302,19 @@ String handlePostRequest(int index, StringList request, String payload){
 String handlePatchRequest(int index, StringList request, String payload){
     printf("patch request\n");
     String response = newString("HTTP/1.1 ");
-    String content = newString("");
+    String content;
     int status = 200;
     String type;
 
     /// handling the request
-    type = newString("text/html");
+    if(containsString(request[1].data, "/comments/vote")){    //client wants comments
+        type = newString("application/json");
+        content = voteComment(payload, &status);
+    }
+    else{
+        type = newString("text/plain");
+        content = newString("");
+    }
 
     /// creating the response
     String length = stringFromInt(content.length);

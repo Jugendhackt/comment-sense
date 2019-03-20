@@ -17,8 +17,11 @@ typedef struct dbResult{
     String **data;
 } dbResult;
 
-String getComments(String request);
-String postComment(String json);
+String getComments(String request, int *status);
+String postComment(String json, int *status);
+String createUser(String json, int *status);
+String voteComment(String json, int *status);
+
 String getDate();
 String getUserName(unsigned int id);
 int isUserValid(String userName, String password);
@@ -71,7 +74,7 @@ void deleteResult(dbResult result){
     free(data);
 }
 
-String getComments(String request){
+String getComments(String request, int *status){
     String content;
     String site = newString(request.data+10);
     String getIDs = newString("SELECT * FROM sites WHERE url LIKE \'");
@@ -97,7 +100,7 @@ String getComments(String request){
             for(int i = 0; i < result.rows; i++){
                 int id = intFromString(result.data[i][0]);
                 int userId = intFromString(result.data[i][1]);
-                StringList votes = splitString(result.data[i][3], ',');
+                StringList votes = splitString(result.data[i][2], ',');
                 String headline = result.data[i][4];
                 String content = result.data[i][5];
                 String userName = getUserName(userId);
@@ -122,8 +125,10 @@ String getComments(String request){
         deleteString(querry);
         cJSON_Delete(root);
     }
-    else
+    else{
         content = newString(noComments);
+        *status = 404;
+    }
 
     deleteString(site);
     deleteString(getIDs);
@@ -131,7 +136,7 @@ String getComments(String request){
     return content;
 }
 
-String postComment(String json){
+String postComment(String json, int *status){
     String response = newString("");
 
     cJSON *root = cJSON_Parse(json.data);
@@ -145,10 +150,9 @@ String postComment(String json){
         String url = newString(cJSON_GetObjectItem(root, "url")->valuestring);
 
         unsigned int userId = getUserId(userName);
-        String tmp = stringFromInt(userId);
         String date = getDate();
         String querry = newString("INSERT INTO comments (userId, votes, date, headline, content) VALUES (\"");
-        appendStringStr(&querry, tmp);
+        appendStringInt(&querry, userId);
         appendStringStdStr(&querry, "\",\"\",\"");
         appendStringStr(&querry, date);
         appendStringStdStr(&querry, "\",\"");
@@ -163,23 +167,131 @@ String postComment(String json){
         if(!addCommentToSite(commentId, url))
             printf("could't add the comment %i to the site\n", commentId);
 
-        deleteString(tmp);
         deleteString(date);
         deleteString(querry);
         deleteString(headline);
         deleteString(comment);
         deleteString(url);
+        *status = 201;
     }
     else{
         deleteString(response);
         response = newString("{\"error\":\"User not valid\"");
         printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
+        *status = 401;
     }
 
     deleteString(userName);
     deleteString(password);
     cJSON_Delete(root);
 
+    return response;
+}
+
+String createUser(String json, int *status){
+    String response = newString("");
+
+    cJSON *root = cJSON_Parse(json.data);
+
+    printf("creating user ...\n");
+
+    cJSON_Delete(root);
+    return response;
+}
+String voteComment(String json, int *status){
+    String response = newString("");
+
+    cJSON *root = cJSON_Parse(json.data);
+
+    String userName = newString(cJSON_GetObjectItem(root, "user")->valuestring);
+    String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
+    int id = cJSON_GetObjectItem(root, "id")->valueint;
+    int vote = cJSON_GetObjectItem(root, "vote")->valueint;
+
+    if(isUserValid(userName, password)){
+        int userId = getUserId(userName);
+        String querry = newString("SELECT votes FROM comments WHERE id LIKE ");
+        appendStringInt(&querry, id);
+        printf("%s\n", querry.data);
+
+        dbResult result = (dbResult){0,0,malloc(0)};
+        sqlite3_exec(db, querry.data, callback, &result, NULL);
+        if(result.rows == 1 && result.columns == 1){
+            String votes = newString(result.data[0][0].data);
+            printf("%s\n", votes.data);
+            if(vote == 1){  //vote
+                if(votes.length == 0){
+                    deleteString(votes);
+                    votes = stringFromInt(userId);
+
+                    deleteString(querry);
+                    querry = newString("UPDATE comments SET votes = \'");
+                    appendStringStr(&querry, votes);
+                    appendStringStdStr(&querry, "\' WHERE id LIKE \'");
+                    appendStringInt(&querry, id);
+                    appendString(&querry, '\'');
+                    printf("%s\n", querry.data);
+                    sqlite3_exec(db, querry.data, callback, NULL, NULL);
+                }
+                else{
+                    String user = stringFromInt(userId);
+                    StringList voters = splitString(votes, ',');
+                    int alreadyVoted = 0;
+                    for(int i = 0; voters[i].data != NULL; i++){
+                        if(compareString(user.data, voters[i].data)){
+                            alreadyVoted = 1;
+                            break;
+                        }
+                    }
+                    if(!alreadyVoted){
+                        appendString(&votes, ',');
+                        appendStringStr(&votes, user);
+
+                        deleteString(querry);
+                        querry = newString("UPDATE comments SET votes = \'");
+                        appendStringStr(&querry, votes);
+                        appendStringStdStr(&querry, "\' WHERE id LIKE \'");
+                        appendStringInt(&querry, id);
+                        appendString(&querry, '\'');
+                        printf("%s\n", querry.data);
+                        sqlite3_exec(db, querry.data, callback, NULL, NULL);
+                    }
+                    else{// the user has already voted
+                        printf("already voted\n");
+                        *status = 403;
+                    }
+                    deleteString(user);
+                    deleteStringList(voters);
+                }
+            }
+            else if(vote == -1){    //unvote
+                if(votes.length == 0){//someone must have voted, before you can unvote
+                    *status = 422;
+                }
+                else{
+                    ;
+                }
+            }
+            else{
+                *status = 422;
+            }
+        }
+        else{
+            *status = 404;
+        }
+        deleteString(querry);
+        clearResult(&result);
+    }
+    else{
+        deleteString(response);
+        response = newString("{\"error\":\"User not valid\"");
+        printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
+        *status = 401;
+    }
+
+    printf("voting ...\n%s\n", json.data);
+
+    cJSON_Delete(root);
     return response;
 }
 
