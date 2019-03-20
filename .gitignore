@@ -14,3 +14,12 @@ clear.sql
 build-Server*
 data/*
 old versions/*
+Server/a.out
+Server/bin
+Server/obj
+Server/data
+Server/Server.*
+Server/cJSON*
+Server/server
+Server/build.sh
+Server/build.sh

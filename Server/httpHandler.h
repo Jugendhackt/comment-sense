@@ -195,8 +195,6 @@ String handleGetRequest(int index, StringList request){
             }
             else
                 content = newString("error, data == NULL");
-            if(content.length > 0)
-                content.data[content.length-1] = 0;
         }
         else{
             status = 404;
@@ -266,11 +264,11 @@ String handlePostRequest(int index, StringList request, String payload){
     String type;
 
     /// handling the request
-    if(containsString(request[1].data, "/comments/")){    //client wants comments
+    if(containsString(request[1].data, "/comments/")){    //client wants to vote
         type = newString("application/json");
         content = postComment(payload, &status);
     }
-    else if(containsString(request[1].data, "/users/create")){    //client wants comments
+    else if(containsString(request[1].data, "/users/create")){    //client wants to create a new account
         type = newString("application/json");
         content = createUser(payload, &status);
     }

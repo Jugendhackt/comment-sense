@@ -192,8 +192,10 @@ String createUser(String json, int *status){
     String response = newString("");
 
     cJSON *root = cJSON_Parse(json.data);
+    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
+    String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
 
-    printf("creating user ...\n");
+    printf("creating user ...\n%s\n", json.data);
 
     cJSON_Delete(root);
     return response;
@@ -203,7 +205,7 @@ String voteComment(String json, int *status){
 
     cJSON *root = cJSON_Parse(json.data);
 
-    String userName = newString(cJSON_GetObjectItem(root, "user")->valuestring);
+    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
     String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
     int id = cJSON_GetObjectItem(root, "id")->valueint;
     int vote = cJSON_GetObjectItem(root, "vote")->valueint;
@@ -272,17 +274,18 @@ String voteComment(String json, int *status){
                     ;
                 }
             }
-            else{
+            else{   //you can't vote nothing/more than once/unvote more then once
                 *status = 422;
             }
+            deleteString(votes);
         }
-        else{
+        else{   //the comment is not in the database
             *status = 404;
         }
         deleteString(querry);
         clearResult(&result);
     }
-    else{
+    else{   //you need a valid account to vote
         deleteString(response);
         response = newString("{\"error\":\"User not valid\"");
         printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
@@ -290,7 +293,8 @@ String voteComment(String json, int *status){
     }
 
     printf("voting ...\n%s\n", json.data);
-
+    deleteString(userName);
+    deleteString(password);
     cJSON_Delete(root);
     return response;
 }
