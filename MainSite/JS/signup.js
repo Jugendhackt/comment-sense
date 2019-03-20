@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	document.getElementById("button-save").addEventListener("click", sendsaveData);
 	document.getElementById("button-clear").addEventListener("click", clearData);
 
-	var ipAdress = '192.168.56.1'
+	var ipAdress = 'localhost'
 
 	var error = document.getElementById("error");
 	var inputUsername = document.getElementById("inputUsername");
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			xhr.onload = function(){
 				data = xhr.responseText;
 			}
-			xhr.send(JSON.stringify({username: username, password: password}));
+			xhr.send(JSON.stringify({userName: username, password: password}));
 		}
 	}
 
