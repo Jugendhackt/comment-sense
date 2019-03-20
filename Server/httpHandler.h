@@ -141,11 +141,15 @@ void* handleClient(void *arg){
             else
                 response = newString("Unknown request");
         }
+
         TCPSend(socket, response.data, response.length);
+        char c = 0;
+        TCPSend(socket, &c, 1);
+        closeSocket(socket);
+
         deleteString(payload);
         deleteString(response);
         deleteStringList(request);
-        closeSocket(socket);
         deleteString(line);
         deleteStringList(header);
     }
