@@ -143,7 +143,7 @@ void* handleClient(void *arg){
         }
 
         TCPSend(socket, response.data, response.length);
-        char c = 0;
+        char c = '\n';
         TCPSend(socket, &c, 1);
         closeSocket(socket);
 
@@ -186,12 +186,11 @@ String handleGetRequest(int index, StringList request){
             fseek(f, 0, SEEK_END);
             long size = ftell(f);
             fseek(f, 0, SEEK_SET);
-            char *buffer = malloc(size+1);
+            char *buffer = malloc(size);
             if(buffer != NULL){
                 if(!fread(buffer, size, 1, f))
                     fprintf(stderr, "error: couldn't read file: %s\n", file.data);
                 fclose(f);
-                buffer[size] = 0;
                 content.data = buffer;
                 content.length = size;
             }
