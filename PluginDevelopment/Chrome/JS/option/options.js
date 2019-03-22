@@ -67,4 +67,26 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
   }
+
+  function readLoginData() {
+    chrome.storage.sync.get(["username", "password"], function(result){
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
+      xhr.onload = function() {
+        var data = JSON.parse(this.responseText);
+        if (this.status === 200 && data.status == "login data valid") {
+          inputUsername.value = result.username;
+          inputPassword.value = result.password
+        } else {
+          inputUsername.value = "";
+          inputPassword.value = "";
+        }
+      }
+      xhr.send(JSON.stringify({
+        userName: result.username,
+        password: result.password
+      }));
+    });
+  }
+  readLoginData();
 });
