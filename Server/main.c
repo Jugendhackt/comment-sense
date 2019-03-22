@@ -21,6 +21,8 @@ void* checkSockets(void *data){
 
 int main()
 {
+    //String hex = convertToHex(newString("Hallo"));
+    //String str = fromHex(hex);
     initDatabase();
     for(int i = 0; i < MAX_CONNECTIONS; i++){
         connections[i].state = 0;
