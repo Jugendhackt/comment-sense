@@ -203,17 +203,14 @@ String convertToHex(String data){
         unsigned char higher = c>>4;
         unsigned char lower = c<<4;
         lower >>=4;
-        printf("\'%c\',%i,%i \t", c, (int)higher, (int)lower);
         if(higher > 9)
             higher += 7;
         if(lower > 9)
             lower += 7;
         hex.data[i*2] = higher + 48;
         hex.data[i*2+1] = lower + 48;
-        printf("%c %c\n", higher + 48, lower + 48);
     }
 
-    printf("%s\n", hex.data);
     hex.data[hex.length] = 0;
     return hex;
 }
@@ -221,7 +218,7 @@ String convertToHex(String data){
 String fromHex(String hex){
     String str;
     str.length = hex.length/2;
-    hex.data = malloc(hex.length+1);
+    str.data = malloc(hex.length+1);
 
     for(int i = 0; i < str.length; i++){
         unsigned char higher = hex.data[i*2] - 48;
@@ -233,11 +230,9 @@ String fromHex(String hex){
             lower -= 7;
 
         unsigned char c = (higher<<4) + lower;
-        printf("%c\n", c);
         str.data[i] = c;
     }
 
-    //printf("%s\n", str.data);
     str.data[str.length] = 0;
     return str;
 }

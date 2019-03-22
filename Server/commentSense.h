@@ -23,6 +23,7 @@ String createUser(String json, int *status);
 String voteComment(String json, int *status);
 String checkUser(String json, int *status);
 String existsUser(String json, int *status);
+String manageUser(String json, int *status);
 
 String getDate();
 String getUserName(unsigned int id);
@@ -268,16 +269,20 @@ String existsUser(String json, int *status){
     sqlite3_exec(db, querry.data, callback, &result, NULL);
 
     if(result.rows == 1){
-        response = newString("{\"status\":\"user exists\"}");
+        response = newString("{\"status\":\"userName valid\"}");
     }
     else{
-        response = newString("{\"status\":\"user doesn't exist\"}");
+        response = newString("{\"status\":\"userName not valid\"}");
     }
 
     clearResult(&result);
     deleteString(userName);
     cJSON_Delete(root);
     return response;
+}
+
+String manageUser(String json, int *status){
+    return newString("");
 }
 
 String voteComment(String json, int *status){
