@@ -21,6 +21,7 @@ void* checkSockets(void *data){
 
 int main()
 {
+    checkDatabase();
     for(int i = 0; i < MAX_CONNECTIONS; i++){
         connections[i].state = 0;
         connections[i].exit = false;

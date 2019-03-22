@@ -21,12 +21,16 @@ String getComments(String request, int *status);
 String postComment(String json, int *status);
 String createUser(String json, int *status);
 String voteComment(String json, int *status);
+String checkUser(String json, int *status);
 
 String getDate();
 String getUserName(unsigned int id);
 int isUserValid(String userName, String password);
 int addCommentToSite(int commentId, String url);
 unsigned int getUserId(String userName);
+
+void checkDatabase();
+
 
 char *noComments = "{\"Comments\":[{\"id\":-1,\"headline\":\"Keine Kommentare\",\"content\":\""
                    "F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. "
@@ -224,6 +228,21 @@ String createUser(String json, int *status){
     cJSON_Delete(root);
     return response;
 }
+
+String checkUser(String json, int *status){
+    cJSON *root = cJSON_Parse(json.data);
+    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
+    String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
+    if(isUserValid(userName, password)){
+        *status = 200;
+        return newString("{\"status\":\"login data valid\"}");
+    }
+    else{
+        *status = 401;
+        return newString("{\"status\":\"login data not valid\"}");
+    }
+}
+
 String voteComment(String json, int *status){
     String response = newString("");
 
@@ -414,6 +433,10 @@ int isUserValid(String userName, String password){
     deleteString(querry);
     clearResult(&result);
     return isValid;
+}
+
+void checkDatabase(){
+    char *path = "./data/mainDataBase.db3";
 }
 
 #endif // COMMENTSENSE_H_INCLUDED
