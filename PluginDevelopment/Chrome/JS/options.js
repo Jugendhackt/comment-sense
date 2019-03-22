@@ -1,111 +1,70 @@
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("button-save").addEventListener("click", sendsaveData);
-  document.getElementById("button-savePassword").addEventListener("click", SavePasswordfnc);
+  document.getElementById("btnLogin").addEventListener("click", checkData);
+  document.getElementById("btnSavePassword").addEventListener("click", save);
 
-  const ipAdress = '192.168.2.113'
-  var SavePassword = false;
-
-  chrome.storage.sync.get(["SavePassword"], function(result) {
-    if (typeof result.PasswordState === "undefined") {
-      chrome.storage.sync.set({
-        SavePassword: SavePassword
-      });
-    } else {
-      SavePassword = result.SavePassword;
-    }
-  });
-
-  //checkPasswordvalue();
-
+  const ipAdress = "192.168.2.113";
   const error = document.getElementById("error");
   const inputUsername = document.getElementById("inputUsername");
   const inputPassword = document.getElementById("inputPassword");
-  const savePassword = document.getElementById("button-savePassword");
 
-  function sendsaveData() {
+  function checkData() {
     var username = inputUsername.value;
     var password = inputPassword.value;
-    if (username == "" || password == "") {
+    if (username == "" || password == "")
       error.innerHTML = "Es sind nicht alle Felder ausgefüllt!";
-    } else {
-      //get Username or set it for the first time
-      chrome.storage.sync.get(["username"], function(result) {
-        if (typeof result.username === "undefined" || result.username == "")
+    else {
+      chrome.storage.sync.get(["username", "password"], function(result) {
+        if (typeof result.username === "undefined" || result.username == "") {
           chrome.storage.sync.set({
-            username: username
+            username: username,
+            password: password,
+            save: false
           });
-      });
-      //get password or set it for the first time
-      chrome.storage.sync.get(["password"], function(result) {
-        if (typeof result.password === "undefined" || result.password == "")
-          chrome.storage.sync.set({
-            password: password
-          });
-      });
-
-      var xhr = new XMLHttpRequest();
-      xhr.onload = function() {
-        if (this.responseText == "") {
-          //do something
         }
-      }
-      xhr.open("POST", ipAdress, true);
-      xhr.send(JSON.stringify({
-        username: username.toString(),
-        password: password.toString()
-      }));
-    }
-  }
-
-  function SavePasswordfnc() {
-    if (SavePassword == false) {
-      error.innerHTML = "Passwort wird gespeichert!";
-      SavePassword = true;
-      chrome.storage.sync.set({
-        SavePassword: SavePassword
-      });
-    } else {
-      error.innerHTML = "";
-      SavePassword = false;
-      chrome.storage.sync.set({
-        SavePassword: SavePassword
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
+        xhr.onload = function() {
+          var data = JSON.parse(this.responseText);
+          if (this.status === 200 && data.status == "login data valid") {
+            saveLoginData();
+            window.open("HTML/showoptions.html", "_blank");
+          } else if (this.status === 401 && data.status == "login data not valid")
+            error.innerHTML = "Passwort oder Nutzername ist nicht korrekt";
+        }
+        xhr.send(JSON.stringify({
+          userName: username,
+          password: password
+        }));
       });
     }
   }
 
-  function GetData() {
-    var xhr = new XMLHttpRequest();
-    var response = "";
-    xhr.onload() = function() {
-      if(this.status === 200){
-        console.log(this.responseText);
-        response = JSON.pars(this.responseText);
+  function save() {
+    chrome.storage.sync.get(["save"], function(result) {
+      if (result.save == true) {
+        chrome.storage.sync.set({
+          save: false
+        });
+        error.innerHTML = "Passwort wird nicht gespeichert";
       } else {
-        alert(this.status);
+        chrome.storage.sync.set({
+          save: true
+        });
+        error.innerHTML = "Passwort wird gespeichert";
       }
-    }
-    xhr.open("GET", ipAdress, true);
-    xhr.send(JSON.stringify({
-      username: username,
-      password: password
-    }));
-    JSON.parse(response);
-    if (response.username == chrome.storage.sync.get(["username"]) && response.password == chrome.storage.sync.get(["password"]) && chrome.storage.sync.get(["SavePassword"]) == true){
-      return true;
-    }
+    });
   }
 
-  function checkPasswordvalue() {
-    var password = "", username = "";
-    if(GetData() == true){
-      chrome.tabs.query({
-        title: "Erweiterte Optionen"
-      }, function(tabs) {
-        if (tabs.length < 1) {
-          window.location.href = "./HTML/showoptions.html";
-        }
-      });
-    }
+  function saveLoginData() {
+    chrome.storage.sync.get(["save"], function(result) {
+      var username = inputUsername.value;
+      var password = inputPassword.value;
+      if (result.save == true) {
+        chrome.storage.sync.set({
+          username: username,
+          password: password
+        });
+      }
+    });
   }
-
 });
