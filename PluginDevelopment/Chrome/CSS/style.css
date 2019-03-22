@@ -148,6 +148,7 @@ main {
 }
 
 #commentInput {
+	resize: none;
 }
 
 

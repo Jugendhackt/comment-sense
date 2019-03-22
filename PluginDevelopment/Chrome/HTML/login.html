@@ -1,19 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html>
   <head>
+    <link rel="stylesheet" href="CSS/style.css" type="text/css">
     <meta charset="utf-8">
   </head>
-  <style media="screen">
-    @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
-    #div {
-      font-family: 'Roboto', sans-serif;
-      font-size: 15px;
-    }
-  </style>
   <body>
-    <div id="div">
-      Du bist bereits angemeldet!<br>
-
-    </div>
+    <label for="inputUsername" class="label">Nickname:</label>
+    <input type="text" name="inputUsername" id="inputUsername" class="input" placeholder="Dein Nickname" value="">
+    <label for="inputPassword" class="label">Passwort:</label>
+    <input type="password" name="inputPassword" id="inputPassword" class="input" placeholder="Dein Passwort" value="">
+    <button type="button" class="button" id="btnLogin">Login</button>
   </body>
 </html>
