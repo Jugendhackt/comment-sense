@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("button-save").addEventListener("click", sendsaveData);
   document.getElementById("button-savePassword").addEventListener("click", SavePasswordfnc);
 
-  const ipAdress = '192.168.56.1'
+  const ipAdress = '192.168.2.113'
   var SavePassword = false;
 
   chrome.storage.sync.get(["SavePassword"], function(result) {

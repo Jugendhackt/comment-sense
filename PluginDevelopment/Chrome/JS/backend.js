@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-  var ipAdress = 'localhost';
-  var password = "pass0";
+  var ipAdress = '192.168.2.113';
+  var password = "123";
   var username = "Nick73";
   var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
   document.getElementById("submit").addEventListener("click", sendData);
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var data;
       xhr.open('GET', 'http://' + ipAdress + '/comments/' + url, true);
       xhr.onload = function() {
-        if (this.status === 200) {
+        if (this.status === 200 || this.status == 404) {
           data = xhr.responseText;
           data = JSON.parse(data)
           document.getElementById("landingpage").innerHTML = "";
@@ -33,14 +33,14 @@ document.addEventListener("DOMContentLoaded", function() {
               clickvote(id)
             });
           }
-        } else {
-					alert(this.status);
-				}
+        } else
+          alert(this.status);
       }
       xhr.send();
     });
   }
-	refresh();
+  refresh();
+
   function clickvote(id) {
     var xhr = new XMLHttpRequest();
     xhr.open("PATCH", 'http://' + ipAdress + '/comments/vote', true);
@@ -82,11 +82,11 @@ document.addEventListener("DOMContentLoaded", function() {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://' + ipAdress + '/comments/', true);
         xhr.onload = function() {
-					if(this.status === 200){
-						console.log(xhr.responseText);
-					} else {
-						alert(this.status);
-					}
+          if (this.status === 200) {
+            console.log(xhr.responseText);
+          } else {
+            alert(this.status);
+          }
         };
         xhr.send(JSON.stringify({
           userName: nickname.toString(),

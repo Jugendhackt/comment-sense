@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(){
   var inputemail = document.getElementById("inputEmail");
   var error = document.getElementById("error");
 
-  var ipAdress = "";
+  var ipAdress = "192.168.2.113";
 
 
   function showOptions(){

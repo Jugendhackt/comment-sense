@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	document.getElementById("button-save").addEventListener("click", sendsaveData);
 	document.getElementById("button-clear").addEventListener("click", clearData);
 
-	var ipAdress = 'localhost'
+	var ipAdress = '192.168.2.113'
 
 	var error = document.getElementById("error");
 	var inputUsername = document.getElementById("inputUsername");
