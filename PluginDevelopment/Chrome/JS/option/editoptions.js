@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 xhr.open("PATCH", "http://" + ipAdress + "/users/manage/", true);
                 xhr.onload = function(){
                   if (this.status === 200)
+                    alert("Ändern erfolgreich!");
                 }
                 xhr.send(JSON.stringify({
                   change: "name, password",
@@ -72,7 +73,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 var xhr = new XMLHttpRequest();
                 xhr.open("PATCH", "http://" + ipAdress + "/users/manage/", true);
                 xhr.onload = function(){
-
+                  if(this.status === 200)
+                    alert("Ändern erfolgreich!");
                 }
                 xhr.send(JSON.stringify({
                   change: "name", "password", "email",
