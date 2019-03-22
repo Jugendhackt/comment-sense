@@ -22,6 +22,7 @@ String postComment(String json, int *status);
 String createUser(String json, int *status);
 String voteComment(String json, int *status);
 String checkUser(String json, int *status);
+String existsUser(String json, int *status);
 
 String getDate();
 String getUserName(unsigned int id);
@@ -224,7 +225,7 @@ String createUser(String json, int *status){
         sqlite3_exec(db, querry.data, callback, NULL, NULL);
     }
     else{   // this username is already in use
-        *status = 403;
+        *status = 409;
         printf("username already used\n");
     }
 
@@ -251,6 +252,30 @@ String checkUser(String json, int *status){
     }
     deleteString(userName);
     deleteString(password);
+    cJSON_Delete(root);
+    return response;
+}
+
+String existsUser(String json, int *status){
+    cJSON  *root = cJSON_Parse(json.data);
+    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
+    String response;
+
+    dbResult result = (dbResult){0,0,malloc(0)};
+    String querry = newString("SELECT id FROM users WHERE name LIKE \'");
+    appendStringStr(&querry, userName);
+    appendString(&querry, '\'');
+    sqlite3_exec(db, querry.data, callback, &result, NULL);
+
+    if(result.rows == 1){
+        response = newString("{\"status\":\"user exists\"}");
+    }
+    else{
+        response = newString("{\"status\":\"user doesn't exist\"}");
+    }
+
+    clearResult(&result);
+    deleteString(userName);
     cJSON_Delete(root);
     return response;
 }

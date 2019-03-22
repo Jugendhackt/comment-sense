@@ -273,6 +273,10 @@ String handlePostRequest(int index, StringList request, String payload){
         type = newString("application/json");
         content = createUser(payload, &status);
     }
+    else if(containsString(request[1].data, "/users/exists/")){
+        type = newString("application/json");
+        content = existsUser(payload, &status);
+    }
     else if(containsString(request[1].data, "/users/login/")){
         type = newString("application/json");
         content = checkUser(payload, &status);
