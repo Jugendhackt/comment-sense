@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("showHidePassword").addEventListener("click", showHidePassword);
   document.getElementById("edit").addEventListener("click", showEditPage);
 
@@ -7,44 +7,34 @@ document.addEventListener("DOMContentLoaded", function(){
   var inputemail = document.getElementById("inputEmail");
   var error = document.getElementById("error");
 
-  function showOptions(){
-    chrome.storage.sync.get(["username"], function(result){
-      if(typeof result.username === "undefined"){
+  function showOptions() {
+    chrome.storage.sync.get(["username", "password", "email"], function(result) {
+      if (typeof result.username === "undefined")
         error.innerHTML += "Nickname existiert nicht!";
-      } else {
+      else
         inputusername.value = result.username;
-      }
-    });
 
-    chrome.storage.sync.get(["password"], function(result){
-      if(typeof result.password === "undefined"){
+      if (typeof result.password === "undefined")
         error.innerHTML += "Passwort existiert nicht!";
-      } else {
+      else
         inputpassword.value = result.password;
-      }
-    });
 
-    chrome.storage.sync.get(["email"], function(result){
-      if(typeof result.email === "undefined"){
-        error.innerHTML += "Keine Email hinterlegt!";
-      } else {
+      if (typeof result.email === "undefined")
+        error.innerHTML += "Email existiert nicht!";
+      else
         inputemail.value = result.email;
-      }
     });
   }
 
-  function showHidePassword(){
-    if(inputpassword.type == "text") {
+  function showHidePassword() {
+    if (inputpassword.type == "text")
       inputpassword.type = "password";
-    } else {
+    else
       inputpassword.type = "text";
-    }
   }
 
-  function showEditPage(){
+  function showEditPage() {
     window.location.href = "/HTML/editoptions.html";
   }
-
   showOptions();
-
 });
