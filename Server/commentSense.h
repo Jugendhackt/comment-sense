@@ -29,12 +29,19 @@ int isUserValid(String userName, String password);
 int addCommentToSite(int commentId, String url);
 unsigned int getUserId(String userName);
 
-void checkDatabase();
+void initDatabase();
 
 
 char *noComments = "{\"Comments\":[{\"id\":-1,\"headline\":\"Keine Kommentare\",\"content\":\""
                    "F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. "
                    "Du kannst gern damit anfangen.\",\"votes\":0,\"userID\":-1,\"userName\":\"CommentSense\"}]}";
+
+const char *dbpath = "./data/mainDataBase.db3";
+const char *initdbSQL = "CREATE TABLE \"comments\" (\'id\' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, \'userId\' INTEGER NOT NULL, \'votes\' TEXT NOT NULL, \'date\' DATE NOT NULL, \'headline\' TEXT NOT NULL, \'content\' TEXT NOT NULL);"
+                        "CREATE TABLE \"sites\" (\'id\' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, \'url\' TEXT, \'comments\' TEXT);"
+                        "CREATE TABLE \"users\" (\'id\' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, \'name\' TEXT NOT NULL UNIQUE, \'password\' TEXT NOT NULL, \'email\' TEXT, \'trustLevel\' REAL);"
+                        "CREATE TABLE sqlite_sequence(name,seq);";
+
 sqlite3 *db;
 
 int callback(void *data, int argc, char **argv, char **azColName){
@@ -233,14 +240,19 @@ String checkUser(String json, int *status){
     cJSON *root = cJSON_Parse(json.data);
     String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
     String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
+    String response;
     if(isUserValid(userName, password)){
         *status = 200;
-        return newString("{\"status\":\"login data valid\"}");
+        response = newString("{\"status\":\"login data valid\"}");
     }
     else{
         *status = 401;
-        return newString("{\"status\":\"login data not valid\"}");
+        response = newString("{\"status\":\"login data not valid\"}");
     }
+    deleteString(userName);
+    deleteString(password);
+    cJSON_Delete(root);
+    return response;
 }
 
 String voteComment(String json, int *status){
@@ -435,8 +447,18 @@ int isUserValid(String userName, String password){
     return isValid;
 }
 
-void checkDatabase(){
-    char *path = "./data/mainDataBase.db3";
+void initDatabase(){
+    FILE *f = fopen(dbpath, "r");
+    bool init = false;
+    if(f == NULL){
+        f = fopen(dbpath, "w");
+        init = true;
+    }
+    sqlite3_open(dbpath, &db);
+    if(init){
+        sqlite3_exec(db, initdbSQL, callback, NULL, NULL);
+    }
+    fclose(f);
 }
 
 #endif // COMMENTSENSE_H_INCLUDED

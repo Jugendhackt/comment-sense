@@ -24,11 +24,11 @@ int connectionCount = 0;
 String getType(String filename);
 void* handleClient(void *arg);
 
-String handleGetRequest(int index, StringList request, String payload);
+String handleGetRequest(int index, StringList request);
 String handlePutRequest(int index, StringList request, String payload);
 String handlePostRequest(int index, StringList request, String payload);
 String handlePatchRequest(int index, StringList request, String payload);
-String handleDeleteRequest(int index, StringList request, String payload);
+String handleDeleteRequest(int index, StringList request);
 
 
 
@@ -115,7 +115,7 @@ void* handleClient(void *arg){
             payload.data[len] = 0;
         }
         else
-            payload = newString("");
+            payload = newString("no payload");
 
         String response;
         StringList request = splitString(header[0], ' ');
@@ -124,7 +124,7 @@ void* handleClient(void *arg){
             response = newString("");
         else{
             if(compareString(request[0].data, "GET")){
-                response = handleGetRequest(index, request, payload);
+                response = handleGetRequest(index, request);
             }
             else if(compareString(request[0].data, "PUT")){
                 response = handlePutRequest(index, request, payload);
@@ -136,7 +136,7 @@ void* handleClient(void *arg){
                 response = handlePatchRequest(index, request, payload);
             }
             else if(compareString(request[0].data, "DELETE")){
-                response = handleDeleteRequest(index, request, payload);
+                response = handleDeleteRequest(index, request);
             }
             else
                 response = newString("Unknown request");
@@ -159,7 +159,7 @@ void* handleClient(void *arg){
     return NULL;
 }
 
-String handleGetRequest(int index, StringList request, String payload){
+String handleGetRequest(int index, StringList request){
     printf("get request\n");
     String response = newString("HTTP/1.1 ");
     String content;
@@ -170,10 +170,6 @@ String handleGetRequest(int index, StringList request, String payload){
     if(containsString(request[1].data, "/comments/")){    //client wants comments
         type = newString("application/json");
         content = getComments(request[1], &status);
-    }
-    else if(containsString(request[1].data, "/users/login/")){
-        type = newString("application/json");
-        content = checkUser(payload, &status);
     }
     else{   //client wants file
         String file = newString("./data");
@@ -277,6 +273,10 @@ String handlePostRequest(int index, StringList request, String payload){
         type = newString("application/json");
         content = createUser(payload, &status);
     }
+    else if(containsString(request[1].data, "/users/login/")){
+        type = newString("application/json");
+        content = checkUser(payload, &status);
+    }
     else{
         type = newString("text/plain");
         content = newString("");
@@ -339,7 +339,7 @@ String handlePatchRequest(int index, StringList request, String payload){
     deleteString(statusStr);
     return response;
 }
-String handleDeleteRequest(int index, StringList request, String payload){
+String handleDeleteRequest(int index, StringList request){
     printf("delete request\n");
     String response = newString("HTTP/1.1 ");
     String content = newString("");

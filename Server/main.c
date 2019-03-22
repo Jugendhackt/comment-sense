@@ -21,13 +21,11 @@ void* checkSockets(void *data){
 
 int main()
 {
-    checkDatabase();
+    initDatabase();
     for(int i = 0; i < MAX_CONNECTIONS; i++){
         connections[i].state = 0;
         connections[i].exit = false;
     }
-
-    sqlite3_open("./data/mainDataBase.db3", &db);
 
     pthread_t check;
     pthread_create(&check, NULL, checkSockets, NULL);
