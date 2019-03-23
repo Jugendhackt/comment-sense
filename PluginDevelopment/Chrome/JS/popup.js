@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
-	document.getElemts
+	//document.getElemts
 	function basicDisplay(identifier, attribute) {
 		$(identifier).css({display: attribute});
 	}
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				display: 'block'
 			});
 			basicDisplay('.footer-overlay-close', 'none');
-		} 
+		}
 		else if (mode == 'extended') {
 			// Hide ScrollDown button
 			$('#scrollDown').hide();
