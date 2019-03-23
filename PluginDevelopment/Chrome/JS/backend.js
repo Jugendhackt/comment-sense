@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
   var ipAdress = '192.168.2.113';
   var password = "123";
-  var username = "Nick73";
   var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
   document.getElementById("submit").addEventListener("click", sendData);
+
+  const error = document.getElementById("error");
 
   function refresh() {
     //delete all displayed comments
@@ -42,18 +43,20 @@ document.addEventListener("DOMContentLoaded", function() {
   refresh();
 
   function clickvote(id) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("PATCH", 'http://' + ipAdress + '/comments/vote', true);
-    xhr.onload = function() {
-      data = xhr.responseText;
-    };
-    xhr.send(JSON.stringify({
-      id: id,
-      userName: username,
-      password: password,
-      vote: 1
-    }));
-    //refresh();
+    chrome.storage.sync.get(["username", "password"], function(result) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("PATCH", 'http://' + ipAdress + '/comments/vote', true);
+      xhr.onload = function() {
+        var data = xhr.responseText;
+      }
+      xhr.send(JSON.stringify({
+        id: id,
+        userName: result.username,
+        password: result.password,
+        vote: 1
+      }));
+      //refresh();
+    });
   }
 
   function displayComment(author, headline, comment, liked, id) {
@@ -67,36 +70,35 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function sendData() {
-    var nickname = document.getElementById("nicknameInput").value;
-    var headline = document.getElementById("headlineInput").value;
-    var comment = document.getElementById("commentInput").value;
+    chrome.storage.sync.get(["username", "password"], function(result) {
+      var headline = document.getElementById("headlineInput").value;
+      var comment = document.getElementById("commentInput").value;
 
-    if (nickname == "" || headline == "" || comment == "") {
-      alert("Es sind nicht alle Felder ausgefüllt!");
-    } else {
-      chrome.tabs.query({
-        currentWindow: true,
-        active: true
-      }, function(tabs) {
-        var url = tabs[0].url;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://' + ipAdress + '/comments/', true);
-        xhr.onload = function() {
-          if (this.status === 200) {
-            console.log(xhr.responseText);
-          } else {
-            alert(this.status);
-          }
-        };
-        xhr.send(JSON.stringify({
-          userName: nickname.toString(),
-          password: password,
-          headline: headline.toString(),
-          comment: comment.toString(),
-          url: url.toString()
-        }));
-      });
-    }
+      if (headline == "" || comment == "")
+        alert("Es sind nicht alle Felder ausgefüllt!");
+      else {
+        chrome.tabs.query({
+          currentWindow: true,
+          active: true
+        }, function(tabs) {
+          var url = tabs[0].url;
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', 'http://' + ipAdress + '/comments/', true);
+          xhr.onload = function() {
+            if (this.status === 200) {
+              console.log(xhr.responseText);
+            }
+          };
+          xhr.send(JSON.stringify({
+            userName: result.username,
+            password: result.password,
+            headline: headline,
+            comment: comment,
+            url: url
+          }));
+        });
+      }
+    });
   }
 
   function readLoginData() {
