@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="CSS/style.css" type="text/css">
-    <meta charset="utf-8">
-  </head>
-  <body>
+
+<head>
+  <link rel="stylesheet" href="../CSS/options.css" type="text/css">
+  <meta charset="utf-8">
+  <style>
+  .flexbox {
+    height: 300px;
+    width: 250px;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="flexbox">
     <label for="inputUsername" class="label">Nickname:</label>
     <input type="text" name="inputUsername" id="inputUsername" class="input" placeholder="Dein Nickname" value="">
     <label for="inputPassword" class="label">Passwort:</label>
     <input type="password" name="inputPassword" id="inputPassword" class="input" placeholder="Dein Passwort" value="">
     <button type="button" class="button" id="btnLogin">Login</button>
-  </body>
+  </div>
+</body>
+
 </html>
