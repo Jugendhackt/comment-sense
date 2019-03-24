@@ -118,16 +118,20 @@ String getComments(String request, int *status){
                 String content = result.data[i][5];
                 String userName = getUserName(userId);
 
+                printf("%s\n", content.data);
+                String contentDecrypted = fromHex(content);
+
                 cJSON *comment = cJSON_CreateObject();
                 cJSON_AddNumberToObject(comment, "id", id);
                 cJSON_AddStringToObject(comment, "headline", headline.data);
-                cJSON_AddStringToObject(comment, "content", content.data);
+                cJSON_AddStringToObject(comment, "content", contentDecrypted.data);
                 cJSON_AddNumberToObject(comment, "votes", stringListLen(votes));
                 cJSON_AddNumberToObject(comment, "userID", userId);
                 cJSON_AddStringToObject(comment, "userName", userName.data);
 
                 cJSON_AddItemToArray(comments, comment);
 
+                deleteString(contentDecrypted);
                 deleteString(userName);
                 deleteStringList(votes);
             }
@@ -153,14 +157,16 @@ String postComment(String json, int *status){
     String response = newString("");
 
     cJSON *root = cJSON_Parse(json.data);
-
+    printf("%s\n\n%s\n", json.data, cJSON_Print(root));
     String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
     String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
 
     if(isUserValid(userName, password)){
         String headline = newString(cJSON_GetObjectItem(root, "headline")->valuestring);
-        String comment = newString(cJSON_GetObjectItem(root, "comment")->valuestring);
+        String raw = newString(cJSON_GetObjectItem(root, "comment")->valuestring);
         String url = newString(cJSON_GetObjectItem(root, "url")->valuestring);
+
+        String comment = convertToHex(raw);
 
         unsigned int userId = getUserId(userName);
         String date = getDate();
@@ -180,6 +186,7 @@ String postComment(String json, int *status){
         if(!addCommentToSite(commentId, url))
             printf("could't add the comment %i to the site\n", commentId);
 
+        deleteString(raw);
         deleteString(date);
         deleteString(querry);
         deleteString(headline);

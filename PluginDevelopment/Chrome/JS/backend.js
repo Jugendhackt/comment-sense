@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  var ipAdress = '192.168.2.113';
+  var ipAdress = 'localhost';
   var password = "123";
   var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
   document.getElementById("submit").addEventListener("click", sendData);

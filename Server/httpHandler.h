@@ -8,7 +8,7 @@
 #include "string.h"
 #include "socket.h"
 
-#define MAX_CONNECTIONS 100
+#define MAX_CONNECTIONS 1024
 
 typedef struct Connection{
     socket_t socket;
@@ -18,13 +18,13 @@ typedef struct Connection{
     bool exit;
 } Connection;
 
-typedef enum type{
-    NONE,
-    GET,
-    PUT,
-    POST,
-    PATCH,
-    DELETE
+typedef enum httpRequestType{
+    NONE = 0,
+    GET = 1,
+    PUT = 2,
+    POST = 4,
+    PATCH = 8,
+    DELETE = 16
 } httpRequestType;
 
 Connection connections[MAX_CONNECTIONS];
@@ -157,11 +157,12 @@ void* handleClient(void *arg){
             else
                 response = newString("Unknown request");
         }
-
-        TCPSend(socket, response.data, response.length);
-        if(type != POST){
-            char c = '\n';
-            TCPSend(socket, &c, 1);
+        if(type != NONE){
+            TCPSend(socket, response.data, response.length);
+            if(type != POST){
+                char c = '\n';
+                TCPSend(socket, &c, 1);
+            }
         }
         closeSocket(socket);
 
