@@ -18,6 +18,15 @@ typedef struct Connection{
     bool exit;
 } Connection;
 
+typedef enum type{
+    NONE,
+    GET,
+    PUT,
+    POST,
+    PATCH,
+    DELETE
+} httpRequestType;
+
 Connection connections[MAX_CONNECTIONS];
 int connectionCount = 0;
 
@@ -120,22 +129,29 @@ void* handleClient(void *arg){
         String response;
         StringList request = splitString(header[0], ' ');
 
+        httpRequestType type = NONE;
+
         if(connections[index].exit)
             response = newString("");
         else{
             if(compareString(request[0].data, "GET")){
+                type = GET;
                 response = handleGetRequest(index, request);
             }
             else if(compareString(request[0].data, "PUT")){
+                type = PUT;
                 response = handlePutRequest(index, request, payload);
             }
             else if(compareString(request[0].data, "POST")){
+                type = POST;
                 response = handlePostRequest(index, request, payload);
             }
             else if(compareString(request[0].data, "PATCH")){
+                type = PATCH;
                 response = handlePatchRequest(index, request, payload);
             }
             else if(compareString(request[0].data, "DELETE")){
+                type = DELETE;
                 response = handleDeleteRequest(index, request);
             }
             else
@@ -143,8 +159,10 @@ void* handleClient(void *arg){
         }
 
         TCPSend(socket, response.data, response.length);
-        char c = '\n';
-        TCPSend(socket, &c, 1);
+        if(type != POST){
+            char c = '\n';
+            TCPSend(socket, &c, 1);
+        }
         closeSocket(socket);
 
         deleteString(payload);
@@ -178,7 +196,7 @@ String handleGetRequest(int index, StringList request){
             file.data[7] = 0;
             file.length = 7;
         }
-        if(compareString(file.data, "./data/"))
+        if(compareString(file.data, "./data") || compareString(file.data, "./data/"))
             appendStringStdStr(&file, "index.html");
         type = getType(file);
         FILE *f = fopen(file.data, "rb");
