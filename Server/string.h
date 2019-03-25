@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 typedef struct String{
     char *data;
@@ -137,6 +138,14 @@ int containsString(char *str, char *str2){
     return 1;
 }
 
+int stringContainsAnyOf(String str, char *chars){
+    for(int i = 0, c; i < str.length && (c = str.data[i]) != 0; i++)
+        for(int k = 0, s; (s = chars[k]) != 0; k++)
+            if(c == s)
+                return 1;
+    return 0;
+}
+
 int compareString(char *str, char *str2){
     if(strlen(str) != strlen(str2))
         return 0;
@@ -236,5 +245,69 @@ String fromHex(String hex){
     str.data[str.length] = 0;
     return str;
 }
+
+String combineString(int count, ...){
+    String result = newString("");
+    va_list args;
+    va_start(args, count);
+    for(int i = 0; i < count; i++)
+        appendStringStdStr(&result, va_arg(args, char*));
+    va_end(args);
+    return result;
+}
+
+char* expandEscapes(char* src)
+{
+    char* dest = malloc(2 * strlen(src) + 1);
+    char *result = dest;
+    char c;
+
+    while((c = *(src++)) != 0){
+        switch(c) {
+            case '\a':{
+                *(dest++) = '\\';
+                *(dest++) = 'a';
+            } break;
+            case '\b':{
+                *(dest++) = '\\';
+                *(dest++) = 'b';
+            } break;
+            case '\t':{
+                *(dest++) = '\\';
+                *(dest++) = 't';
+            } break;
+            case '\n':{
+                *(dest++) = '\\';
+                *(dest++) = 'n';
+            } break;
+            case '\v':{
+                *(dest++) = '\\';
+                *(dest++) = 'v';
+            } break;
+            case '\f':{
+                *(dest++) = '\\';
+                *(dest++) = 'f';
+            } break;
+            case '\r':{
+                *(dest++) = '\\';
+                *(dest++) = 'r';
+            } break;
+            case '\\':{
+                *(dest++) = '\\';
+                *(dest++) = '\\';
+            } break;
+            case '\"':{
+                *(dest++) = '\\';
+                *(dest++) = '\"';
+            } break;
+            default:
+                *(dest++) = c;
+        }
+    }
+
+    *dest = '\0';
+    return result;
+}
+
 
 #endif // STRING_H_INCLUDED
