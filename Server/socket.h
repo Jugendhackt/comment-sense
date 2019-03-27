@@ -1,6 +1,16 @@
 #ifndef SOCKET_H_
 #define SOCKET_H_
 
+#ifdef WIN32
+#include <stdio.h>
+#include <stdlib.h>
+#include <winsock.h>
+#include <io.h>
+
+typedef SOCKET socket_t;
+
+#else
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +23,7 @@
 #include <unistd.h>
 
 typedef int socket_t;
+#endif
 
 void errorExit(char *message);
 int createSocket(int af, int type, int protocol);
