@@ -99,6 +99,8 @@ void appendString(String *str, char c){
 }
 
 void appendStringStdStr(String *str, char *str2){
+    if(str2 == NULL)
+        return;
     int len = str->length;
     int len2 = strlen(str2);
     char *data = malloc(len+len2+2);

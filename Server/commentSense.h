@@ -437,7 +437,7 @@ int addCommentToSite(int commentId, String url){
 }
 
 int isUserValid(String userName, String password){
-    String querry = combineString(3, "SELECT password FROM users WHERE name LIKE \'", userName, "\'");
+    String querry = combineString(3, "SELECT password FROM users WHERE name LIKE \'", userName.data, "\'");
     dbResult result = (dbResult){0,0,malloc(0)};
     sqlite3_exec(db, querry.data, callback, &result, NULL);
     int isValid = 0;
