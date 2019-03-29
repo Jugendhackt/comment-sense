@@ -101,7 +101,7 @@ void appendString(String *str, char c){
 void appendStringStdStr(String *str, char *str2){
     int len = str->length;
     int len2 = strlen(str2);
-    char *data = malloc(len+len2+1);
+    char *data = malloc(len+len2+2);
     strcpy(data, str->data);
     strcpy(data+len, str2);
     free(str->data);
