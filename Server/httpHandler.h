@@ -231,9 +231,9 @@ String handleGetRequest(int index, StringList request){
     appendStringStr(&response, statusStr);
 
     if(content.length > 0){
-        appendStringStdStr(&response, "\ncontent type:");
+        appendStringStdStr(&response, "\nContent-Type:");
         appendStringStr(&response, type);
-        appendStringStdStr(&response, "\ncontent length:");
+        appendStringStdStr(&response, "\nContent-Length:");
         appendStringStr(&response, length);
         appendStringStdStr(&response, "\n\n");
         appendStringByteArray(&response, content);

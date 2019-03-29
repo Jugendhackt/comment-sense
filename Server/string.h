@@ -61,7 +61,7 @@ StringList splitString(String string, char c){
     list[0] = (String){NULL,0};
     char *data = newString(string.data).data;
     char *tmp = data;
-    for(int i = 0; i < strlen(data) && data[i] != 0; i++){
+    for(int i = 0; tmp[i] != 0; i++){
         if(data[i] == c){
             data[i] = 0;
             String current = newString(data);

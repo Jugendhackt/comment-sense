@@ -31,6 +31,15 @@ int checkGetFile(char *serverAddr, unsigned short port){
     return 0;
 }
 
+int checkGetComments(char *serverAddr, unsigned short port){
+    String request = combineString(1, "GET /comments/site=\"http://localhost/\" HTTP/1.1\n\n");
+    String response = tcpRequest(request, serverAddr, port);
+    printf("Request:\"\n%s\"\nResponse:\"\n%s\"\n\n", request.data, response.data);
+    if(compareString(response.data, mainFile))
+        return 1;
+    return 0;
+}
+
 int main(int argc, char *argv[]){
     char *serverAddr = "localhost";
     unsigned short port = 80;
