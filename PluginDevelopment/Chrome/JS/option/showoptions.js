@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("showHidePassword").addEventListener("click", showHidePassword);
   document.getElementById("edit").addEventListener("click", showEditPage);
 
-  var inputusername = document.getElementById("inputUserName");
-  var inputpassword = document.getElementById("inputPassword");
-  var inputemail = document.getElementById("inputEmail");
-  var error = document.getElementById("error");
+  const inputusername = document.getElementById("inputUserName");
+  const inputpassword = document.getElementById("inputPassword");
+  const inputemail = document.getElementById("inputEmail");
+  const error = document.getElementById("error");
 
   function showOptions() {
     chrome.storage.sync.get(["username", "password", "email"], function(result) {
@@ -34,7 +34,8 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function showEditPage() {
-    window.location.href = "/HTML/editoptions.html";
+    window.location.href = "../../HTML/option/editOptions.html";
   }
+
   showOptions();
 });

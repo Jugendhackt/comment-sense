@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-  var ipAdress = 'localhost';
-  var password = "123";
+  var ipAdress = "192.168.2.113";
+  //var password = "123";
   var buttons = document.getElementsByClassName("btn btn-primary btn-sm");
   document.getElementById("submit").addEventListener("click", sendData);
 
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var url = tabs[0].url;
       var xhr = new XMLHttpRequest();
       var data;
-      xhr.open('GET', 'http://' + ipAdress + '/comments/' + url, true);
+      xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "'", true);
       xhr.onload = function() {
         if (this.status === 200 || this.status == 404) {
           data = xhr.responseText;
@@ -103,15 +103,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function readLoginData() {
     chrome.storage.sync.get("logged", function(result) {
-      if (result.logged == true) {
+      alert(result.logged);
+      if (result.logged == true || typeof result.logged == undefined) {
         chrome.storage.sync.get(["username", "password", "save"], function(result) {
+          alert(result.username);
+          alert(result.password);
+
+          alert(result.save);
           if (result.save == true) {
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
             xhr.onload = function() {
               var data = JSON.parse(this.responseText);
-              if (this.status !== 200 || data.status != "login not data valid") {
-                window.location.href = "HTML/login.html";
+              alert(data.status);
+              if (this.status !== 200 || data.status != "login data valid") {
+                window.location.href = "../../HTML/login/login.html";
               }
             }
             xhr.send(JSON.stringify({
@@ -120,6 +126,8 @@ document.addEventListener("DOMContentLoaded", function() {
             }));
           }
         });
+      } else {
+        window.location.href = "../../HTML/login/login.html";
       }
     });
   }

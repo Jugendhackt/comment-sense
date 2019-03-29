@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     alert("Ändern erfolgreich!");
                 }
                 xhr.send(JSON.stringify({
-                  change: "name", "password", "email",
+                  change: "name", "password", "email"
                   data: {
                     userName: username,
                     password: password,
