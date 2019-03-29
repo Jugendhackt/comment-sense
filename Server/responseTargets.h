@@ -13,4 +13,13 @@ char *mainFile = "HTTP/1.1 200\nContent-Type:text/html\nContent-Length:807\n\n<h
                  "iv>\n        <script src=\"JS/index.js\" charset=\"utf-8\" type=\"text/javascript\"></sc"
                  "ript>\n\t</body>\n</html>\n\n";
 
+char *testComment = "HTTP/1.1 200\nContent-Type:application/json\nContent-Length:141\n\n{\n\t\"Comments\":"
+                 "\t[{\n\t\t\t\"id\":\t0,\n\t\t\t\"headline\":\t\"headline\",\n\t\t\t\"content\":\t\"conte"
+                 "nt\",\n\t\t\t\"votes\":\t0,\n\t\t\t\"userID\":\t0,\n\t\t\t\"userName\":\t\"test\"\n\t\t}"
+                 "]\n}\n";
+
+char *usersCreate1 = "x";
+char *usersExists1 = "x";
+char *usersLogin1 = "x";
+
 #endif // RESPONSETARGETS_H_INCLUDED

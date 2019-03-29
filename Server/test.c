@@ -25,22 +25,50 @@ String tcpRequest(String request, char *serverAddr, unsigned short port){
 int checkGetFile(char *serverAddr, unsigned short port){
     String request = combineString(1, "GET / HTTP/1.1\n\n");
     String response = tcpRequest(request, serverAddr, port);
-    printf("Request:\"\n%s\"\nResponse:\"\n%s\"\n\n", request.data, response.data);
     if(compareString(response.data, mainFile))
         return 1;
+    printf("\n\n%s\n\n", expandEscapes(response.data));
     return 0;
 }
 
 int checkGetComments(char *serverAddr, unsigned short port){
-    String request = combineString(1, "GET /comments/site=\"http://localhost/\" HTTP/1.1\n\n");
+    String request = combineString(1, "GET /comments/site=\'http://check/\' HTTP/1.1\n\n");
     String response = tcpRequest(request, serverAddr, port);
-    printf("Request:\"\n%s\"\nResponse:\"\n%s\"\n\n", request.data, response.data);
-    if(compareString(response.data, mainFile))
+    if(compareString(response.data, testComment))
         return 1;
+    printf("\n\n%s\n\n", expandEscapes(response.data));
+    return 0;
+}
+
+int checkUsersCreate(char *serverAddr, unsigned short port){
+    String request = combineString(1, "POST /users/create/ HTTP/1.1\nContent-Length:38\n\n{\"userName\":\"test\",\"password\":\"test\"}  ");
+    String response = tcpRequest(request, serverAddr, port);
+    if(compareString(response.data, usersCreate1))
+        return 1;
+    printf("\n\n%s\n\n", expandEscapes(response.data));
+    return 0;
+}
+
+int checkUsersExists(char *serverAddr, unsigned short port){
+    String request = combineString(1, "POST /users/exists/ HTTP/1.1\n\n");
+    String response = tcpRequest(request, serverAddr, port);
+    if(compareString(response.data, usersExists1))
+        return 1;
+    printf("\n\n%s\n\n", expandEscapes(response.data));
+    return 0;
+}
+
+int checkUsersLogin(char *serverAddr, unsigned short port){
+    String request = combineString(1, "POST /users/login/ HTTP/1.1\n\n");
+    String response = tcpRequest(request, serverAddr, port);
+    if(compareString(response.data, usersLogin1))
+        return 1;
+    printf("\n\n%s\n\n", expandEscapes(response.data));
     return 0;
 }
 
 int main(int argc, char *argv[]){
+    printf("%i\n", strlen("{\"userName\":\"test\",\"password\":\"test\"}"));
     char *serverAddr = "localhost";
     unsigned short port = 80;
     for(int i = 0; i < argc; i++){
@@ -56,6 +84,18 @@ int main(int argc, char *argv[]){
     }
     else{
         printf("server can't send file back properly\n");
+    }
+    if(checkGetComments(serverAddr, port)){
+        printf("Server sends comments back properly\n");
+    }
+    else{
+        printf("server can't send comments back properly\n");
+    }
+    if(checkUsersCreate(serverAddr, port)){
+        printf("Server creates user properly\n");
+    }
+    else{
+        printf("server can't create users properly\n");
     }
     return 0;
 }
