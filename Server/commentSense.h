@@ -88,8 +88,21 @@ void deleteResult(dbResult result){
 }
 
 String getComments(String request, int *status){
-    String content;
-    String site = newString(request.data+10);
+    String content, site;
+    char *data = request.data+10;
+    if(containsString(data, "site=\'")){
+        site = newString(data+6);
+        for(int i = 0; site.data[i] != 0; i++){
+            if(site.data[i] == '\''){
+                site.data[i] = 0;
+                site.length = i;
+                break;
+            }
+        }
+    }
+    else
+        site = newString(data);
+    printf("%s\n", site);
     String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\'");
 
     dbResult result = (dbResult){0,0,malloc(0)};

@@ -169,9 +169,9 @@ void* handleClient(void *arg){
         deleteString(payload);
         deleteString(response);
         deleteStringList(request);
-        deleteString(line);
-        deleteStringList(header);
     }
+    deleteString(line);
+    deleteStringList(header);
     connectionCount--;
     connections[index].state = 0;
     printf("ended thread\t\t%i thread(s) running\n", connectionCount);
