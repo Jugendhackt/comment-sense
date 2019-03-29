@@ -258,7 +258,7 @@ String existsUser(String json, int *status){
     String response;
 
     dbResult result = (dbResult){0,0,malloc(0)};
-    String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName, "\'");
+    String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data, "\'");
     sqlite3_exec(db, querry.data, callback, &result, NULL);
 
     if(result.rows == 1){
@@ -373,7 +373,7 @@ String getUserName(unsigned int userId){
     String userName;
     dbResult result = (dbResult){0,0,malloc(0)};
     String id = stringFromInt(userId);
-    String querry = combineString(3, "SELECT name FROM users WHERE id LIKE ", id.data);
+    String querry = combineString(2, "SELECT name FROM users WHERE id LIKE ", id.data);
 
     sqlite3_exec(db, querry.data, callback, &result, NULL);
     if(result.columns == 1 && result.rows == 1)
@@ -389,7 +389,7 @@ String getUserName(unsigned int userId){
 unsigned int getUserId(String userName){
     int id = -1;
     dbResult result = (dbResult){0,0,malloc(0)};
-    String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data,"\'");
+    String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data, "\'");
 
     sqlite3_exec(db, querry.data, callback, &result, NULL);
     if(result.columns == 1 && result.rows == 1)
