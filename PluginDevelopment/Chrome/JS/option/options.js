@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", function() {
       error.innerHTML = "Es sind nicht alle Felder ausgefüllt!";
     else {
       chrome.storage.sync.get(["username", "password"], function(result) {
-        if (typeof result.username === "undefined" || result.username == "") {
+        if (typeof result.username == undefined || result.username == "") {
+          alert("hello");
           chrome.storage.sync.set({
             username: username,
             password: password,
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
           var data = JSON.parse(this.responseText);
           if (this.status === 200 && data.status == "login data valid") {
             saveLoginData();
-            window.open("HTML/showoptions.html", "_blank");
+            window.open("../../HTML/option/showOptions.html", "_blank");
           } else if (this.status === 401 && data.status == "login data not valid")
             error.innerHTML = "Passwort oder Nutzername ist nicht korrekt";
         }
@@ -71,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function readLoginData() {
     chrome.storage.sync.get(["username", "password", "save"], function(result){
       if (result.save == true){
+        error.innerHTML = "Passwort wird gespeichert";
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
         xhr.onload = function() {

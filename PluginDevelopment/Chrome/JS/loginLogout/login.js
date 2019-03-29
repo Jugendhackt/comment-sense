@@ -1,10 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("btnLogin").addEventListener("click", login);
+  document.getElementById("btnSave").addEventListener("click", savePassword);
+
   const ipAdress = "192.168.2.113";
 
   const inputUsername = document.getElementById("inputUsername");
   const inputPassword = document.getElementById("inputPassword");
-
+  const error = document.getElementById("error");
 
   function saveLoginData() {
     chrome.storage.sync.get(["save"], function(result) {
@@ -20,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function login() {
-    //alert("hi3");
+    alert("hi3");
     var username = inputUsername.value;
     var password = inputPassword.value;
 
@@ -32,12 +34,33 @@ document.addEventListener("DOMContentLoaded", function() {
         chrome.storage.sync.set({
           logged: true
         });
-        window.location.href = "../popup.html";
+        window.location.href = "../../popup.html";
       }
     }
     xhr.send(JSON.stringify({
       userName: username,
       password: password
     }));
+  }
+
+  function savePassword() {
+    chrome.storage.sync.get(["save"], function(result) {
+      if (typeof result.save == undefined) {
+        chrome.storage.sync.set({
+          save: true
+        });
+        error.innerHTML = "Passwort wird gespeichert";
+      } else if (result.save == true) {
+        chrome.storage.sync.set({
+          save: false
+        });
+        error.innerHTML = "Passwort wird nicht gespeichert";
+      } else if (result.save == false) {
+        chrome.storage.sync.set({
+          save: true
+        });
+        error.innerHTML = "Passwort wird gespeichert";
+      }
+    });
   }
 });

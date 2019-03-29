@@ -9,7 +9,7 @@
 		"storage"
 	],
 	"options_ui": {
-		"page": "options.html",
+		"page": "HTML/option/options.html",
 		"open_in_tab": false
 	},
 	"icons": { "32": "/assets/icons/icon.png"},
