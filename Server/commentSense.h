@@ -164,10 +164,31 @@ String getComments(String request, int *status){
 }
 
 String postComment(String json, int *status){
-    String response = newString("");
+    String response;
 
     cJSON *root = cJSON_Parse(json.data);
-    printf("%s\n\n%s\n", json.data, cJSON_Print(root));
+
+    if(!cJSON_HasObjectItem(root, "userName")){
+        return  newString("userName missing in json");
+        *status = 400;
+    }
+    if(!cJSON_HasObjectItem(root, "password")){
+        return  newString("password missing in json");
+        *status = 400;
+    }
+    if(!cJSON_HasObjectItem(root, "headline")){
+        return  newString("headline missing in json");
+        *status = 400;
+    }
+    if(!cJSON_HasObjectItem(root, "comment")){
+        return  newString("comment missing in json");
+        *status = 400;
+    }
+    if(!cJSON_HasObjectItem(root, "url")){
+        return  newString("url missing in json");
+        *status = 400;
+    }
+
     String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
     String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
 
@@ -198,10 +219,10 @@ String postComment(String json, int *status){
         deleteString(headline);
         deleteString(comment);
         deleteString(url);
+        response = newString("maybe everything worked");
         *status = 201;
     }
     else{
-        deleteString(response);
         response = newString("{\"error\":\"User not valid\"");
         printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
         *status = 401;
