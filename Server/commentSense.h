@@ -188,14 +188,18 @@ String postComment(String json, int *status){
         return  newString("url missing in json");
         *status = 400;
     }
-
-    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
-    String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
+    char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
+    char *passwordData = cJSON_GetObjectItem(root, "password")->valuestring;
+    String userName = newString(userNameData == NULL ? "" : userNameData);
+    String password = newString(passwordData == NULL ? "" : passwordData);
 
     if(isUserValid(userName, password)){
-        String rawHeadline = newString(cJSON_GetObjectItem(root, "headline")->valuestring);
-        String rawComment = newString(cJSON_GetObjectItem(root, "comment")->valuestring);
-        String url = newString(cJSON_GetObjectItem(root, "url")->valuestring);
+        char *rawHeadlineData = cJSON_GetObjectItem(root, "headline")->valuestring;
+        char *rawCommentData = cJSON_GetObjectItem(root, "comment")->valuestring;
+        char *urlData = cJSON_GetObjectItem(root, "url")->valuestring;
+        String rawHeadline = newString(rawHeadlineData == NULL ? "" : rawHeadlineData);
+        String rawComment = newString(rawCommentData == NULL ? "" : rawCommentData);
+        String url = newString(urlData == NULL ? "" : urlData);
 
         String headline = convertToHex(rawHeadline);
         String comment = convertToHex(rawComment);
