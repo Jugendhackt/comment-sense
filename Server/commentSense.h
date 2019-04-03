@@ -169,24 +169,24 @@ String postComment(String json, int *status){
     cJSON *root = cJSON_Parse(json.data);
 
     if(!cJSON_HasObjectItem(root, "userName")){
-        return  newString("userName missing in json");
         *status = 400;
+        return  newString("userName missing in json");
     }
     if(!cJSON_HasObjectItem(root, "password")){
-        return  newString("password missing in json");
         *status = 400;
+        return  newString("password missing in json");
     }
     if(!cJSON_HasObjectItem(root, "headline")){
-        return  newString("headline missing in json");
         *status = 400;
+        return  newString("headline missing in json");
     }
     if(!cJSON_HasObjectItem(root, "comment")){
-        return  newString("comment missing in json");
         *status = 400;
+        return  newString("comment missing in json");
     }
     if(!cJSON_HasObjectItem(root, "url")){
-        return  newString("url missing in json");
         *status = 400;
+        return  newString("url missing in json");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
     char *passwordData = cJSON_GetObjectItem(root, "password")->valuestring;
