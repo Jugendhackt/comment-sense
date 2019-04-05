@@ -22,6 +22,17 @@ html {
   border-bottom: 2px solid gray;
 }
 
+.a {
+    text-decoration: none;
+    color: black;
+    border-bottom: 4px solid gray;
+    transition: 0.4s;
+}
+
+.a:hover {
+    border-bottom: 4px solid red;
+}
+
 /*Handy/Tablet*/
 @media only screen and (max-width: 1060px) {
   * {
