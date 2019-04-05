@@ -240,11 +240,21 @@ String postComment(String json, int *status){
 }
 
 String createUser(String json, int *status){
-    String response = newString("");
+    String response;
 
     cJSON *root = cJSON_Parse(json.data);
-    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
-    String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
+    if(!cJSON_HasObjectItem(root, "userName")){
+        *status = 400;
+        return  newString("userName missing in json");
+    }
+    if(!cJSON_HasObjectItem(root, "password")){
+        *status = 400;
+        return  newString("password missing in json");
+    }
+    char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
+    String userName = newString(userNameData == NULL ? "" : userNameData);
+    char *passwordData = cJSON_GetObjectItem(root, "password")->valuestring;
+    String password = newString(passwordData == NULL ? "" : passwordData);
 
     String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data, "\'");
 
@@ -257,10 +267,12 @@ String createUser(String json, int *status){
                            userName.data, "\',\'", password.data, "\')");
 
         sqlite3_exec(db, querry.data, callback, NULL, NULL);
+        response = newString("user created succesfully");
     }
     else{   // this username is already in use
         *status = 409;
         printf("username already used\n");
+        response = newString("username already used\n");
     }
 
     deleteString(userName);
@@ -273,8 +285,18 @@ String createUser(String json, int *status){
 
 String checkUser(String json, int *status){
     cJSON *root = cJSON_Parse(json.data);
-    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
-    String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
+    if(!cJSON_HasObjectItem(root, "userName")){
+        *status = 400;
+        return  newString("userName missing in json");
+    }
+    if(!cJSON_HasObjectItem(root, "password")){
+        *status = 400;
+        return  newString("password missing in json");
+    }
+    char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
+    String userName = newString(userNameData == NULL ? "" : userNameData);
+    char *passwordData = cJSON_GetObjectItem(root, "password")->valuestring;
+    String password = newString(passwordData == NULL ? "" : passwordData);
     String response;
     if(isUserValid(userName, password)){
         *status = 200;
@@ -292,7 +314,12 @@ String checkUser(String json, int *status){
 
 String existsUser(String json, int *status){
     cJSON  *root = cJSON_Parse(json.data);
-    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
+    if(!cJSON_HasObjectItem(root, "userName")){
+        *status = 400;
+        return  newString("userName missing in json");
+    }
+    char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
+    String userName = newString(userNameData == NULL ? "" : userNameData);
     String response;
 
     dbResult result = (dbResult){0,0,malloc(0)};
@@ -321,8 +348,27 @@ String voteComment(String json, int *status){
 
     cJSON *root = cJSON_Parse(json.data);
 
-    String userName = newString(cJSON_GetObjectItem(root, "userName")->valuestring);
-    String password = newString(cJSON_GetObjectItem(root, "password")->valuestring);
+    if(!cJSON_HasObjectItem(root, "userName")){
+        *status = 400;
+        return  newString("userName missing in json");
+    }
+    if(!cJSON_HasObjectItem(root, "password")){
+        *status = 400;
+        return  newString("password missing in json");
+    }
+    if(!cJSON_HasObjectItem(root, "id")){
+        *status = 400;
+        return  newString("id missing in json");
+    }
+    if(!cJSON_HasObjectItem(root, "vote")){
+        *status = 400;
+        return  newString("vote missing in json");
+    }
+    char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
+    String userName = newString(userNameData == NULL ? "" : userNameData);
+    char *passwordData = cJSON_GetObjectItem(root, "password")->valuestring;
+    String password = newString(passwordData == NULL ? "" : passwordData);
+
     int id = cJSON_GetObjectItem(root, "id")->valueint;
     int vote = cJSON_GetObjectItem(root, "vote")->valueint;
 
