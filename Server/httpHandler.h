@@ -103,6 +103,11 @@ void* handleClient(void *arg){
             line = newString("");
         }
     }
+    if(!isSocketConnected(socket)){
+        deleteString(line);
+        deleteStringList(header);
+        return NULL;
+    }
     if(header != NULL && header[0].data != 0 && header[0].length > 0){
         int len = 0;
 

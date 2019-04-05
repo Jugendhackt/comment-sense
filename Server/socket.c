@@ -124,6 +124,7 @@ int createSocket(int af, int type, int protocol ) {
     sock = socket(af, type, protocol);
     if (sock < 0)
         fprintf(stderr, "error: creating socket failed: %s\n", strerror(errno));
+
     setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &y, sizeof(int));
     return sock;
 }
@@ -151,6 +152,11 @@ void acceptSocket(socket_t *socket, socket_t *new_socket ){
     *new_socket = accept(*socket,(struct sockaddr *)&client, &len);
     if(*new_socket  == -1)
         fprintf(stderr, "error: couldn't accept socket: %s\n", strerror(errno));
+
+    struct timeval tv;
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
+    setsockopt(*new_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
 }
 
 void connectSocket(socket_t *sock, char *serv_addr, unsigned short port) {
@@ -184,6 +190,16 @@ void TCPSend(socket_t *sock, char *data, size_t size) {
     }
     if(send(*sock, data, size, 0) == -1 )
         fprintf(stderr, "error: tcp send(): %s\n", strerror(errno));
+}
+
+int isSocketConnected(socket_t *sock){
+    int error = 0;
+    socklen_t errorlen = sizeof (error);
+    if(getsockopt(*sock, SOL_SOCKET, SO_ERROR, &error, &errorlen) != 0){
+        fprintf(stderr, "error: socket not connected: %s\n", strerror(errno));
+        return 0;
+    }
+    return 1;
 }
 
 int TCPRecv(socket_t *sock, char *data, size_t size) {

@@ -36,6 +36,7 @@ int TCPRecv(socket_t *sock, char *data, size_t size);
 void UDPSend(socket_t *sock, char *data, size_t size, char *addr, unsigned short port);
 void UDPRecv(socket_t *sock, char *data, size_t size);
 void closeSocket(socket_t *socket);
+int isSocketConnected(socket_t *sock);
 
 #endif
 

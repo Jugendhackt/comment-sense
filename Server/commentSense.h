@@ -102,7 +102,7 @@ String getComments(String request, int *status){
     }
     else
         site = newString(data);
-    printf("%s\n", site);
+    printf("request: %s, site: %s\n", request.data, site.data);
     String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\'");
 
     dbResult result = (dbResult){0,0,malloc(0)};
