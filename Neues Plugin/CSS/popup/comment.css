@@ -1,0 +1,23 @@
+.commentTitle {
+	text-align: center;
+	font-weight: 500;
+	box-shadow: 1px 1px 5px gray;
+	padding: 15px;
+	margin-bottom: 10px;
+}
+
+.commentUser {
+	font-weight: 500;
+	text-align: center;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+
+.commentContent {
+	margin: 5px;
+}
+
+.comment {
+	padding-bottom: 50px;
+	box-shadow: 1px 1px 5px gray;
+}

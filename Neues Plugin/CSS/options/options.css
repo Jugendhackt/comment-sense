@@ -1,0 +1,19 @@
+.flexbox {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.flexbox > * {
+	margin: 10px;
+}
+
+.input {
+	border: none;
+	border-bottom: 2px solid gray;
+}
+
+#error {
+  font-size: 13px !important;
+}
+
