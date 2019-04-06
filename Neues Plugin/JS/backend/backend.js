@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		content.innerHTML = comment;
 		content.classList.add("commentContent");
 		div.appendChild(content);
-
 	}
 
 	function writeComment() {
@@ -88,8 +87,19 @@ document.addEventListener("DOMContentLoaded", function() {
 			});
 		}
 	}
-
+	
+	function getUserData() {
+		chrome.storage.local.get(["userName", "password", "time"], function(result){
+			var date = new Date();
+			if (result.time > date.getTime()) {
+				alert("yeah");
+			} else {
+				alert("yeah2");
+			}
+			
+		});
+	}
+	getUserData();
 	refresh();
-
-
+	setInterval(refresh, 50000);
 });
