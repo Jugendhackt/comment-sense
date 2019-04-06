@@ -54,10 +54,24 @@ textarea {
 .input {
 	padding: 5px;
 	width: 190px;
+	border: none;
+	border-bottom: 2px solid gray;
 }
 
 ::selection {
 	color: white;
 	background-color: #31AF91;
 }
+
+.flexbox {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#error, #autoLoginError {
+	font-size: 13px !important;
+	text-align: center;
+}
+
 

@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("send").addEventListener("click", writeComment);
-	
-	
+
+
 	const ipAdress = "192.168.2.113";
 	const userName = "Test1";
 	const password = "123";
@@ -87,16 +87,21 @@ document.addEventListener("DOMContentLoaded", function() {
 			});
 		}
 	}
-	
+
 	function getUserData() {
 		chrome.storage.local.get(["userName", "password", "time"], function(result){
 			var date = new Date();
 			if (result.time > date.getTime()) {
 				alert("yeah");
 			} else {
-				alert("yeah2");
+				chrome.storage.local.set({
+					userName: undefined,
+					password: undefined,
+					time: undefined
+				}, function(){
+					window.location.href = "../../HTML/login/login.html";
+				});
 			}
-			
 		});
 	}
 	getUserData();
