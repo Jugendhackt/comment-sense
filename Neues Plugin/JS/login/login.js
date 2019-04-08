@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
 								"time": date
 							});
 							setErr("angemeldet mit automatischen anmelden");
-							setErr("Bitte öffne das Plugin neu");
+							setErr("Bitte &oumlffne das Plugin neu");
 							setAutoLoginErr("");
 						} else if (this.status === 400) 
 							setErr("Nutzerdaten nicht vollständig");

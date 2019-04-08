@@ -14,21 +14,21 @@ html {
 
 /*Keine Scrollbar*/
 ::-webkit-scrollbar { 
-    display: none; 
-}
-
-.footer {
-	position: sticky;
-	bottom: 0;
-	width: 100%;
-	background-color: white;
+	display: none; 
 }
 
 .title {
 	background-color: white;
-	position: sticky;
+	position: fixed;
 	top: 0;
-	width: 100%;
+	min-width: 100%;
+}
+
+.footer {
+	background-color: white;
+	position: fixed;
+	bottom: 0;
+	min-width: 100%;
 }
 
 .button {
@@ -54,10 +54,24 @@ textarea {
 .input {
 	padding: 5px;
 	width: 190px;
+	border: none;
+	border-bottom: 2px solid gray;
 }
 
 ::selection {
 	color: white;
 	background-color: #31AF91;
 }
+
+.flexbox {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#error, #autoLoginError {
+	font-size: 13px !important;
+	text-align: center;
+}
+
 
