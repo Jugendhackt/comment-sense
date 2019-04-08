@@ -360,6 +360,7 @@ String voteComment(String json, int *status){
     String response;
 
     cJSON *root = cJSON_Parse(json.data);
+    printf("vote json: \"%s\"\n", cJSON_Print(root));
 
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
