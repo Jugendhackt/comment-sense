@@ -357,7 +357,7 @@ String manageUser(String json, int *status){
 }
 
 String voteComment(String json, int *status){
-    String response;
+    String response = newString("{\"error\":\"unknown error\"");
 
     cJSON *root = cJSON_Parse(json.data);
     printf("vote json: \"%s\"\n", cJSON_Print(root));
@@ -408,6 +408,9 @@ String voteComment(String json, int *status){
                     querry = combineString(5, "UPDATE comments SET votes = \'", votes.data, "\' WHERE id LIKE \'", commentId.data, "\'");
 
                     sqlite3_exec(db, querry.data, callback, NULL, NULL);
+                    *status = 200;
+                    deleteString(response);
+                    response = newString("{\"status\":\"everything worked\"");
                 }
                 else{
                     String user = stringFromInt(userId);
@@ -426,10 +429,14 @@ String voteComment(String json, int *status){
                         deleteString(querry);
                         querry = combineString(5, "UPDATE comments SET votes = \'", votes.data, "\' WHERE id LIKE \'", commentId.data, "\'");
                         sqlite3_exec(db, querry.data, callback, NULL, NULL);
+                        *status = 200;
+                        deleteString(response);
+                        response = newString("{\"status\":\"everything worked\"");
                     }
                     else{// the user has already voted
                         printf("already voted\n");
                         *status = 403;
+                        deleteString(response);
                         response = newString("{\"error\":\"you have already voted on this comment\"");
                     }
                     deleteString(user);
@@ -439,14 +446,18 @@ String voteComment(String json, int *status){
             else if(vote == -1){    //unvote
                 if(votes.length == 0){//someone must have voted, before you can unvote
                     *status = 422;
+                    deleteString(response);
                     response = newString("{\"error\":\"nobody has voted --> you can't unvote\"");
                 }
                 else{///TODO: implement unvoting
-                    ;
+                    *status = 501;
+                    deleteString(response);
+                    response = newString("{\"error\":\"not implemented\"");
                 }
             }
             else{   //you can't vote nothing/more than once/unvote more then once
                 *status = 422;
+                deleteString(response);
                 response = newString("{\"error\":\"you can only vote +1 or -1\"");
             }
             deleteString(votes);
@@ -454,15 +465,17 @@ String voteComment(String json, int *status){
         }
         else{   //the comment is not in the database
             *status = 404;
+            deleteString(response);
             response = newString("{\"error\":\"Comment not found\"");
         }
         deleteString(querry);
         clearResult(&result);
     }
     else{   //you need a valid account to vote
-        response = newString("{\"error\":\"User not valid\"");
         printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
         *status = 401;
+        deleteString(response);
+        response = newString("{\"error\":\"User not valid\"");
     }
 
     printf("voting ...\n%s\n", json.data);
@@ -524,13 +537,13 @@ int addCommentToSite(int commentId, String url){
         sqlite3_exec(db, querry.data, callback, NULL, NULL);
     }
     else if(result.rows > 0 && result.columns == 1){
-        String comments = result.data[0][0];
+        String comments = newString(result.data[0][0].data);
         appendString(&comments, ',');
         appendStringStr(&comments, id);
 
         querry = combineString(5, "UPDATE sites SET comments = \'", comments.data, "\' WHERE url LIKE \'", url.data, "\'");
-
         sqlite3_exec(db, querry.data, callback, NULL, NULL);
+        deleteString(comments);
     }
     else
         querry = newString("");
