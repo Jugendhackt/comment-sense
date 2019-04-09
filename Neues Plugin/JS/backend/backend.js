@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 	const ipAdress = "192.168.2.113";
-	const userName = "Test1";
-	const password = "123";
+	//const userName = "Test1";
+	//const password = "123";
 
 
 	function refresh() {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "'", true);			xhr.onload = function() {
 				if (this.status === 200 || this.status === 404) {
 					var data = JSON.parse(this.responseText);
-					//document.getElementById("comments").innerHTML = "";
+					document.getElementById("comments").innerHTML = "";
 					for (var i = 0; i < data.Comments.length; i++) {
 						let userid = data.Comments[i].userId;
 						let username = data.Comments[i].userName;
@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function() {
 						let votes = data.Comments[i].votes;
 						console.log(username);
 						displayComment(username, headline, comment, votes, id);
-
 					}
 				}
 			}
@@ -55,6 +54,25 @@ document.addEventListener("DOMContentLoaded", function() {
 		content.innerHTML = comment;
 		content.classList.add("commentContent");
 		div.appendChild(content);
+
+		var votes = document.createElement("DIV");
+		votes.id = "votes" + id;
+		votes.classList.add("votes");
+		votes.innerHTML = liked + " Likes";
+		div.appendChild(votes);
+
+		var button = document.createElement("BUTTON");
+		button.id = "button" + id;
+		button.innerHTML = "Gefällt mir";
+		button.classList.add("like");
+		button.classList.add("button");
+		div.appendChild(button);
+
+		console.log(button);
+
+		button.addEventListener("click", function(){
+			like(id, title);
+		});
 	}
 
 	function writeComment() {
@@ -69,21 +87,27 @@ document.addEventListener("DOMContentLoaded", function() {
 				active: true
 			}, function(tabs) {
 				var url = tabs[0].url;
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "http://" + ipAdress + "/comments/", true);
-				xhr.onload = function() {
-					console.log(this.responseText);
-					console.log(this.status);
-					if (this.status === 201)
-						alert("yeah");
-				}				
-				xhr.send(JSON.stringify({
-					userName: userName,
-					password: password,
-					headline: title,
-					comment: comment,
-					url: url
-				}));
+				chrome.storage.local.get(["userName", "password"], function(result){
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", "http://" + ipAdress + "/comments/", true);
+					xhr.onload = function() {
+						console.log(this.responseText);
+						console.log(this.status);
+						if (this.status === 201) {
+							changeDisplay("commentInput", "none");
+							changeDisplay("createCommentDiv", "block");
+							changeHeight("footer", "40px");	
+						}
+
+					}				
+					xhr.send(JSON.stringify({
+						userName: result.userName,
+						password: result.password,
+						headline: title,
+						comment: comment,
+						url: url
+					}));
+				});
 			});
 		}
 	}
@@ -91,9 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	function getUserData() {
 		chrome.storage.local.get(["userName", "password", "time"], function(result){
 			var date = new Date();
-			if (result.time > date.getTime()) {
-				alert("yeah");
-			} else {
+			if (result.time < date.getTime()) {
 				chrome.storage.local.set({
 					userName: undefined,
 					password: undefined,
@@ -104,7 +126,34 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 		});
 	}
+
+	function changeDisplay(id, display) {
+		document.getElementById(id).style.display = display;
+	}
+
+	function changeHeight(id, height) {
+		document.getElementById(id).style.height = height;
+	}
+
+	function like(id, headline) {
+		chrome.storage.local.get(["userName", "password"], function(result){
+			var xhr = new XMLHttpRequest();
+			xhr.open("PATCH", "http://" + ipAdress + "/comments/vote", true);
+			xhr.onload = function() {
+				//var data = JSON.parse(this.responseText);
+				console.log(this.responseText + " hello");
+			}
+			xhr.send(JSON.stringify({
+				id: id,
+				userName: result.userName,
+				password: result.password,
+				vote: 1
+			}));
+		});
+
+	}
+
 	getUserData();
 	refresh();
-	setInterval(refresh, 50000);
+	setInterval(refresh, 5000);
 });
