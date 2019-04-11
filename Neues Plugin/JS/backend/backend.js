@@ -112,27 +112,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
-	function getUserData() {
-		chrome.storage.local.get(["userName", "password", "time"], function(result){
-			
-			if (typeof result.time == "undefined"){
-				window.location.href="../../HTML/login/login.html";
-			}
-
-			var date = new Date();
-			if (result.time < date.getTime()) {
-				chrome.storage.local.set({
-					userName: undefined,
-					password: undefined,
-					time: undefined
-				}, function(){
-					console.log("yes")
-					window.location.href = "../../HTML/login/login.html";
-				});
-			}
-		});
-	}
-
 	function changeDisplay(id, display) {
 		document.getElementById(id).style.display = display;
 	}
@@ -158,8 +137,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 
 	}
-
-	getUserData();
 	refresh();
 	setInterval(refresh, 5000);
 });
