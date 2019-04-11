@@ -114,6 +114,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	function getUserData() {
 		chrome.storage.local.get(["userName", "password", "time"], function(result){
+			
+			if (typeof result.time == "undefined"){
+				window.location.href="../../HTML/login/login.html";
+			}
+
 			var date = new Date();
 			if (result.time < date.getTime()) {
 				chrome.storage.local.set({
@@ -121,6 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					password: undefined,
 					time: undefined
 				}, function(){
+					console.log("yes")
 					window.location.href = "../../HTML/login/login.html";
 				});
 			}
@@ -141,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			xhr.open("PATCH", "http://" + ipAdress + "/comments/vote", true);
 			xhr.onload = function() {
 				//var data = JSON.parse(this.responseText);
-				console.log(this.responseText + " hello");
+				console.log(this.responseText);
 			}
 			xhr.send(JSON.stringify({
 				id: id,
