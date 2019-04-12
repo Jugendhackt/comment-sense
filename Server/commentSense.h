@@ -359,7 +359,6 @@ String voteComment(String json, int *status){
     String response = newString("{\"error\":\"unknown error\"}");
 
     cJSON *root = cJSON_Parse(json.data);
-    printf("vote json: \"%s\"\n", cJSON_Print(root));
 
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
@@ -477,7 +476,6 @@ String voteComment(String json, int *status){
         response = newString("{\"error\":\"User not valid\"}");
     }
 
-    printf("voting ...\n%s\n", json.data);
     deleteString(userName);
     deleteString(password);
     cJSON_Delete(root);
