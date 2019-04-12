@@ -171,27 +171,27 @@ String postComment(String json, int *status){
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"userName missing in json\"");
+        return newString("{\"error\":\"userName missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "password")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"password missing in json\"");
+        return newString("{\"error\":\"password missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "headline")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"headline missing in json\"");
+        return newString("{\"error\":\"headline missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "comment")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"comment missing in json\"");
+        return newString("{\"error\":\"comment missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "url")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"url missing in json\"");
+        return newString("{\"error\":\"url missing in json\"}");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
     char *passwordData = cJSON_GetObjectItem(root, "password")->valuestring;
@@ -232,7 +232,7 @@ String postComment(String json, int *status){
         *status = 201;
     }
     else{
-        response = newString("{\"error\":\"User not valid\"");
+        response = newString("{\"error\":\"User not valid\"}");
         printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
         *status = 401;
     }
@@ -246,18 +246,17 @@ String postComment(String json, int *status){
 
 String createUser(String json, int *status){
     String response;
-
     cJSON *root = cJSON_Parse(json.data);
 
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"userName missing in json\"");
+        return newString("{\"error\":\"userName missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "password")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"password missing in json\"");
+        return newString("{\"error\":\"password missing in json\"}");
     }
 
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
@@ -298,12 +297,12 @@ String checkUser(String json, int *status){
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"userName missing in json\"");
+        return newString("{\"error\":\"userName missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "password")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"password missing in json\"");
+        return newString("{\"error\":\"password missing in json\"}");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
     String userName = newString(userNameData == NULL ? "" : userNameData);
@@ -329,7 +328,7 @@ String existsUser(String json, int *status){
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"userName missing in json\"");
+        return newString("{\"error\":\"userName missing in json\"}");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
     String userName = newString(userNameData == NULL ? "" : userNameData);
@@ -357,7 +356,7 @@ String manageUser(String json, int *status){
 }
 
 String voteComment(String json, int *status){
-    String response = newString("{\"error\":\"unknown error\"");
+    String response = newString("{\"error\":\"unknown error\"}");
 
     cJSON *root = cJSON_Parse(json.data);
     printf("vote json: \"%s\"\n", cJSON_Print(root));
@@ -365,22 +364,22 @@ String voteComment(String json, int *status){
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"userName missing in json\"");
+        return newString("{\"error\":\"userName missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "password")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"password missing in json\"");
+        return newString("{\"error\":\"password missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "id")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"id missing in json\"");
+        return newString("{\"error\":\"id missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "vote")){
         cJSON_Delete(root);
         *status = 400;
-        return newString("{\"error\":\"vote missing in json\"");
+        return newString("{\"error\":\"vote missing in json\"}");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
     String userName = newString(userNameData == NULL ? "" : userNameData);
@@ -410,7 +409,7 @@ String voteComment(String json, int *status){
                     sqlite3_exec(db, querry.data, callback, NULL, NULL);
                     *status = 200;
                     deleteString(response);
-                    response = newString("{\"status\":\"everything worked\"");
+                    response = newString("{\"status\":\"everything worked\"}");
                 }
                 else{
                     String user = stringFromInt(userId);
@@ -431,13 +430,13 @@ String voteComment(String json, int *status){
                         sqlite3_exec(db, querry.data, callback, NULL, NULL);
                         *status = 200;
                         deleteString(response);
-                        response = newString("{\"status\":\"everything worked\"");
+                        response = newString("{\"status\":\"everything worked\"}");
                     }
                     else{// the user has already voted
                         printf("already voted\n");
                         *status = 403;
                         deleteString(response);
-                        response = newString("{\"error\":\"you have already voted on this comment\"");
+                        response = newString("{\"error\":\"you have already voted on this comment\"}");
                     }
                     deleteString(user);
                     deleteStringList(voters);
@@ -447,18 +446,18 @@ String voteComment(String json, int *status){
                 if(votes.length == 0){//someone must have voted, before you can unvote
                     *status = 422;
                     deleteString(response);
-                    response = newString("{\"error\":\"nobody has voted --> you can't unvote\"");
+                    response = newString("{\"error\":\"nobody has voted --> you can't unvote\"}");
                 }
                 else{///TODO: implement unvoting
                     *status = 501;
                     deleteString(response);
-                    response = newString("{\"error\":\"not implemented\"");
+                    response = newString("{\"error\":\"not implemented\"}");
                 }
             }
             else{   //you can't vote nothing/more than once/unvote more then once
                 *status = 422;
                 deleteString(response);
-                response = newString("{\"error\":\"you can only vote +1 or -1\"");
+                response = newString("{\"error\":\"you can only vote +1 or -1\"}");
             }
             deleteString(votes);
             deleteString(commentId);
@@ -466,7 +465,7 @@ String voteComment(String json, int *status){
         else{   //the comment is not in the database
             *status = 404;
             deleteString(response);
-            response = newString("{\"error\":\"Comment not found\"");
+            response = newString("{\"error\":\"Comment not found\"}");
         }
         deleteString(querry);
         clearResult(&result);
@@ -475,7 +474,7 @@ String voteComment(String json, int *status){
         printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
         *status = 401;
         deleteString(response);
-        response = newString("{\"error\":\"User not valid\"");
+        response = newString("{\"error\":\"User not valid\"}");
     }
 
     printf("voting ...\n%s\n", json.data);

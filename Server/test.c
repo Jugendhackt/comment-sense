@@ -27,7 +27,7 @@ int checkGetFile(char *serverAddr, unsigned short port){
     String response = tcpRequest(request, serverAddr, port);
     if(compareString(response.data, mainFile))
         return 1;
-    printf("\n\n%s\n\n", expandEscapes(response.data));
+    printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
 }
 
@@ -36,16 +36,16 @@ int checkGetComments(char *serverAddr, unsigned short port){
     String response = tcpRequest(request, serverAddr, port);
     if(compareString(response.data, testComment))
         return 1;
-    printf("\n\n%s\n\n", expandEscapes(response.data));
+    printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
 }
 
 int checkUsersCreate(char *serverAddr, unsigned short port){
-    String request = combineString(1, "POST /users/create/ HTTP/1.1\nContent-Length:38\n\n{\"userName\":\"test\",\"password\":\"test\"}  ");
+    String request = combineString(1, "POST /users/create/ HTTP/1.1\nContent-Length: 37\n\n{\"userName\":\"test\",\"password\":\"test\"}");
     String response = tcpRequest(request, serverAddr, port);
     if(compareString(response.data, usersCreate1))
         return 1;
-    printf("\n\n%s\n\n", expandEscapes(response.data));
+    printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
 }
 
@@ -54,7 +54,7 @@ int checkUsersExists(char *serverAddr, unsigned short port){
     String response = tcpRequest(request, serverAddr, port);
     if(compareString(response.data, usersExists1))
         return 1;
-    printf("\n\n%s\n\n", expandEscapes(response.data));
+    printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
 }
 
@@ -63,7 +63,7 @@ int checkUsersLogin(char *serverAddr, unsigned short port){
     String response = tcpRequest(request, serverAddr, port);
     if(compareString(response.data, usersLogin1))
         return 1;
-    printf("\n\n%s\n\n", expandEscapes(response.data));
+    printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
 }
 
