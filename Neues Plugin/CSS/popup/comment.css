@@ -15,9 +15,19 @@
 
 .commentContent {
 	margin: 5px;
+	margin-bottom: 25px;
 }
 
 .comment {
-	padding-bottom: 50px;
 	box-shadow: 1px 1px 5px gray;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	padding-bottom: 5px;
+	margin-bottom: 25px;
+}
+
+.like {
+	width: 100% !important;
+	margin-bottom: 25px;
 }
