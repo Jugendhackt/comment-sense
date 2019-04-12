@@ -18,8 +18,11 @@ char *testComment = "HTTP/1.1 200\nContent-Type:application/json\nContent-Length
                  "nt\",\n\t\t\t\"votes\":\t0,\n\t\t\t\"userID\":\t0,\n\t\t\t\"userName\":\t\"test\"\n\t\t}"
                  "]\n}\n";
 
-char *usersCreate1 = "x";
-char *usersExists1 = "x";
-char *usersLogin1 = "x";
+char *usersCreate1 = "HTTP/1.1 201\ncontent type:application/json\ncontent length:37\n\n{\"status\":\"user created succesfully\"}";
+char *usersCreate2 = "HTTP/1.1 409\ncontent type:application/json\ncontent length:34\n\n{\"status\":\"username already used\"}";
+char *usersExists1 = "HTTP/1.1 200\ncontent type:application/json\ncontent length:27\n\n{\"status\":\"userName valid\"}";
+char *usersExists2 = "HTTP/1.1 200\ncontent type:application/json\ncontent length:31\n\n{\"status\":\"userName not valid\"}";
+char *usersLogin1 = "HTTP/1.1 200\ncontent type:application/json\ncontent length:29\n\n{\"status\":\"login data valid\"}";
+char *usersLogin2 = "HTTP/1.1 401\ncontent type:application/json\ncontent length:33\n\n{\"status\":\"login data not valid\"}";
 
 #endif // RESPONSETARGETS_H_INCLUDED

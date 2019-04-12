@@ -43,32 +43,31 @@ int checkGetComments(char *serverAddr, unsigned short port){
 int checkUsersCreate(char *serverAddr, unsigned short port){
     String request = combineString(1, "POST /users/create/ HTTP/1.1\nContent-Length: 37\n\n{\"userName\":\"test\",\"password\":\"test\"}");
     String response = tcpRequest(request, serverAddr, port);
-    if(compareString(response.data, usersCreate1))
+    if(compareString(response.data, usersCreate1) || compareString(response.data, usersCreate2))
         return 1;
     printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
 }
 
 int checkUsersExists(char *serverAddr, unsigned short port){
-    String request = combineString(1, "POST /users/exists/ HTTP/1.1\n\n");
+    String request = combineString(1, "POST /users/exists/ HTTP/1.1\nContent-Length: 19\n\n{\"userName\":\"test\"}");
     String response = tcpRequest(request, serverAddr, port);
-    if(compareString(response.data, usersExists1))
+    if(compareString(response.data, usersExists1) || compareString(response.data, usersExists2))
         return 1;
     printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
 }
 
 int checkUsersLogin(char *serverAddr, unsigned short port){
-    String request = combineString(1, "POST /users/login/ HTTP/1.1\n\n");
+    String request = combineString(1, "POST /users/login/ HTTP/1.1\nContent-Length: 37\n\n{\"userName\":\"test\",\"password\":\"test\"}");
     String response = tcpRequest(request, serverAddr, port);
-    if(compareString(response.data, usersLogin1))
+    if(compareString(response.data, usersLogin1) || compareString(response.data, usersLogin2))
         return 1;
     printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
 }
 
 int main(int argc, char *argv[]){
-    printf("%i\n", strlen("{\"userName\":\"test\",\"password\":\"test\"}"));
     char *serverAddr = "localhost";
     unsigned short port = 80;
     for(int i = 0; i < argc; i++){
@@ -79,23 +78,41 @@ int main(int argc, char *argv[]){
         port = strtol(argv[2], NULL, 0);
     }
     printf("%s:%i\n", serverAddr, port);
+
+
     if(checkGetFile(serverAddr, port)){
         printf("Server sends file back properly\n");
     }
     else{
         printf("server can't send file back properly\n");
     }
+
     if(checkGetComments(serverAddr, port)){
         printf("Server sends comments back properly\n");
     }
     else{
         printf("server can't send comments back properly\n");
     }
+
     if(checkUsersCreate(serverAddr, port)){
         printf("Server creates user properly\n");
     }
     else{
         printf("server can't create users properly\n");
+    }
+
+    if(checkUsersExists(serverAddr, port)){
+        printf("Server checks user properly\n");
+    }
+    else{
+        printf("server can't check users properly\n");
+    }
+
+    if(checkUsersLogin(serverAddr, port)){
+        printf("Server logs in user properly\n");
+    }
+    else{
+        printf("server can't log in users properly\n");
     }
     return 0;
 }
