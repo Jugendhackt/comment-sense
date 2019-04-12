@@ -34,7 +34,7 @@ int checkGetFile(char *serverAddr, unsigned short port){
 int checkGetComments(char *serverAddr, unsigned short port){
     String request = combineString(1, "GET /comments/site=\'http://check/\' HTTP/1.1\n\n");
     String response = tcpRequest(request, serverAddr, port);
-    if(compareString(response.data, testComment))
+    if(compareString(response.data, testComment1) || compareString(response.data, testComment2) || compareString(response.data, testComment3))
         return 1;
     printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
@@ -67,6 +67,24 @@ int checkUsersLogin(char *serverAddr, unsigned short port){
     return 0;
 }
 
+int checkPostComment(char *serverAddr, unsigned short port){
+    String request = combineString(1, "POST /comments/ HTTP/1.1\nContent-Length: 94\n\n{\"userName\":\"test\",\"password\":\"test\",\"headline\":\"test\",\"comment\":\"test\",\"url\":\"http://check/\"}");
+    String response = tcpRequest(request, serverAddr, port);
+    if(compareString(response.data, postComment1))
+        return 1;
+    printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
+    return 0;
+}
+
+int checkVoteComment(char *serverAddr, unsigned short port){
+    String request = combineString(1, "PATCH /comments/vote HTTP/1.1\nContent-Length: 53\n\n{\"userName\":\"test\",\"password\":\"test\",\"id\":0,\"vote\":1}");
+    String response = tcpRequest(request, serverAddr, port);
+    if(compareString(response.data, voteComment1) || compareString(response.data, voteComment2))
+        return 1;
+    printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
+    return 0;
+}
+
 int main(int argc, char *argv[]){
     char *serverAddr = "localhost";
     unsigned short port = 80;
@@ -84,35 +102,49 @@ int main(int argc, char *argv[]){
         printf("Server sends file back properly\n");
     }
     else{
-        printf("server can't send file back properly\n");
+        printf("ERROR: server can't send file back properly\n");
     }
 
     if(checkGetComments(serverAddr, port)){
         printf("Server sends comments back properly\n");
     }
     else{
-        printf("server can't send comments back properly\n");
+        printf("ERROR: server can't send comments back properly\n");
     }
 
     if(checkUsersCreate(serverAddr, port)){
         printf("Server creates user properly\n");
     }
     else{
-        printf("server can't create users properly\n");
+        printf("ERROR: server can't create users properly\n");
     }
 
     if(checkUsersExists(serverAddr, port)){
         printf("Server checks user properly\n");
     }
     else{
-        printf("server can't check users properly\n");
+        printf("ERROR: server can't check users properly\n");
     }
 
     if(checkUsersLogin(serverAddr, port)){
         printf("Server logs in user properly\n");
     }
     else{
-        printf("server can't log in users properly\n");
+        printf("ERROR: server can't log in users properly\n");
+    }
+
+    if(checkPostComment(serverAddr, port)){
+        printf("Server posts comments properly\n");
+    }
+    else{
+        printf("ERROR: server can't post comments properly\n");
+    }
+
+    if(checkVoteComment(serverAddr, port)){
+        printf("Server votes comments properly\n");
+    }
+    else{
+        printf("ERROR: server can't vote comments properly\n");
     }
     return 0;
 }

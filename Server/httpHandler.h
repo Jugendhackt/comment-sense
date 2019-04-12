@@ -289,7 +289,7 @@ String handlePostRequest(int index, StringList request, String payload){
     String type;
 
     /// handling the request
-    if(containsString(request[1].data, "/comments/")){    //client wants to vote
+    if(containsString(request[1].data, "/comments/")){    //client wants to post a comment
         type = newString("application/json");
         content = postComment(payload, &status);
     }
@@ -338,7 +338,7 @@ String handlePatchRequest(int index, StringList request, String payload){
     String type;
 
     /// handling the request
-    if(containsString(request[1].data, "/comments/vote")){    //client wants comments
+    if(containsString(request[1].data, "/comments/vote")){    //client wants to vote
         type = newString("application/json");
         content = voteComment(payload, &status);
     }
