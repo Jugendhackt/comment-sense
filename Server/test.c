@@ -70,7 +70,7 @@ int checkUsersLogin(char *serverAddr, unsigned short port){
 int checkPostComment(char *serverAddr, unsigned short port){
     String request = combineString(1, "POST /comments/ HTTP/1.1\nContent-Length: 94\n\n{\"userName\":\"test\",\"password\":\"test\",\"headline\":\"test\",\"comment\":\"test\",\"url\":\"http://check/\"}");
     String response = tcpRequest(request, serverAddr, port);
-    if(compareString(response.data, postComment1))
+    if(compareString(response.data, postComment1) || compareString(response.data, postComment2))
         return 1;
     printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
@@ -79,7 +79,7 @@ int checkPostComment(char *serverAddr, unsigned short port){
 int checkVoteComment(char *serverAddr, unsigned short port){
     String request = combineString(1, "PATCH /comments/vote HTTP/1.1\nContent-Length: 53\n\n{\"userName\":\"test\",\"password\":\"test\",\"id\":0,\"vote\":1}");
     String response = tcpRequest(request, serverAddr, port);
-    if(compareString(response.data, voteComment1) || compareString(response.data, voteComment2))
+    if(compareString(response.data, voteComment1) || compareString(response.data, voteComment2)|| compareString(response.data, voteComment3))
         return 1;
     printf("\n\n\"%s\"\n\n", expandEscapes(response.data));
     return 0;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
         serverAddr = argv[1];
         port = strtol(argv[2], NULL, 0);
     }
-    printf("%s:%i\n", serverAddr, port);
+    printf("testing server at %s:%i  ...\n", serverAddr, port);
 
 
     if(checkGetFile(serverAddr, port)){

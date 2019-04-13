@@ -35,7 +35,9 @@ char *usersExists2 = "HTTP/1.1 200\ncontent type:application/json\ncontent lengt
 char *usersLogin1 = "HTTP/1.1 200\ncontent type:application/json\ncontent length:29\n\n{\"status\":\"login data valid\"}";
 char *usersLogin2 = "HTTP/1.1 401\ncontent type:application/json\ncontent length:33\n\n{\"status\":\"login data not valid\"}";
 char *postComment1 = "HTTP/1.1 201\ncontent type:application/json\ncontent length:48\n\n{\"status\":\"posting the comment probably worked\"}";
+char *postComment2 = "HTTP/1.1 201\ncontent type:application/json\ncontent length:26\n\n{\"error\":\"User not valid\"}";
 char *voteComment1 = "HTTP/1.1 200\ncontent type:application/json\ncontent length:30\n\n{\"status\":\"everything worked\"}\n";
 char *voteComment2 = "HTTP/1.1 403\ncontent type:application/json\ncontent length:50\n\n{\"error\":\"you have already voted on this comment\"}\n";
+char *voteComment2 = "HTTP/1.1 403\ncontent type:application/json\ncontent length:26\n\n{\"error\":\"User not valid\"}\n";
 
 #endif // RESPONSETARGETS_H_INCLUDED
