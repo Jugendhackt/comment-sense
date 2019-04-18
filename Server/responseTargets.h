@@ -38,6 +38,6 @@ char *postComment1 = "HTTP/1.1 201\ncontent type:application/json\ncontent lengt
 char *postComment2 = "HTTP/1.1 201\ncontent type:application/json\ncontent length:26\n\n{\"error\":\"User not valid\"}";
 char *voteComment1 = "HTTP/1.1 200\ncontent type:application/json\ncontent length:30\n\n{\"status\":\"everything worked\"}\n";
 char *voteComment2 = "HTTP/1.1 403\ncontent type:application/json\ncontent length:50\n\n{\"error\":\"you have already voted on this comment\"}\n";
-char *voteComment2 = "HTTP/1.1 403\ncontent type:application/json\ncontent length:26\n\n{\"error\":\"User not valid\"}\n";
+char *voteComment3 = "HTTP/1.1 403\ncontent type:application/json\ncontent length:26\n\n{\"error\":\"User not valid\"}\n";
 
 #endif // RESPONSETARGETS_H_INCLUDED
