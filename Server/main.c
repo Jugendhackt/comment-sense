@@ -21,7 +21,6 @@ void* checkSockets(void *data){
 
 int main()
 {
-    signal(SIGPIPE, SIG_IGN);
     initDatabase();
     for(int i = 0; i < MAX_CONNECTIONS; i++){
         connections[i].state = 0;
