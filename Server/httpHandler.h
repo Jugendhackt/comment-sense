@@ -223,7 +223,6 @@ String handleGetRequest(int index, StringList request){
         }
         else{
             status = 404;
-            deleteString(content);
             content = newString("Error: File not found");
             type = newString("text/plain");
         }
