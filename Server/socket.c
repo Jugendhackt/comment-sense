@@ -182,14 +182,9 @@ void connectSocket(socket_t *sock, char *serv_addr, unsigned short port) {
 }
 
 void TCPSend(socket_t *sock, char *data, size_t size) {
-    int error = 0;
-    socklen_t errorlen = sizeof (error);
-    if(getsockopt(*sock, SOL_SOCKET, SO_ERROR, &error, &errorlen) != 0){
-        fprintf(stderr, "error: socket not connected: %s\n", strerror(errno));
-        return;
-    }
-    if(send(*sock, data, size, 0) == -1 )
-        fprintf(stderr, "error: tcp send(): %s\n", strerror(errno));
+    if(isSocketConnected(sock))
+        if(send(*sock, data, size, 0) == -1 )  
+            fprintf(stderr, "error: tcp send(): %s\n", strerror(errno));
 }
 
 int isSocketConnected(socket_t *sock){
