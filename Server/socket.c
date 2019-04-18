@@ -157,8 +157,6 @@ void acceptSocket(socket_t *socket, socket_t *new_socket ){
     tv.tv_sec = 1;
     tv.tv_usec = 0;
     setsockopt(*new_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
-    int set = 1;
-    setsockopt(*new_socket, SOL_SOCKET, SO_NOSIGPIPE, (void*)&set, sizeof(int));
 }
 
 void connectSocket(socket_t *sock, char *serv_addr, unsigned short port) {
@@ -185,7 +183,7 @@ void connectSocket(socket_t *sock, char *serv_addr, unsigned short port) {
 
 void TCPSend(socket_t *sock, char *data, size_t size) {
     if(isSocketConnected(sock))
-        if(send(*sock, data, size, 0) == -1 )  
+        if(send(*sock, data, size, MSG_NOSIGNAL) == -1 )  
             fprintf(stderr, "error: tcp send(): %s\n", strerror(errno));
 }
 
