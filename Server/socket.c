@@ -157,6 +157,8 @@ void acceptSocket(socket_t *socket, socket_t *new_socket ){
     tv.tv_sec = 1;
     tv.tv_usec = 0;
     setsockopt(*new_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
+    int set = 1;
+    setsockopt(*new_socket, SOL_SOCKET, SO_NOSIGPIPE, (void*)&set, sizeof(int));
 }
 
 void connectSocket(socket_t *sock, char *serv_addr, unsigned short port) {
