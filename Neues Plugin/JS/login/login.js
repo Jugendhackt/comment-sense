@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("autoLogin").addEventListener("click", autoLogin);
 
 
-	const ipAdress = "192.168.2.113";
+	const ipAdress = "192.168.2.110";
 
 
 	function loginUser() {

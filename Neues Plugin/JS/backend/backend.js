@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("send").addEventListener("click", writeComment);
 
 
-	const ipAdress = "192.168.2.113";
+	const ipAdress = "192.168.2.110";
 	//const userName = "Test1";
 	//const password = "123";
 

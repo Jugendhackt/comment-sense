@@ -9,7 +9,11 @@
 		"activeTab"
 	],
 	"icons": {
-		"32": "/assets/icons/icon.png"
+		"32": "/assets/icons/icon32.png",
+		"64": "/assets/icons/icon64.png",
+		"128": "/assets/icons/icon128.png",
+		"256": "/assets/icons/icon256.png",
+		"512": "/assets/icons/icon512.png"
 	},
 	"browser_action": {
 		"default_popup": "HTML/popup/popup.html",
