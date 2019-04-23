@@ -1,0 +1,38 @@
+body {
+	background-color: #B3B3B3;
+}
+
+.title, .footer {
+	background-color: black;
+	color: white;
+}
+
+.button {
+	background-color: #4D4D4D;
+	border: none;
+	color: white;
+}
+
+.button:hover {
+	border: 2px solid white;
+	background-color: #333333;
+	color: white;
+}
+
+.input {
+	border: none;
+	border-bottom: 2px solid gray;
+}
+
+::selection {
+	color: black;
+	background-color: white;
+}
+
+.comment {
+	background-color: #7F7F7F;
+}
+
+.comments {
+	background-color: #999999; 
+}

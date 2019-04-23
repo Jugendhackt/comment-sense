@@ -1,0 +1,29 @@
+.body {
+	background-color: white;
+}
+
+.title, .footer {
+	background-color: white;
+}
+
+.button {
+	background-color: #31AF91;
+	border: none;
+	color: white;
+}
+
+.button:hover {
+	border: 2px solid #31AF91;
+	background-color: white;
+	color: black;
+}
+
+.input {
+	border: none;
+	border-bottom: 2px solid gray;
+}
+
+::selection {
+	color: white;
+	background-color: #31AF91;
+}
