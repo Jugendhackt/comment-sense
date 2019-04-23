@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("login").addEventListener("click", loginUser);
 	document.getElementById("autoLogin").addEventListener("click", autoLogin);
-
+	document.getElementById("options").addEventListener("click", function(){
+		window.location.href="../../HTML/options/settings.html";
+	});
 
 	const ipAdress = "192.168.2.110";
 
