@@ -74,4 +74,18 @@ textarea {
 	text-align: center;
 }
 
+.a:link, .a:visited, .a:active, .a:hover, .a{
+	font-size: 14px;
+	text-decoration: none;
+	color: black;
+	border: 3px solid white;
+	transition: 0.3s;
+	padding: 5px;
+}
+
+.a:hover {
+	border: 3px solid black;
+	border-radius: 8px;
+}
+
 
