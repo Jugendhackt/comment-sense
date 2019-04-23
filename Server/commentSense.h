@@ -17,6 +17,7 @@ typedef struct dbResult{
     String **data;
 } dbResult;
 
+String getTopComments(String request, int *status);
 String getComments(String request, int *status);
 String postComment(String json, int *status);
 String createUser(String json, int *status);
@@ -24,6 +25,8 @@ String voteComment(String json, int *status);
 String checkUser(String json, int *status);
 String existsUser(String json, int *status);
 String manageUser(String json, int *status);
+
+String commentsToJson(dbResult comments);
 
 String getDate();
 String getUserName(unsigned int id);
@@ -87,6 +90,47 @@ void deleteResult(dbResult result){
     free(data);
 }
 
+String commentsToJson(dbResult result){
+    String json;
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON *comments = cJSON_AddArrayToObject(root, "Comments");
+
+    if(result.rows > 0 && result.columns == 6){
+        for(int i = 0; i < result.rows; i++){
+            int id = intFromString(result.data[i][0]);
+            int userId = intFromString(result.data[i][1]);
+            StringList votes = splitString(result.data[i][2], ',');
+            String headline = result.data[i][4];
+            String content = result.data[i][5];
+            String userName = getUserName(userId);
+
+            String contentDecrypted = fromHex(content);
+            String headlineDecrypted = fromHex(headline);
+
+            cJSON *comment = cJSON_CreateObject();
+            cJSON_AddNumberToObject(comment, "id", id);
+            cJSON_AddStringToObject(comment, "headline", headlineDecrypted.data);
+            cJSON_AddStringToObject(comment, "content", contentDecrypted.data);
+            cJSON_AddNumberToObject(comment, "votes", stringListLen(votes));
+            cJSON_AddNumberToObject(comment, "userID", userId);
+            cJSON_AddStringToObject(comment, "userName", userName.data);
+
+            cJSON_AddItemToArray(comments, comment);
+
+            deleteString(contentDecrypted);
+            deleteString(headlineDecrypted);
+            deleteString(userName);
+            deleteStringList(votes);
+        }
+    }
+
+    json.data = cJSON_Print(root);
+    json.length = strlen(json.data);
+    cJSON_Delete(root);
+    return json;
+}
+
 String getComments(String request, int *status){
     String content, site;
     char *data = request.data+10;
@@ -100,57 +144,25 @@ String getComments(String request, int *status){
             }
         }
     }
-    else
-        site = newString(data);
+    else{
+        *status = 400;
+        return newString("{\"error\":\"no site specified\"}");
+    }
+    ///
     printf("request: %s, site: %s\n", request.data, site.data);
-    String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\'");
+    String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\';");
 
     dbResult result = (dbResult){0,0,malloc(0)};
     sqlite3_exec(db, getIDs.data, callback, &result, NULL);
 
     if(result.rows > 0 && result.columns == 3){
-        cJSON *root = cJSON_CreateObject();
-        cJSON *comments = cJSON_AddArrayToObject(root, "Comments");
-
         String commentIDs = result.data[0][2];
-        String querry = combineString(3, "SELECT * FROM comments WHERE id IN (", commentIDs.data, ")");
+        String querry = combineString(3, "SELECT * FROM comments WHERE id IN (", commentIDs.data, ");");
 
         clearResult(&result);
         sqlite3_exec(db, querry.data, callback, &result, NULL);
 
-        if(result.rows > 0 && result.columns == 6){
-            for(int i = 0; i < result.rows; i++){
-                int id = intFromString(result.data[i][0]);
-                int userId = intFromString(result.data[i][1]);
-                StringList votes = splitString(result.data[i][2], ',');
-                String headline = result.data[i][4];
-                String content = result.data[i][5];
-                String userName = getUserName(userId);
-
-                String contentDecrypted = fromHex(content);
-                String headlineDecrypted = fromHex(headline);
-
-                cJSON *comment = cJSON_CreateObject();
-                cJSON_AddNumberToObject(comment, "id", id);
-                cJSON_AddStringToObject(comment, "headline", headlineDecrypted.data);
-                cJSON_AddStringToObject(comment, "content", contentDecrypted.data);
-                cJSON_AddNumberToObject(comment, "votes", stringListLen(votes));
-                cJSON_AddNumberToObject(comment, "userID", userId);
-                cJSON_AddStringToObject(comment, "userName", userName.data);
-
-                cJSON_AddItemToArray(comments, comment);
-
-                deleteString(contentDecrypted);
-                deleteString(headlineDecrypted);
-                deleteString(userName);
-                deleteStringList(votes);
-            }
-        }
-
-        content.data = cJSON_Print(root);
-        content.length = strlen(content.data);
-        deleteString(querry);
-        cJSON_Delete(root);
+        content = commentsToJson(result);
     }
     else{
         content = newString(noComments);
@@ -160,6 +172,57 @@ String getComments(String request, int *status){
     deleteString(site);
     deleteString(getIDs);
     clearResult(&result);
+    return content;
+}
+
+String getTopComments(String request, int *status){
+    String content, site;
+    int onSite = 0;
+    char *data = request.data+14;
+    if(request.length > 14 && containsString(data, "site=\'")){
+        site = newString(data+6);
+        for(int i = 0; site.data[i] != 0; i++){
+            if(site.data[i] == '\''){
+                site.data[i] = 0;
+                site.length = i;
+                break;
+            }
+        }
+        onSite = 1;
+    }
+    else{
+        onSite = 0;
+        site = newString("");
+    }
+    dbResult result = (dbResult){0,0,malloc(0)};
+    if(onSite == 1){
+        printf("request: %s, site: %s\n", request.data, site.data);
+        String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\';");
+
+        sqlite3_exec(db, getIDs.data, callback, &result, NULL);
+
+        if(result.rows > 0 && result.columns == 3){
+            String commentIDs = result.data[0][2];
+            String querry = combineString(3, "SELECT * FROM comments WHERE id IN (", commentIDs.data, ") order by length(votes)-length(replace(votes, \",\", \"\")) desc limit 5;");
+            clearResult(&result);
+            sqlite3_exec(db, querry.data, callback, &result, NULL);
+            content = commentsToJson(result);
+            deleteString(querry);
+        }
+        else{
+            content = newString(noComments);
+            *status = 404;
+        }
+        deleteString(getIDs);
+    }
+    else{
+        String querry = combineString(1, "SELECT * FROM comments order by length(votes)-length(replace(votes, \",\", \"\")) desc limit 5;");
+        sqlite3_exec(db, querry.data, callback, &result, NULL);
+        content = commentsToJson(result);
+        deleteString(querry);
+    }
+    clearResult(&result);
+    deleteString(site);
     return content;
 }
 

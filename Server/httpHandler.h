@@ -191,7 +191,11 @@ String handleGetRequest(int index, StringList request){
     String type;
 
     /// handling the request
-    if(containsString(request[1].data, "/comments/")){    //client wants comments
+    if(containsString(request[1].data, "/comments/top/")){
+        type = newString("application/json");
+        content = getTopComments(request[1], &status);
+    }
+    else if(containsString(request[1].data, "/comments/")){    //client wants comments
         type = newString("application/json");
         content = getComments(request[1], &status);
     }
