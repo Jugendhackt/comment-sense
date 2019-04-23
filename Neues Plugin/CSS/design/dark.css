@@ -1,22 +1,22 @@
 body {
-	background-color: #B3B3B3;
+	background-color: #252525;
 }
 
 .title, .footer {
-	background-color: black;
+	background-color: #4D4D4D;
 	color: white;
 }
 
 .button {
-	background-color: #4D4D4D;
+	background-color: #333333;
 	border: none;
 	color: white;
 }
 
 .button:hover {
-	border: 2px solid white;
-	background-color: #333333;
-	color: white;
+	border: 2px solid black;
+	background-color: #4285f4;
+	color: black;
 }
 
 .input {
@@ -34,5 +34,6 @@ body {
 }
 
 .comments {
-	background-color: #999999; 
+	background-color: #999999;
+
 }
