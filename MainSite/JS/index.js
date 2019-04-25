@@ -17,4 +17,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	function setTopWebsites() {
 		var data = JSON.parse(getXhrData("/sites/top/", true)); 
 	}
+	
+	setTopComments();
 });
