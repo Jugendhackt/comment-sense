@@ -40,8 +40,8 @@ html {
   }
 
   .button, .input {
-      width: 50%;
-      height: 7%;
+      width: 50vw;
+      height: 7vh;
   }
 
   #error {
@@ -57,17 +57,17 @@ html {
 
   .button, .input {
     transition: 0.2s;
-    width: 30%;
-    height: 4%;
+    width: 30vw;
+    height: 4vh;
   }
 
   .button:hover {
     background-color: rgba(0, 0, 0, 0.5);
-    width: 40%;
+    width: 4vw;
   }
 
   .input:focus, .input:hover {
-    width: 40%;
+    width: 40vw;
   }
 
   #error {
