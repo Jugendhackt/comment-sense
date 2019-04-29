@@ -27,3 +27,13 @@
 	color: white;
 	background-color: #31AF91;
 }
+
+.a:hover {
+	border: 3px solid black;
+	border-radius: 8px;
+}
+
+.a:link, .a:visited, .a:active, .a:hover, .a{
+	color: black;
+	border: 3px solid white;
+}

@@ -9,6 +9,8 @@
 		"activeTab"
 	],
 	"icons": {
+		"16": "/assets/icons/icon16.png",
+		"24": "/assets/icons/icon24.png",
 		"32": "/assets/icons/icon32.png",
 		"64": "/assets/icons/icon64.png",
 		"128": "/assets/icons/icon128.png",
@@ -23,6 +25,9 @@
 		"page": "HTML/options/options.html",
 		"open_in_tab": false
 	},
+	"homepage_url": "https://github.com/Jugendhackt/comment-sense",
+	"minimum_chrome_version": "29",
+	"offline_enabled": false,
 	"content_scripts": [
 		{
 			"matches": [
