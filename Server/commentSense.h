@@ -58,7 +58,10 @@ int callback(void *data, int argc, char **argv, char **azColName){
     result->data = realloc(result->data, result->rows*sizeof(String*));
     String *line = malloc(argc*sizeof(String));
     for(int i = 0; i < argc; i++){
-        line[i] = newString(argv[i]);
+        if(argv[i] == NULL)
+            line[i] = newString("");
+        else
+            line[i] = newString(argv[i]);
     }
     result->data[len] = line;
     return 0;
@@ -96,13 +99,14 @@ String commentsToJson(dbResult result){
     cJSON *root = cJSON_CreateObject();
     cJSON *comments = cJSON_AddArrayToObject(root, "Comments");
 
-    if(result.rows > 0 && result.columns == 6){
+    if(result.rows > 0 && result.columns == 7){
         for(int i = 0; i < result.rows; i++){
             int id = intFromString(result.data[i][0]);
             int userId = intFromString(result.data[i][1]);
             StringList votes = splitString(result.data[i][2], ',');
             String headline = result.data[i][4];
             String content = result.data[i][5];
+            String url = result.data[i][6];
             String userName = getUserName(userId);
 
             String contentDecrypted = fromHex(content);
@@ -115,6 +119,7 @@ String commentsToJson(dbResult result){
             cJSON_AddNumberToObject(comment, "votes", stringListLen(votes));
             cJSON_AddNumberToObject(comment, "userID", userId);
             cJSON_AddStringToObject(comment, "userName", userName.data);
+            cJSON_AddStringToObject(comment, "url", url.data);
 
             cJSON_AddItemToArray(comments, comment);
 
@@ -124,6 +129,8 @@ String commentsToJson(dbResult result){
             deleteStringList(votes);
         }
     }
+    else
+        fprintf(stderr, "error when creating json from comments: not enough data\n");
 
     json.data = cJSON_Print(root);
     json.length = strlen(json.data);
@@ -274,8 +281,8 @@ String postComment(String json, int *status){
 
         String userId = stringFromInt(getUserId(userName));
         String date = getDate();
-        String querry = combineString(9, "INSERT INTO comments (userId, votes, date, headline, content) VALUES (\"",
-                                      userId.data, "\",\"\",\"", date.data, "\",\"", headline.data, "\",\"", comment.data, "\")");
+        String querry = combineString(11, "INSERT INTO comments (userId, votes, date, headline, content, url) VALUES (\"",
+                                      userId.data, "\",\"\",\"", date.data, "\",\"", headline.data, "\",\"", comment.data, "\",\"", url.data, "\")");
         printf("%s\n", querry.data);
 
         sqlite3_exec(db, querry.data, callback, NULL, NULL);

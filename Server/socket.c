@@ -154,7 +154,7 @@ void acceptSocket(socket_t *socket, socket_t *new_socket ){
         fprintf(stderr, "error: couldn't accept socket: %s\n", strerror(errno));
 
     struct timeval tv;
-    tv.tv_sec = 1;
+    tv.tv_sec = 10;
     tv.tv_usec = 0;
     setsockopt(*new_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
 }
@@ -183,7 +183,7 @@ void connectSocket(socket_t *sock, char *serv_addr, unsigned short port) {
 
 void TCPSend(socket_t *sock, char *data, size_t size) {
     if(isSocketConnected(sock))
-        if(send(*sock, data, size, MSG_NOSIGNAL) == -1 )  
+        if(send(*sock, data, size, MSG_NOSIGNAL) == -1 )
             fprintf(stderr, "error: tcp send(): %s\n", strerror(errno));
 }
 
