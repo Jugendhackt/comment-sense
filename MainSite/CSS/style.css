@@ -11,15 +11,13 @@ html {
   font-family: 'Roboto', sans-serif;
 }
 
-.button {
-  border: none;
-  color: white;
-  background-color: rgba(49, 175, 145, 1);
-}
-
 .input {
   border: none;
   border-bottom: 2px solid gray;
+}
+
+.select {
+  border: none;
 }
 
 .a {
@@ -33,13 +31,38 @@ html {
     border-bottom: 4px solid red;
 }
 
+#setting {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+
+#icons {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.modal {
+  display: none;
+  z-index: 1;
+  flex-direction: column;
+  justify-content: center;
+  width: 100vw;
+  align-items: center;
+}
+
+.modal > * {
+  margin: 10px;
+}
+
 /*Handy/Tablet*/
 @media only screen and (max-width: 1060px) {
   * {
     font-size: 40px;
   }
 
-  .button, .input {
+  .button, .input, .select {
       width: 50vw;
       height: 7vh;
   }
@@ -55,19 +78,10 @@ html {
     font-size: 18px;
   }
 
-  .button, .input {
+  .button, .input, .select {
     transition: 0.2s;
     width: 30vw;
     height: 4vh;
-  }
-
-  .button:hover {
-    background-color: rgba(0, 0, 0, 0.5);
-    width: 4vw;
-  }
-
-  .input:focus, .input:hover {
-    width: 40vw;
   }
 
   #error {
