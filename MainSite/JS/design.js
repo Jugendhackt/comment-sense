@@ -4,14 +4,14 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log(design);
     if (typeof design == "undefined" || design == "light" || design == null) {
       loadjscssfile("CSS/design/light.css", "css");
-      loadjscssfile("assets/icons/settingLight512.png", "png");
+      loadjscssfile("assets/icons/settingLight512.png", "png", "setting");
     } else if (design == "dark") {
       loadjscssfile("CSS/design/dark.css", "css");
-      loadjscssfile("assets/icons/settingDark512.png", "png");
+      loadjscssfile("assets/icons/settingDark512.png", "png", "setting");
     }
   }
 
-  function loadjscssfile(filename, filetype) {
+  function loadjscssfile(filename, filetype, id) {
     if (filetype == "js") {
       var fileref = document.createElement("script");
       fileref.setAttribute("type", "text/javascript");
@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", function() {
       fileref.setAttribute("type", "text/css");
       fileref.setAttribute("href", filename);
     } else if (filetype == "png") {
-      document.getElementById("setting").src = filename;
+      if (typeof id != "undefined" || id != null)
+        document.getElementById(id).src = filename;
     }
     if (typeof fileref != "undefined")
       document.getElementsByTagName("head")[0].appendChild(fileref);
