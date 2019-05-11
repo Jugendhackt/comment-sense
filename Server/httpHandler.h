@@ -199,6 +199,10 @@ String handleGetRequest(int index, StringList request){
         type = newString("application/json");
         content = getComments(request[1], &status);
     }
+    else if(containsString(request[1].data, "/sites/top/")){
+        type = newString("application/json");
+        content = getTopSites(request[1], &status);
+    }
     else{   //client wants file
         String file = newString("./data");
         appendStringStr(&file, request[1]);

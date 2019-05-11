@@ -18,6 +18,7 @@ typedef struct dbResult{
 } dbResult;
 
 String getTopComments(String request, int *status);
+String getTopSites(String json, int *status);
 String getComments(String request, int *status);
 String postComment(String json, int *status);
 String createUser(String json, int *status);
@@ -50,12 +51,15 @@ const char *initdbSQL = "CREATE TABLE \"comments\" (\'id\' INTEGER NOT NULL PRIM
 sqlite3 *db;
 
 int callback(void *data, int argc, char **argv, char **azColName){
-    if(data == NULL)
+    if(!data)
         return 0;
     dbResult *result = data;
     int len = result->rows++;
     result->columns = argc;
-    result->data = realloc(result->data, result->rows*sizeof(String*));
+    if(!result->data)
+        result->data = malloc(result->rows*sizeof(String*));
+    else
+        result->data = realloc(result->data, result->rows*sizeof(String*));
     String *line = malloc(argc*sizeof(String));
     for(int i = 0; i < argc; i++){
         if(argv[i] == NULL)
@@ -76,10 +80,9 @@ void clearResult(dbResult *result){
         free(data[i]);
     }
     free(data);
-
     result->columns = 0;
     result->rows = 0;
-    result->data = malloc(0);
+    result->data = NULL;
 }
 
 void deleteResult(dbResult result){
@@ -99,14 +102,14 @@ String commentsToJson(dbResult result){
     cJSON *root = cJSON_CreateObject();
     cJSON *comments = cJSON_AddArrayToObject(root, "Comments");
 
-    if(result.rows > 0 && result.columns == 7){
+    if(result.rows > 0 && result.columns == 6){
         for(int i = 0; i < result.rows; i++){
             int id = intFromString(result.data[i][0]);
             int userId = intFromString(result.data[i][1]);
-            StringList votes = splitString(result.data[i][2], ',');
-            String headline = result.data[i][4];
-            String content = result.data[i][5];
-            String url = result.data[i][6];
+            int count = intFromString(result.data[i][2]);
+            String headline = result.data[i][3];
+            String content = result.data[i][4];
+            String url = result.data[i][5];
             String userName = getUserName(userId);
 
             String contentDecrypted = fromHex(content);
@@ -116,7 +119,7 @@ String commentsToJson(dbResult result){
             cJSON_AddNumberToObject(comment, "id", id);
             cJSON_AddStringToObject(comment, "headline", headlineDecrypted.data);
             cJSON_AddStringToObject(comment, "content", contentDecrypted.data);
-            cJSON_AddNumberToObject(comment, "votes", stringListLen(votes));
+            cJSON_AddNumberToObject(comment, "votes", count);
             cJSON_AddNumberToObject(comment, "userID", userId);
             cJSON_AddStringToObject(comment, "userName", userName.data);
             cJSON_AddStringToObject(comment, "url", url.data);
@@ -126,11 +129,39 @@ String commentsToJson(dbResult result){
             deleteString(contentDecrypted);
             deleteString(headlineDecrypted);
             deleteString(userName);
-            deleteStringList(votes);
         }
     }
     else
-        fprintf(stderr, "error when creating json from comments: not enough data\n");
+        fprintf(stderr, "error when creating json from comments: not enough data: %i columns\n", result.columns);
+
+    json.data = cJSON_Print(root);
+    json.length = strlen(json.data);
+    cJSON_Delete(root);
+    return json;
+}
+
+String sitesToJson(dbResult result){
+    String json;
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON *comments = cJSON_AddArrayToObject(root, "sites");
+
+    if(result.rows > 0 && result.columns == 3){
+        for(int i = 0; i < result.rows; i++){
+            int id = intFromString(result.data[i][0]);
+            String url = result.data[i][1];
+            int count = intFromString(result.data[i][2]);
+
+            cJSON *site = cJSON_CreateObject();
+            cJSON_AddNumberToObject(site, "id", id);
+            cJSON_AddStringToObject(site, "url", url.data);
+            cJSON_AddNumberToObject(site, "count", count);
+
+            cJSON_AddItemToArray(comments, site);
+        }
+    }
+    else
+        fprintf(stderr, "error when creating json from sites: not enough data: %i columns\n", result.columns);
 
     json.data = cJSON_Print(root);
     json.length = strlen(json.data);
@@ -159,7 +190,7 @@ String getComments(String request, int *status){
     printf("request: %s, site: %s\n", request.data, site.data);
     String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\';");
 
-    dbResult result = (dbResult){0,0,malloc(0)};
+    dbResult result = (dbResult){0,0,NULL};
     sqlite3_exec(db, getIDs.data, callback, &result, NULL);
 
     if(result.rows > 0 && result.columns == 3){
@@ -201,7 +232,7 @@ String getTopComments(String request, int *status){
         onSite = 0;
         site = newString("");
     }
-    dbResult result = (dbResult){0,0,malloc(0)};
+    dbResult result = (dbResult){0,0,NULL};
     if(onSite == 1){
         printf("request: %s, site: %s\n", request.data, site.data);
         String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\';");
@@ -210,7 +241,7 @@ String getTopComments(String request, int *status){
 
         if(result.rows > 0 && result.columns == 3){
             String commentIDs = result.data[0][2];
-            String querry = combineString(3, "SELECT * FROM comments WHERE id IN (", commentIDs.data, ") order by length(votes)-length(replace(votes, \",\", \"\")) desc limit 5;");
+            String querry = combineString(3, "SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments WHERE id IN (", commentIDs.data, ") order by count desc limit 5;");
             clearResult(&result);
             sqlite3_exec(db, querry.data, callback, &result, NULL);
             content = commentsToJson(result);
@@ -223,14 +254,26 @@ String getTopComments(String request, int *status){
         deleteString(getIDs);
     }
     else{
-        String querry = combineString(1, "SELECT * FROM comments order by length(votes)-length(replace(votes, \",\", \"\")) desc limit 5;");
+        String querry = combineString(1, "SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments order by count desc limit 5;");
         sqlite3_exec(db, querry.data, callback, &result, NULL);
         content = commentsToJson(result);
         deleteString(querry);
     }
     clearResult(&result);
+    free(result.data);
     deleteString(site);
     return content;
+}
+
+String getTopSites(String json, int *status){
+    String querry = newString("SELECT id,url,(length(comments)-length(replace(comments, \",\", \"\"))+1) as count FROM sites order by count desc limit 5;");
+    dbResult result = (dbResult){0,0,NULL};
+    sqlite3_exec(db, querry.data, callback, &result, NULL);
+    String sites = sitesToJson(result);
+    clearResult(&result);
+    deleteString(querry);
+    free(result.data);
+    return sites;
 }
 
 String postComment(String json, int *status){
@@ -336,7 +379,7 @@ String createUser(String json, int *status){
 
     String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data, "\'");
 
-    dbResult result = (dbResult){0,0,malloc(0)};
+    dbResult result = (dbResult){0,0,NULL};
     sqlite3_exec(db, querry.data, callback, &result, NULL);
 
     if(result.rows == 0){//create the account
@@ -404,7 +447,7 @@ String existsUser(String json, int *status){
     String userName = newString(userNameData == NULL ? "" : userNameData);
     String response;
 
-    dbResult result = (dbResult){0,0,malloc(0)};
+    dbResult result = (dbResult){0,0,NULL};
     String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data, "\'");
     sqlite3_exec(db, querry.data, callback, &result, NULL);
 
@@ -463,7 +506,7 @@ String voteComment(String json, int *status){
         String commentId = stringFromInt(id);
         String querry = combineString(2, "SELECT votes FROM comments WHERE id LIKE ", commentId.data);
 
-        dbResult result = (dbResult){0,0,malloc(0)};
+        dbResult result = (dbResult){0,0,NULL};
         sqlite3_exec(db, querry.data, callback, &result, NULL);
         if(result.rows == 1 && result.columns == 1){
             String votes = newString(result.data[0][0].data);
@@ -556,7 +599,7 @@ String getUserName(unsigned int userId){
     if(userId == -1)
         return newString("Unknown User");
     String userName;
-    dbResult result = (dbResult){0,0,malloc(0)};
+    dbResult result = (dbResult){0,0,NULL};
     String id = stringFromInt(userId);
     String querry = combineString(2, "SELECT name FROM users WHERE id LIKE ", id.data);
 
@@ -573,7 +616,7 @@ String getUserName(unsigned int userId){
 
 unsigned int getUserId(String userName){
     int id = -1;
-    dbResult result = (dbResult){0,0,malloc(0)};
+    dbResult result = (dbResult){0,0,NULL};
     String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data, "\'");
 
     sqlite3_exec(db, querry.data, callback, &result, NULL);
@@ -592,7 +635,7 @@ String getDate(){
 }
 
 int addCommentToSite(int commentId, String url){
-    dbResult result = (dbResult){0,0,malloc(0)};
+    dbResult result = (dbResult){0,0,NULL};
     String id = stringFromInt(commentId);
     String querry = combineString(3, "SELECT comments FROM sites WHERE url LIKE \'", url.data, "\'");
 
@@ -623,7 +666,7 @@ int addCommentToSite(int commentId, String url){
 
 int isUserValid(String userName, String password){
     String querry = combineString(3, "SELECT password FROM users WHERE name LIKE \'", userName.data, "\'");
-    dbResult result = (dbResult){0,0,malloc(0)};
+    dbResult result = (dbResult){0,0,NULL};
     sqlite3_exec(db, querry.data, callback, &result, NULL);
     int isValid = 0;
     if(result.rows == 1 && result.columns == 1){
