@@ -1,3 +1,11 @@
+if ! dpkg -s gcc &> /dev/null
+then sudo apt-get install gcc
+fi
+
+if ! dpkg -s build-essential &> /dev/null
+then sudo apt-get install build-essential
+fi
+
 gcc -c cJSON.c
 gcc -c socket.c
 gcc -c sqlite3.c
