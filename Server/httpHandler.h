@@ -185,7 +185,7 @@ void* handleClient(void *arg){
 
 String handleGetRequest(int index, StringList request){
     printf("get request\n");
-    String response = newString("HTTP/1.1 ");
+    String response;
     String content;
     int status = 200;
     String type;
@@ -240,14 +240,12 @@ String handleGetRequest(int index, StringList request){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
-    appendStringStr(&response, statusStr);
 
     if(content.length > 0){
-        appendStringStdStr(&response, "\nContent-Type:");
-        appendStringStr(&response, type);
-        appendStringStdStr(&response, "\nContent-Length:");
-        appendStringStr(&response, length);
-        appendStringStdStr(&response, "\n\n");
+        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+                                    "Access-Control-Allow-Origin:*\n",
+                                    "Content-Type:", type.data, "\n",
+                                    "Content-Length:", length.data, "\n\n");
         appendStringByteArray(&response, content);
     }
 
