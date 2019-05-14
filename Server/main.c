@@ -21,6 +21,9 @@ void* checkSockets(void *data){
 
 int main()
 {
+    #if _CORS_ == 1
+    printf("[WARNING] CORS is enabled\n");
+    #endif // _CORS_
     initDatabase();
     for(int i = 0; i < MAX_CONNECTIONS; i++){
         connections[i].state = 0;
