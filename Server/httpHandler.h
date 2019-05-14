@@ -243,9 +243,11 @@ String handleGetRequest(int index, StringList request){
 
     if(content.length > 0){
         response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+#if _CORS_ == 1
                                     "Access-Control-Allow-Origin:*\n",
+#endif
                                     "Content-Type:", type.data, "\n",
-                                    "Content-Length:", length.data, "\n\n");
+                                    "Content-Length:", length.data, "\n\n", "");
         appendStringByteArray(&response, content);
     }
 
