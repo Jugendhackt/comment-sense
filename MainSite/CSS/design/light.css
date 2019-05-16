@@ -17,6 +17,10 @@ body {
 	border-bottom: 2px solid gray;
 }
 
+.visitWebsite {
+	
+}
+
 @media only screen and (min-width: 1060px) {
   .button:hover {
     border: 2px solid #31AF91;
