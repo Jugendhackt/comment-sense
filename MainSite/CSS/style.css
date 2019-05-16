@@ -1,84 +1,84 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
 
 html {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 * {
-	padding: 0;
-	margin: 0;
-	font-family: 'Roboto', sans-serif;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
 }
 
 .input {
-	border: none;
-	border-bottom: 2px solid gray;
+  border: none;
+  border-bottom: 2px solid gray;
 }
 
 .select {
-	border: none;
+  border: none;
 }
 
 .a, .a:visited {
-	text-decoration: none;
-	color: black;
+  text-decoration: none;
+  color: black;
 }
 
 #setting {
-	position: absolute;
-	right: 20px;
-	top: 20px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
 }
 
 #icons {
-	position: absolute;
-	bottom: 10px;
-	left: 10px;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
 }
 
 .modal {
-	display: none;
-	z-index: 1;
-	flex-direction: column;
-	justify-content: center;
-	width: 100vw;
-	align-items: center;
+  display: none;
+  z-index: 1;
+  flex-direction: column;
+  justify-content: center;
+  width: 100vw;
+  align-items: center;
 }
 
 .modal>* {
-	margin: 10px;
+  margin: 10px;
 }
 
 /*Handy/Tablet*/
 @media only screen and (max-width: 1060px) {
-	* {
-		font-size: 40px;
-	}
+  * {
+    font-size: 40px;
+  }
 
-	.button, .input, .select {
-		width: 50vw;
-		height: 7vh;
-	}
+  .button, .input, .select {
+    width: 50vw;
+    height: 7vh;
+  }
 
-	#error {
-		font-size: 18px;
-	}
+  #error {
+    font-size: 18px;
+  }
 }
 
 /*Desktop*/
 @media only screen and (min-width: 1060px) {
-	* {
-		font-size: 18px;
-	}
+  * {
+    font-size: 18px;
+  }
 
-	.button, .input, .select {
-		transition: 0.2s;
-		width: 30vw;
-		height: 4vh;
-	}
+  .button, .input, .select {
+    transition: 0.2s;
+    width: 30vw;
+    height: 4vh;
+  }
 
-	#error {
-		font-size: 13px;
-	}
+  #error {
+    font-size: 13px;
+  }
 }

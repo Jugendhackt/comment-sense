@@ -1,52 +1,22 @@
 .flexbox {
-	display: flex;
-	justify-content: center;
-	margin-top: 5%;
-	margin-bottom: 5%;
-	width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  width: 100%;
 }
 
 .row {
-	display: flex;
-	flex-direction: row;
-	text-align: center;
-	width: 100%;
-	margin: auto;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  width: 100%;
+  margin: auto;
 }
 
 .column {
-	display: flex;
-	flex-direction: column;
-	flex-basis: 100%;
-	flex: 1;
-}
-
-#topWebsites {
-	margin-left: 25px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-content: center;
-	width: 40vw;
-	height: 70vh;
-}
-
-.topWebsite {
-	display: flex;
-	justify-content: center;
-	width: 40vw;
-	height: 11vh;
-	margin: 10px;
-	margin-top: 10px;
-	flex-direction: column;
-	box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.5);
-	border-radius: 12px;
-	text-align: center;
-}
-
-
-.btnDiv {
-	display: flex;
-	justify-content: center;
-	margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
 }
