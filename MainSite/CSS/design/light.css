@@ -2,7 +2,7 @@ body {
   background-color: white;
 }
 
-.button {
+.button, .visitComment, .visitWebsite {
   background-color: #31AF91;
   border: none;
   color: white;
@@ -17,12 +17,8 @@ body {
 	border-bottom: 2px solid gray;
 }
 
-.visitWebsite {
-	
-}
-
 @media only screen and (min-width: 1060px) {
-  .button:hover {
+  .button:hover, .visitWebsite:hover, .visitComment:hover {
     border: 2px solid #31AF91;
     background-color: white;
     color: black;

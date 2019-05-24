@@ -12,82 +12,46 @@ document.addEventListener("DOMContentLoaded", function() {
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", "http://" + ipAdress + "/comments/top/", true);
 		xhr.onload = function() {
-			console.log(this.responseText);
 			if (this.status === 200) {
 				var data = JSON.parse(this.responseText);
+				console.log(data);
 
-				for (var i = 0; i < 4; i++) {
-					document.getElementById("link" + i).href = data[i];
-					console.log(i);
+				for (var i = 0; i < data.Comments.length; i++) {
+					document.getElementById("commentTitle" + i).textContent = data.Comments[i].headline;
+					document.getElementById("commentContent" + i).textContent = data.Comments[i].content;
 				}
 			}
 		}
 		xhr.send();
 	}
 
+	setTopComments();
+
 	function setTopWebsites() {
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", "http://" + ipAdress + "/sites/top/", true);
 		xhr.onload = function() {
-			if (this.status === 200)
+			if (this.status === 200){
 				var data = JSON.parse(this.responseText);
-			console.log(data.sites[0]);
-
-			var div = document.createElement("div");
-			div.id = "topWebsites";
-			document.getElementById("topWebsitesContainer").appendChild(div);
-
-			var headerWebsites = document.createElement("label");
-			headerWebsites.textContent = "Top Websites";
-			headerWebsites.id = "headerWebsites";
-			headerWebsites.classList.add("headerWebsites");
-			div.appendChild(headerWebsites);
-
-			for (var i = 0; i < data.sites.length; i++){
-				var contentDiv = document.createElement("div");
-				contentDiv.id = "topWebsite" + i;
-				contentDiv.classList.add("topWebsite");
-				div.appendChild(contentDiv);
-
-				var titleDiv = document.createElement("div");
-				titleDiv.id = "titleDiv" + i;
-				titleDiv.classList.add("title");
-
-				if (data.sites[i].url.substring(0, 7) == "http://")
-					titleDiv.textContent = data.sites[i].url.substring(7, data.sites[i].url.length);
-				else 
-					titleDiv.textContent = data.sites[i].url.substring(8, data.sites[i].url.length);
-
-				contentDiv.appendChild(titleDiv);
-
-
-				var btnDiv = document.createElement("div");
-				btnDiv.id = "btnDiv" + i;
-				btnDiv.classList.add("btnDiv");
-				contentDiv.appendChild(btnDiv);
-
-				var btn = document.createElement("button");
-				btn.id = "btnVisitWebsite" + i;
-				btn.classList.add("button");
-				btn.classList.add("visitWebsite");
-				btn.textContent = "Zur Website wechseln";
-				console.log(data.sites[i].url);
-				btn.addEventListener("click", function(){
-					var id = this.id.substring(15, this.id.length);
-					visitWebsite(data.sites[id].url);
-				});
-				btnDiv.appendChild(btn);
+				console.log(data);
+				for (var i = 0; i < 4; i++) {
+					var title;
+					if(data.sites[i].url.substring(0, 7) == "http://")
+						title = data.sites[i].url.substring(7, data.sites[i].url.length);
+					else if (data.sites[i].url.substring(0, 8) == "https://")
+						title = data.sites[i].url.substring(8, data.sites[i].url.length);
+					title = title.substring(0, title.length-1);
+					document.getElementById("websiteTitle" + i).textContent = title;
+					document.getElementById("websiteVisitBtn" + i).addEventListener("click", function(){
+						window.location.href = data.sites[this.id.substring(15, this.id.length)].url;
+					});
+				}
 			}
 		}
 		xhr.send();
-
 	}
 
 	setTopWebsites();
-	
-	function visitWebsite(url){
-		window.location.href = url;
-	}
 
 	function createModalBox() {
 		if (document.getElementById("modal") == null) {
@@ -136,14 +100,21 @@ document.addEventListener("DOMContentLoaded", function() {
 			button.textContent = "Speichern";
 			button.classList.add("button");
 			modal.appendChild(button);
-			document.body.appendChild(modal);
+			
+			var a = document.createElement("a");
+			a.id = "linkToIcon";
+			a.classList.add("a");
+			a.textContent = "Links are from: https://www.iconfinder.com/Chanut-is";
+			modal.appendChild(a);
+			
+			document.getElementById("nav").appendChild(modal);
 			document.getElementById("save").addEventListener("click", function() {
 				localStorage.setItem("design", document.getElementById("design").value);
 				window.location.reload();
 			});
 
 			window.onclick = function(event) {
-				if (event.target.id != "save" && event.target.id != "setting") {
+				if (event.target.id != "save" && event.target.id != "setting" && event.target.id != "design") {
 					modal.remove();
 				}
 			}
@@ -151,5 +122,4 @@ document.addEventListener("DOMContentLoaded", function() {
 			modal.style.display = "flex";
 		}
 	}
-	//setTopComments();
 });

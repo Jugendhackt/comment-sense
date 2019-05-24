@@ -1,29 +1,70 @@
 <html>
 
-<head>
-	<title>Comment-Sense</title>
-	<link rel="stylesheet" href="CSS/style.css" type="text/css">
-	<link rel="stylesheet" href="CSS/index.css" type="text/css">
-	<meta charset="utf-8">
-</head>
+    <head>
+        <title>Comment-Sense</title>
+        <link rel="stylesheet" href="CSS/style.css" type="text/css">
+        <link rel="stylesheet" href="CSS/index.css" type="text/css">
+        <meta charset="utf-8">
+    </head>
 
-<body>
-	<div>
-		<img id="setting" src="assets/icons/settingLight512" width="65px">
-	</div>
-	<div class="flexbox">
-		<button id="createAcc" type="button" class="button">Account Erstellen</button>
-	</div>
-	<div class="row">
-		<div class="column" id="topWebsitesContainer">
+    <body>
+        <div>
+            
+        </div>
+        <div class="nav" id="nav">
+            <button id="createAcc" type="button" class="button">Account Erstellen</button>
+			<img id="setting" src="assets/icons/settingLight512" width="3.5%">
 		</div>
-		<div class="column" id="topCommentsContainer">
-		</div>
-	</div>
-	<a href="https://www.iconfinder.com/icons/185095/settings_streamline_icon" id="icons" class="a">Icons are from https://www.iconfinder.com/webalys</a>
-	<script src="JS/design.js" charset="utf-8" type="application/javascript"></script>
-	<script src="JS/index.js" charset="utf-8" type="application/javascript"></script>
-
-</body>
+        <div class="row">
+			<div class="column" id="topComments">
+                <div id="comment0" class="comments">
+                    <div id="commentTitle0" class="commentTitle">Kommentar 0</div>
+                    <div id="commentContent0" class="commentContent"></div>
+                    <div class="btnDiv"><button class="visitComment" id="commentVisitBtn0">Zum Kommentar wechseln</button></div>
+                </div>
+				
+				<div id="comment1" class="comments">
+                    <div id="commentTitle1" class="commentTitle">Kommentar 1</div>
+                    <div id="commentContent1" class="commentContent"></div>
+                    <div class="btnDiv"><button class="visitComment" id="commentVisitBtn1">Zum Kommentar wechseln</button></div>
+                </div>
+				<div id="comment2" class="comments">
+                    <div id="commentTitle2" class="commentTitle">Kommentar 2</div>
+                    <div id="commentContent2" class="commentContent"></div>
+                    <div class="btnDiv"><button class="visitComment" id="commentVisitBtn2">Zum Kommentar wechseln</button></div>
+                </div>
+				<div id="comment3" class="comments">
+                    <div id="commentTitle3" class="commentTitle">Kommentar 3</div>
+                    <div id="commentContent3" class="commentContent"></div>
+                    <div class="btnDiv"><button class="visitComment" id="commentVisitBtn3">Zum Kommentar wechseln</button></div>
+                </div>
+				<div id="comment4" class="comments">
+                    <div id="commentTitle4" class="commentTitle">Kommentar 4</div>
+                    <div id="commentContent4" class="commentContent"></div>
+                    <div class="btnDiv"><button class="visitComment" id="commentVisitBtn4">Zum Kommentar wechseln</button></div>
+                </div>
+            </div>
+            <div class="column" id="topWebsites">
+                <div id="website0" class="websites">
+                    <div id="websiteTitle0">Titel 0</div>
+                    <div class="btnDiv"><button id="websiteVisitBtn0" class="visitWebsite">Zur Website wechseln</button></div>
+                </div>
+                <div id="website1" class="websites">
+                    <div id="websiteTitle1">Titel 1</div>
+                    <div class="btnDiv"><button id="websiteVisitBtn1" class="visitWebsite">Zur Website wechseln</button></div>
+                </div>
+                <div id="website2" class="websites">
+                    <div id="websiteTitle2">Titel 2</div>
+                    <div class="btnDiv"><button id="websiteVisitBtn2" class="visitWebsite">Zur Website wechseln</button></div>
+                </div>
+                <div id="website3" class="websites">
+                    <div id="websiteTitle3">Titel 3</div>
+                    <div class="btnDiv"><button id="websiteVisitBtn3" class="visitWebsite">Zur Website wechseln</button></div>
+                </div>
+			</div>
+        </div>
+		<script src="JS/design.js" charset="utf-8" type="application/javascript"></script>
+        <script src="JS/index.js" charset="utf-8" type="application/javascript"></script>
+    </body>
 
 </html>

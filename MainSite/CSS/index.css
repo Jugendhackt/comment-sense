@@ -1,17 +1,26 @@
-.flexbox {
+.nav {
 	display: flex;
+	position: fixed;
+	top: 0;
+	transition: 0.2s;
 	justify-content: center;
-	margin-top: 5%;
-	margin-bottom: 5%;
+	align-items: center;
 	width: 100%;
+	height: 10vh;
+	background-color: white;
+	box-shadow: 0px 0px 5px 1px;
+}
+
+#createAcc {
+	width: 50vw;
 }
 
 .row {
+	margin-top: 11vh;
 	display: flex;
 	flex-direction: row;
 	text-align: center;
 	width: 100%;
-	margin: auto;
 }
 
 .column {
@@ -21,32 +30,63 @@
 	flex: 1;
 }
 
-#topWebsites {
-	margin-left: 25px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-content: center;
-	width: 40vw;
-	height: 70vh;
+#topWebsites>*, #topComments>* {
+	margin: 10px;
 }
 
-.topWebsite {
+#topWebsites, #topComments {
 	display: flex;
-	justify-content: center;
-	width: 40vw;
-	height: 11vh;
-	margin: 10px;
-	margin-top: 10px;
+	align-content: center;
+	margin: 20px;
+}
+
+.comments {
+	transition: 0.2s;
+    box-shadow: 0px 0px 7px 1px;
+    border-radius: 14px;
+    width: 50vw;
+}
+
+.commentTitle {
+    font-weight: bold;
+}
+
+.visitComment {
+	transition: 0.2s;
+    width: 50vw;
+	border-bottom-left-radius: 14px;
+	border-bottom-right-radius: 14px;
+	height: 4vh;
+}
+
+.websites{
+	display: flex;
 	flex-direction: column;
-	box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.5);
-	border-radius: 12px;
-	text-align: center;
+	height: 10vh;
+	width: 40vw;
+	border-radius: 14px;
+	box-shadow: 0px 0px 7px 1px;
+    transition: 0.2s;
 }
 
 
 .btnDiv {
 	display: flex;
-	justify-content: center;
-	margin-top: 20px;
+	align-items: flex-end;
+	height: 100%;
 }
+
+.visitWebsite {
+	transition: 0.2s;
+	width: 40vw;
+	height: 4vh;
+	border-bottom-right-radius: 14px;
+	border-bottom-left-radius: 14px; 
+}
+
+@media only screen and (min-width: 1060px) {
+	.websites:hover, .comments:hover, .nav:hover {
+		box-shadow: 0px 0px 10px 3px;
+	}
+}
+
