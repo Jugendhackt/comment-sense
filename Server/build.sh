@@ -1,12 +1,12 @@
 #!/bin/bash
 
 if ! dpkg -s gcc &> /dev/null
-    then 
+    then
 	sudo apt-get install gcc
 fi
 
 if ! dpkg -s build-essential &> /dev/null
-    then 
+    then
 	sudo apt-get install build-essential
 fi
 
@@ -24,16 +24,27 @@ done
 gcc -c cJSON.c
 gcc -c socket.c
 gcc -c sqlite3.c
+gcc -c string.c
+gcc -c httpHandler.c
+gcc -c commentSense.c
 
-if [ "$debug" == "1" ] 
+libs='-lpthread -ldl'
+link='cJSON.o socket.c sqlite3.o string.o httpHandler.o commentSense.c'
+
+if [ "$debug" == "1" ]
     then
     	echo "debug build"
-	gcc main.c cJSON.o socket.o sqlite3.o -o server -lpthread -ldl -Wall -D DEBUG
+	gcc main.c $link -o server $libs -Wall -D DEBUG
     else
     	echo "release build"
-	gcc main.c cJSON.o socket.o sqlite3.o -o server -lpthread -ldl -Wall
+	gcc main.c $link -o server $libs -Wall
 fi
 
-gcc test.c socket.o -o test -Wall
+gcc test.c socket.o string.o -o test -Wall
+
+if [ -d data ]
+    then
+	rm data -r
+fi
 mkdir data
 cp ../MainSite/* data/ -r

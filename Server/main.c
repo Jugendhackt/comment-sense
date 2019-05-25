@@ -6,6 +6,7 @@
 #include <pthread.h>
 
 #include "httpHandler.h"
+#include "commentSense.h"
 
 void* checkSockets(void *data){
     while(1){
@@ -24,7 +25,9 @@ int main()
     #if _CORS_ == 1
     printf("[WARNING] CORS is enabled\n");
     #endif // _CORS_
+
     initDatabase();
+
     for(int i = 0; i < MAX_CONNECTIONS; i++){
         connections[i].state = 0;
         connections[i].exit = false;
