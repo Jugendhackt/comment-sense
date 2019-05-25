@@ -205,10 +205,19 @@ String handleGetRequest(int index, StringList request){
         response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
 #if _CORS_ == 1
                                     "Access-Control-Allow-Origin:*\n",
+#else
+                                    "",
 #endif
                                     "Content-Type:", type.data, "\n",
-                                    "Content-Length:", length.data, "\n\n", "");
+                                    "Content-Length:", length.data, "\n\n");
         appendStringByteArray(&response, content);
+    }
+    else{
+#if _CORS_ == 1
+        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+#else
+        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\n");
+#endif
     }
 
     deleteString(content);
@@ -220,7 +229,7 @@ String handleGetRequest(int index, StringList request){
 
 String handlePutRequest(int index, StringList request, String payload){
     printf("put request\n");
-    String response = newString("HTTP/1.1 ");
+    String response;
     String content = newString("");
     int status = 200;
     String type;
@@ -231,15 +240,24 @@ String handlePutRequest(int index, StringList request, String payload){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
-    appendStringStr(&response, statusStr);
 
     if(content.length > 0){
-        appendStringStdStr(&response, "\ncontent type:");
-        appendStringStr(&response, type);
-        appendStringStdStr(&response, "\ncontent length:");
-        appendStringStr(&response, length);
-        appendStringStdStr(&response, "\n\n");
+        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+#if _CORS_ == 1
+                                    "Access-Control-Allow-Origin:*\n",
+#else
+                                    "",
+#endif
+                                    "Content-Type:", type.data, "\n",
+                                    "Content-Length:", length.data, "\n\n");
         appendStringByteArray(&response, content);
+    }
+    else{
+#if _CORS_ == 1
+        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+#else
+        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\n");
+#endif
     }
 
     deleteString(content);
@@ -250,7 +268,7 @@ String handlePutRequest(int index, StringList request, String payload){
 }
 String handlePostRequest(int index, StringList request, String payload){
     printf("post request\n");
-    String response = newString("HTTP/1.1 ");
+    String response;
     String content;
     int status = 200;
     String type;
@@ -280,15 +298,24 @@ String handlePostRequest(int index, StringList request, String payload){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
-    appendStringStr(&response, statusStr);
 
     if(content.length > 0){
-        appendStringStdStr(&response, "\ncontent type:");
-        appendStringStr(&response, type);
-        appendStringStdStr(&response, "\ncontent length:");
-        appendStringStr(&response, length);
-        appendStringStdStr(&response, "\n\n");
+        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+#if _CORS_ == 1
+                                    "Access-Control-Allow-Origin:*\n",
+#else
+                                    "",
+#endif
+                                    "Content-Type:", type.data, "\n",
+                                    "Content-Length:", length.data, "\n\n");
         appendStringByteArray(&response, content);
+    }
+    else{
+#if _CORS_ == 1
+        response = combineString(4, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+#else
+        response = combineString(4, "HTTP/1.1 ", statusStr.data, "\n");
+#endif
     }
 
     deleteString(content);
@@ -297,9 +324,10 @@ String handlePostRequest(int index, StringList request, String payload){
     deleteString(statusStr);
     return response;
 }
+
 String handlePatchRequest(int index, StringList request, String payload){
     printf("patch request\n");
-    String response = newString("HTTP/1.1 ");
+    String response;
     String content;
     int status = 200;
     String type;
@@ -317,15 +345,24 @@ String handlePatchRequest(int index, StringList request, String payload){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
-    appendStringStr(&response, statusStr);
 
     if(content.length > 0){
-        appendStringStdStr(&response, "\ncontent type:");
-        appendStringStr(&response, type);
-        appendStringStdStr(&response, "\ncontent length:");
-        appendStringStr(&response, length);
-        appendStringStdStr(&response, "\n\n");
+        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+#if _CORS_ == 1
+                                    "Access-Control-Allow-Origin:*\n",
+#else
+                                    "",
+#endif
+                                    "Content-Type:", type.data, "\n",
+                                    "Content-Length:", length.data, "\n\n");
         appendStringByteArray(&response, content);
+    }
+    else{
+#if _CORS_ == 1
+        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+#else
+        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\n");
+#endif
     }
 
     deleteString(content);
@@ -347,15 +384,24 @@ String handleDeleteRequest(int index, StringList request){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
-    appendStringStr(&response, statusStr);
 
     if(content.length > 0){
-        appendStringStdStr(&response, "\ncontent type:");
-        appendStringStr(&response, type);
-        appendStringStdStr(&response, "\ncontent length:");
-        appendStringStr(&response, length);
-        appendStringStdStr(&response, "\n\n");
+        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+#if _CORS_ == 1
+                                    "Access-Control-Allow-Origin:*\n",
+#else
+                                    "",
+#endif
+                                    "Content-Type:", type.data, "\n",
+                                    "Content-Length:", length.data, "\n\n");
         appendStringByteArray(&response, content);
+    }
+    else{
+#if _CORS_ == 1
+        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+#else
+        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\n");
+#endif
     }
 
     deleteString(content);
