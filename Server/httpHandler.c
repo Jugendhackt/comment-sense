@@ -1,6 +1,101 @@
 #include "httpHandler.h"
 #include "commentSense.h"
 
+/// begin HTTPSTATUSCODES_C_H_
+
+char HttpStatus_isInformational(int code) { return (code >= 100 && code < 200); } /*!< \returns \c true if the given \p code is an informational code. */
+char HttpStatus_isSuccessful(int code)    { return (code >= 200 && code < 300); } /*!< \returns \c true if the given \p code is a successful code. */
+char HttpStatus_isRedirection(int code)   { return (code >= 300 && code < 400); } /*!< \returns \c true if the given \p code is a redirectional code. */
+char HttpStatus_isClientError(int code)   { return (code >= 400 && code < 500); } /*!< \returns \c true if the given \p code is a client error code. */
+char HttpStatus_isServerError(int code)   { return (code >= 500 && code < 600); } /*!< \returns \c true if the given \p code is a server error code. */
+char HttpStatus_isError(int code)         { return (code >= 400); }               /*!< \returns \c true if the given \p code is any type of error code. */
+
+/*! Returns the standard HTTP reason phrase for a HTTP status code.
+ * \param code An HTTP status code.
+ * \return The standard HTTP reason phrase for the given \p code or \c NULL if no standard
+ * phrase for the given \p code is known.
+ */
+const char* HttpStatus_reasonPhrase(int code)
+{
+	switch (code)
+	{
+	/*####### 1xx - Informational #######*/
+	case 100: return "Continue";
+	case 101: return "Switching Protocols";
+	case 102: return "Processing";
+	case 103: return "Early Hints";
+
+	/*####### 2xx - Successful #######*/
+	case 200: return "OK";
+	case 201: return "Created";
+	case 202: return "Accepted";
+	case 203: return "Non-Authoritative Information";
+	case 204: return "No Content";
+	case 205: return "Reset Content";
+	case 206: return "Partial Content";
+	case 207: return "Multi-Status";
+	case 208: return "Already Reported";
+	case 226: return "IM Used";
+
+	/*####### 3xx - Redirection #######*/
+	case 300: return "Multiple Choices";
+	case 301: return "Moved Permanently";
+	case 302: return "Found";
+	case 303: return "See Other";
+	case 304: return "Not Modified";
+	case 305: return "Use Proxy";
+	case 307: return "Temporary Redirect";
+	case 308: return "Permanent Redirect";
+
+	/*####### 4xx - Client Error #######*/
+	case 400: return "Bad Request";
+	case 401: return "Unauthorized";
+	case 402: return "Payment Required";
+	case 403: return "Forbidden";
+	case 404: return "Not Found";
+	case 405: return "Method Not Allowed";
+	case 406: return "Not Acceptable";
+	case 407: return "Proxy Authentication Required";
+	case 408: return "Request Timeout";
+	case 409: return "Conflict";
+	case 410: return "Gone";
+	case 411: return "Length Required";
+	case 412: return "Precondition Failed";
+	case 413: return "Payload Too Large";
+	case 414: return "URI Too Long";
+	case 415: return "Unsupported Media Type";
+	case 416: return "Range Not Satisfiable";
+	case 417: return "Expectation Failed";
+	case 418: return "I'm a teapot";
+	case 422: return "Unprocessable Entity";
+	case 423: return "Locked";
+	case 424: return "Failed Dependency";
+	case 426: return "Upgrade Required";
+	case 428: return "Precondition Required";
+	case 429: return "Too Many Requests";
+	case 431: return "Request Header Fields Too Large";
+	case 451: return "Unavailable For Legal Reasons";
+
+	/*####### 5xx - Server Error #######*/
+	case 500: return "Internal Server Error";
+	case 501: return "Not Implemented";
+	case 502: return "Bad Gateway";
+	case 503: return "Service Unavailable";
+	case 504: return "Gateway Time-out";
+	case 505: return "HTTP Version Not Supported";
+	case 506: return "Variant Also Negotiates";
+	case 507: return "Insufficient Storage";
+	case 508: return "Loop Detected";
+	case 510: return "Not Extended";
+	case 511: return "Network Authentication Required";
+
+	default: return 0;
+	}
+
+}
+
+/// end HTTPSTATUSCODES_C_H_
+
 int connectionCount = 0;
 
 String getType(String filename){
@@ -123,6 +218,9 @@ void* handleClient(void *arg){
                 response = newString("Unknown request");
         }
         if(type != NONE){
+#if defined(DEBUG)
+            printf("response: %s\n", response.data);
+#endif
             TCPSend(socket, response.data, response.length);
             if(type != POST){
                 char c = '\n';
@@ -147,7 +245,7 @@ String handleGetRequest(int index, StringList request){
     printf("get request\n");
     String response;
     String content;
-    int status = 200;
+    int status = HttpStatus_OK;
     String type;
 
     /// handling the request
@@ -190,7 +288,7 @@ String handleGetRequest(int index, StringList request){
                 content = newString("error, data == NULL");
         }
         else{
-            status = 404;
+            status = HttpStatus_NotFound;
             content = newString("Error: File not found");
             type = newString("text/plain");
         }
@@ -200,9 +298,10 @@ String handleGetRequest(int index, StringList request){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
+    const char *reasonPhrase = HttpStatus_reasonPhrase(status);
 
     if(content.length > 0){
-        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+        response = combineString(12, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n",
 #if _CORS_ == 1
                                     "Access-Control-Allow-Origin:*\n",
 #else
@@ -214,9 +313,9 @@ String handleGetRequest(int index, StringList request){
     }
     else{
 #if _CORS_ == 1
-        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\nAccess-Control-Allow-Origin:*\n");
 #else
-        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n");
 #endif
     }
 
@@ -231,7 +330,7 @@ String handlePutRequest(int index, StringList request, String payload){
     printf("put request\n");
     String response;
     String content = newString("");
-    int status = 200;
+    int status = HttpStatus_OK;
     String type;
 
     /// handling the request
@@ -240,9 +339,10 @@ String handlePutRequest(int index, StringList request, String payload){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
+    const char *reasonPhrase = HttpStatus_reasonPhrase(status);
 
     if(content.length > 0){
-        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+        response = combineString(12, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n",
 #if _CORS_ == 1
                                     "Access-Control-Allow-Origin:*\n",
 #else
@@ -254,9 +354,9 @@ String handlePutRequest(int index, StringList request, String payload){
     }
     else{
 #if _CORS_ == 1
-        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\nAccess-Control-Allow-Origin:*\n");
 #else
-        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n");
 #endif
     }
 
@@ -270,7 +370,7 @@ String handlePostRequest(int index, StringList request, String payload){
     printf("post request\n");
     String response;
     String content;
-    int status = 200;
+    int status = HttpStatus_OK;
     String type;
 
     /// handling the request
@@ -298,9 +398,10 @@ String handlePostRequest(int index, StringList request, String payload){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
+    const char *reasonPhrase = HttpStatus_reasonPhrase(status);
 
     if(content.length > 0){
-        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+        response = combineString(12, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n",
 #if _CORS_ == 1
                                     "Access-Control-Allow-Origin:*\n",
 #else
@@ -312,9 +413,9 @@ String handlePostRequest(int index, StringList request, String payload){
     }
     else{
 #if _CORS_ == 1
-        response = combineString(4, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\nAccess-Control-Allow-Origin:*\n");
 #else
-        response = combineString(4, "HTTP/1.1 ", statusStr.data, "\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n");
 #endif
     }
 
@@ -329,7 +430,7 @@ String handlePatchRequest(int index, StringList request, String payload){
     printf("patch request\n");
     String response;
     String content;
-    int status = 200;
+    int status = HttpStatus_OK;
     String type;
 
     /// handling the request
@@ -345,9 +446,10 @@ String handlePatchRequest(int index, StringList request, String payload){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
+    const char *reasonPhrase = HttpStatus_reasonPhrase(status);
 
     if(content.length > 0){
-        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+        response = combineString(12, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n",
 #if _CORS_ == 1
                                     "Access-Control-Allow-Origin:*\n",
 #else
@@ -359,9 +461,9 @@ String handlePatchRequest(int index, StringList request, String payload){
     }
     else{
 #if _CORS_ == 1
-        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\nAccess-Control-Allow-Origin:*\n");
 #else
-        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n");
 #endif
     }
 
@@ -371,11 +473,12 @@ String handlePatchRequest(int index, StringList request, String payload){
     deleteString(statusStr);
     return response;
 }
+
 String handleDeleteRequest(int index, StringList request){
     printf("delete request\n");
     String response = newString("HTTP/1.1 ");
     String content = newString("");
-    int status = 200;
+    int status = HttpStatus_OK;
     String type;
 
     /// handling the request
@@ -384,9 +487,10 @@ String handleDeleteRequest(int index, StringList request){
     /// creating the response
     String length = stringFromInt(content.length);
     String statusStr = stringFromInt(status);
+    const char *reasonPhrase = HttpStatus_reasonPhrase(status);
 
     if(content.length > 0){
-        response = combineString(10, "HTTP/1.1 ", statusStr.data, "\n",
+        response = combineString(12, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n",
 #if _CORS_ == 1
                                     "Access-Control-Allow-Origin:*\n",
 #else
@@ -398,9 +502,9 @@ String handleDeleteRequest(int index, StringList request){
     }
     else{
 #if _CORS_ == 1
-        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\nAccess-Control-Allow-Origin:*\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\nAccess-Control-Allow-Origin:*\n");
 #else
-        response = combineString(3, "HTTP/1.1 ", statusStr.data, "\n");
+        response = combineString(5, "HTTP/1.1 ", statusStr.data, " ", reasonPhrase, "\n");
 #endif
     }
 

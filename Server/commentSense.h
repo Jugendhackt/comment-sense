@@ -9,6 +9,7 @@
 #include "sqlite3.h"
 #include "string.h"
 #include "cJSON.h"
+#include "httpHandler.h"
 
 typedef struct dbResult{
     int rows;

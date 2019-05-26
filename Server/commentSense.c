@@ -155,13 +155,13 @@ String getComments(String request, int *status){
         }
     }
     else{
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"no site specified\"}");
     }
     ///
     printf("request: %s, site: %s\n", request.data, site.data);
     if(stringContainsAnyOf(site, sqlTestChars)){
-        *status = 409;
+        *status = HttpStatus_Forbidden;
         return newString("{\"error\":\"we don't like sql injections\"");
     }
     String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\';");
@@ -172,7 +172,7 @@ String getComments(String request, int *status){
     if(result.rows > 0 && result.columns == 3){
         String commentIDs = result.data[0][2];
         if(stringContainsAnyOf(commentIDs, sqlTestChars)){
-            *status = 409;
+            *status = HttpStatus_Forbidden;
             return newString("{\"error\":\"we don't like sql injections\"");
         }
         String querry = combineString(3, "SELECT * FROM comments WHERE id IN (", commentIDs.data, ");");
@@ -184,7 +184,7 @@ String getComments(String request, int *status){
     }
     else{
         content = newString(noComments);
-        *status = 404;
+        *status = HttpStatus_NotFound;
     }
 
     deleteString(site);
@@ -216,7 +216,7 @@ String getTopComments(String request, int *status){
     if(onSite == 1){
         printf("request: %s, site: %s\n", request.data, site.data);
         if(stringContainsAnyOf(site, sqlTestChars)){
-            *status = 409;
+            *status = HttpStatus_Forbidden;
             return newString("{\"error\":\"we don't like sql injections\"");
         }
         String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\';");
@@ -226,7 +226,7 @@ String getTopComments(String request, int *status){
         if(result.rows > 0 && result.columns == 3){
             String commentIDs = result.data[0][2];
             if(stringContainsAnyOf(commentIDs, sqlTestChars)){
-                *status = 409;
+                *status = HttpStatus_Forbidden;
                 return newString("{\"error\":\"we don't like sql injections\"");
             }
             String querry = combineString(3, "SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments WHERE id IN (", commentIDs.data, ") order by count desc limit 5;");
@@ -237,7 +237,7 @@ String getTopComments(String request, int *status){
         }
         else{
             content = newString(noComments);
-            *status = 404;
+            *status = HttpStatus_NotFound;
         }
         deleteString(getIDs);
     }
@@ -271,27 +271,27 @@ String postComment(String json, int *status){
 
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"userName missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "password")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"password missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "headline")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"headline missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "comment")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"comment missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "url")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"url missing in json\"}");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
@@ -308,7 +308,7 @@ String postComment(String json, int *status){
         String url = newString(urlData == NULL ? "" : urlData);
 
         if(stringContainsAnyOf(url, sqlTestChars)){
-            *status = 409;
+            *status = HttpStatus_Forbidden;
             return newString("{\"error\":\"we don't like sql injections\"");
         }
 
@@ -335,12 +335,12 @@ String postComment(String json, int *status){
         deleteString(comment);
         deleteString(url);
         response = newString("{\"status\":\"posting the comment probably worked\"}");
-        *status = 201;
+        *status = HttpStatus_Created;
     }
     else{
         response = newString("{\"error\":\"User not valid\"}");
         printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
-        *status = 401;
+        *status = HttpStatus_Unauthorized;
     }
 
     deleteString(userName);
@@ -356,12 +356,12 @@ String createUser(String json, int *status){
 
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"userName missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "password")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"password missing in json\"}");
     }
 
@@ -371,11 +371,11 @@ String createUser(String json, int *status){
     String password = newString(passwordData == NULL ? "" : passwordData);
 
     if(stringContainsAnyOf(userName, sqlTestChars)){
-        *status = 409;
+        *status = HttpStatus_Forbidden;
         return newString("{\"error\":\"we don't like sql injections\"");
     }
     else if(stringContainsAnyOf(password, sqlTestChars)){
-        *status = 409;
+        *status = HttpStatus_Forbidden;
         return newString("{\"error\":\"we don't like sql injections\"");
     }
 
@@ -390,11 +390,11 @@ String createUser(String json, int *status){
                            userName.data, "\',\'", password.data, "\')");
 
         sqlite3_exec(db, querry.data, callback, NULL, NULL);
-        *status = 201;
+        *status = HttpStatus_Created;
         response = newString("{\"status\":\"user created succesfully\"}");
     }
     else{   // this username is already in use
-        *status = 409;
+        *status = HttpStatus_Conflict;
         printf("username already used\n");
         response = newString("{\"status\":\"username already used\"}");
     }
@@ -411,12 +411,12 @@ String checkUser(String json, int *status){
     cJSON *root = cJSON_Parse(json.data);
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"userName missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "password")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"password missing in json\"}");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
@@ -425,11 +425,11 @@ String checkUser(String json, int *status){
     String password = newString(passwordData == NULL ? "" : passwordData);
     String response;
     if(isUserValid(userName, password)){
-        *status = 200;
+        *status = HttpStatus_OK;
         response = newString("{\"status\":\"login data valid\"}");
     }
     else{
-        *status = 401;
+        *status = HttpStatus_Unauthorized;
         response = newString("{\"status\":\"login data not valid\"}");
     }
     deleteString(userName);
@@ -442,7 +442,7 @@ String existsUser(String json, int *status){
     cJSON  *root = cJSON_Parse(json.data);
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"userName missing in json\"}");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
@@ -450,7 +450,7 @@ String existsUser(String json, int *status){
     String response;
 
     if(stringContainsAnyOf(userName, sqlTestChars)){
-        *status = 409;
+        *status = HttpStatus_Forbidden;
         return newString("{\"error\":\"we don't like sql injections\"");
     }
 
@@ -482,22 +482,22 @@ String voteComment(String json, int *status){
 
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"userName missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "password")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"password missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "id")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"id missing in json\"}");
     }
     if(!cJSON_HasObjectItem(root, "vote")){
         cJSON_Delete(root);
-        *status = 400;
+        *status = HttpStatus_BadRequest;
         return newString("{\"error\":\"vote missing in json\"}");
     }
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
@@ -526,7 +526,7 @@ String voteComment(String json, int *status){
                     querry = combineString(5, "UPDATE comments SET votes = \'", votes.data, "\' WHERE id LIKE \'", commentId.data, "\'");
 
                     sqlite3_exec(db, querry.data, callback, NULL, NULL);
-                    *status = 200;
+                    *status = HttpStatus_OK;
                     deleteString(response);
                     response = newString("{\"status\":\"everything worked\"}");
                 }
@@ -547,13 +547,13 @@ String voteComment(String json, int *status){
                         deleteString(querry);
                         querry = combineString(5, "UPDATE comments SET votes = \'", votes.data, "\' WHERE id LIKE \'", commentId.data, "\'");
                         sqlite3_exec(db, querry.data, callback, NULL, NULL);
-                        *status = 200;
+                        *status = HttpStatus_OK;
                         deleteString(response);
                         response = newString("{\"status\":\"everything worked\"}");
                     }
                     else{// the user has already voted
                         printf("already voted\n");
-                        *status = 403;
+                        *status = HttpStatus_Forbidden;
                         deleteString(response);
                         response = newString("{\"error\":\"you have already voted on this comment\"}");
                     }
@@ -563,18 +563,18 @@ String voteComment(String json, int *status){
             }
             else if(vote == -1){    //unvote
                 if(votes.length == 0){//someone must have voted, before you can unvote
-                    *status = 422;
+                    *status = HttpStatus_UnprocessableEntity;
                     deleteString(response);
                     response = newString("{\"error\":\"nobody has voted --> you can't unvote\"}");
                 }
                 else{///TODO: implement unvoting
-                    *status = 501;
+                    *status = HttpStatus_NotImplemented;
                     deleteString(response);
                     response = newString("{\"error\":\"not implemented\"}");
                 }
             }
             else{   //you can't vote nothing/more than once/unvote more then once
-                *status = 422;
+                *status = HttpStatus_UnprocessableEntity;
                 deleteString(response);
                 response = newString("{\"error\":\"you can only vote +1 or -1\"}");
             }
@@ -582,7 +582,7 @@ String voteComment(String json, int *status){
             deleteString(commentId);
         }
         else{   //the comment is not in the database
-            *status = 404;
+            *status = HttpStatus_NotFound;
             deleteString(response);
             response = newString("{\"error\":\"Comment not found\"}");
         }
@@ -591,7 +591,7 @@ String voteComment(String json, int *status){
     }
     else{   //you need a valid account to vote
         printf("User not Valid: \'%s\' | \'%s\'\n", userName.data, password.data);
-        *status = 401;
+        *status = HttpStatus_Unauthorized;
         deleteString(response);
         response = newString("{\"error\":\"User not valid\"}");
     }
