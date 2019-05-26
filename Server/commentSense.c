@@ -1,8 +1,8 @@
 #include "commentSense.h"
 
 char *noComments = "{\"Comments\":[{\"id\":-1,\"headline\":\"Keine Kommentare\",\"content\":\""
-                   "F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. "
-                   "Du kannst gern damit anfangen.\",\"votes\":0,\"userID\":-1,\"userName\":\"CommentSense\"}]}";
+                        "F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. "
+                        "Du kannst gern damit anfangen.\",\"votes\":0,\"userID\":-1,\"userName\":\"CommentSense\"}]}";
 
 const char *dbpath = "./data/mainDataBase.db3";
 const char *initdbSQL = "CREATE TABLE \"comments\" (\'id\' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
@@ -18,6 +18,7 @@ const char *initdbSQL = "CREATE TABLE \"comments\" (\'id\' INTEGER NOT NULL PRIM
                                                     "\'email\' TEXT, "
                                                     "\'trustLevel\' REAL);"
                         "CREATE TABLE sqlite_sequence(name,seq);";
+const char *sqlTestChars = ");\"\'*";
 
 sqlite3 *db;
 
@@ -143,7 +144,7 @@ String sitesToJson(dbResult result){
 String getComments(String request, int *status){
     String content, site;
     char *data = request.data+10;
-    if(containsString(data, "site=\'")){
+    if(stringStartsWith(data, "site=\'")){
         site = newString(data+6);
         for(int i = 0; site.data[i] != 0; i++){
             if(site.data[i] == '\''){
@@ -159,6 +160,10 @@ String getComments(String request, int *status){
     }
     ///
     printf("request: %s, site: %s\n", request.data, site.data);
+    if(stringContainsAnyOf(site, sqlTestChars)){
+        *status = 409;
+        return newString("{\"error\":\"we don't like sql injections\"");
+    }
     String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\';");
 
     dbResult result = (dbResult){0,0,NULL};
@@ -166,6 +171,10 @@ String getComments(String request, int *status){
 
     if(result.rows > 0 && result.columns == 3){
         String commentIDs = result.data[0][2];
+        if(stringContainsAnyOf(commentIDs, sqlTestChars)){
+            *status = 409;
+            return newString("{\"error\":\"we don't like sql injections\"");
+        }
         String querry = combineString(3, "SELECT * FROM comments WHERE id IN (", commentIDs.data, ");");
 
         clearResult(&result);
@@ -188,7 +197,7 @@ String getTopComments(String request, int *status){
     String content, site;
     int onSite = 0;
     char *data = request.data+14;
-    if(request.length > 14 && containsString(data, "site=\'")){
+    if(request.length > 14 && stringStartsWith(data, "site=\'")){
         site = newString(data+6);
         for(int i = 0; site.data[i] != 0; i++){
             if(site.data[i] == '\''){
@@ -206,12 +215,20 @@ String getTopComments(String request, int *status){
     dbResult result = (dbResult){0,0,NULL};
     if(onSite == 1){
         printf("request: %s, site: %s\n", request.data, site.data);
+        if(stringContainsAnyOf(site, sqlTestChars)){
+            *status = 409;
+            return newString("{\"error\":\"we don't like sql injections\"");
+        }
         String getIDs = combineString(3, "SELECT * FROM sites WHERE url LIKE \'", site.data, "\';");
 
         sqlite3_exec(db, getIDs.data, callback, &result, NULL);
 
         if(result.rows > 0 && result.columns == 3){
             String commentIDs = result.data[0][2];
+            if(stringContainsAnyOf(commentIDs, sqlTestChars)){
+                *status = 409;
+                return newString("{\"error\":\"we don't like sql injections\"");
+            }
             String querry = combineString(3, "SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments WHERE id IN (", commentIDs.data, ") order by count desc limit 5;");
             clearResult(&result);
             sqlite3_exec(db, querry.data, callback, &result, NULL);
@@ -225,7 +242,7 @@ String getTopComments(String request, int *status){
         deleteString(getIDs);
     }
     else{
-        String querry = combineString(1, "SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments order by count desc limit 5;");
+        String querry = newString("SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments order by count desc limit 5;");
         sqlite3_exec(db, querry.data, callback, &result, NULL);
         content = commentsToJson(result);
         deleteString(querry);
@@ -290,6 +307,11 @@ String postComment(String json, int *status){
         String rawComment = newString(rawCommentData == NULL ? "" : rawCommentData);
         String url = newString(urlData == NULL ? "" : urlData);
 
+        if(stringContainsAnyOf(url, sqlTestChars)){
+            *status = 409;
+            return newString("{\"error\":\"we don't like sql injections\"");
+        }
+
         String headline = convertToHex(rawHeadline);
         String comment = convertToHex(rawComment);
 
@@ -347,6 +369,15 @@ String createUser(String json, int *status){
     String userName = newString(userNameData == NULL ? "" : userNameData);
     char *passwordData = cJSON_GetObjectItem(root, "password")->valuestring;
     String password = newString(passwordData == NULL ? "" : passwordData);
+
+    if(stringContainsAnyOf(userName, sqlTestChars)){
+        *status = 409;
+        return newString("{\"error\":\"we don't like sql injections\"");
+    }
+    else if(stringContainsAnyOf(password, sqlTestChars)){
+        *status = 409;
+        return newString("{\"error\":\"we don't like sql injections\"");
+    }
 
     String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data, "\'");
 
@@ -417,6 +448,11 @@ String existsUser(String json, int *status){
     char *userNameData = cJSON_GetObjectItem(root, "userName")->valuestring;
     String userName = newString(userNameData == NULL ? "" : userNameData);
     String response;
+
+    if(stringContainsAnyOf(userName, sqlTestChars)){
+        *status = 409;
+        return newString("{\"error\":\"we don't like sql injections\"");
+    }
 
     dbResult result = (dbResult){0,0,NULL};
     String querry = combineString(3, "SELECT id FROM users WHERE name LIKE \'", userName.data, "\'");

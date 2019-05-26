@@ -116,7 +116,7 @@ void appendStringByteArray(String *str, String byteArray){
     str->length += len2;
 }
 
-int containsString(char *str, char *str2){
+int stringStartsWith(char *str, char *str2){
     for(int i = 0; str[i] != 0 && str2[i] != 0; i++){
         if(str[i] != str2[i])
             return 0;
@@ -124,30 +124,20 @@ int containsString(char *str, char *str2){
     return 1;
 }
 
-int stringContainsAnyOf(String str, char *chars){
-    for(int i = 0, c; i < str.length && (c = str.data[i]) != 0; i++)
-        for(int k = 0, s; (s = chars[k]) != 0; k++)
-            if(c == s)
-                return 1;
-    return 0;
+char* stringContainsAnyOf(String str, const char *chars){
+    return strpbrk(str.data, chars);
 }
 
 int compareString(char *str, char *str2){
     if(strlen(str) != strlen(str2))
         return 0;
-    if(!containsString(str, str2))
+    if(!stringStartsWith(str, str2))
         return 0;
     return 1;
 }
 
-int stringFindSubStr(String str, char *substr){
-    for(int i = 0; i < str.length; i++){
-        for(int k = 0; str.data[k+i] != 0 && substr[k] != 0; k++){
-            if(str.data[k+i] != substr[k])
-                return -1;
-        }
-    }
-    return -1;
+char* stringFindSubStr(String str, char *substr){
+    return strstr(str.data, substr);
 }
 
 void printStringList(StringList list){

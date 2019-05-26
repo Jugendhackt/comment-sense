@@ -72,7 +72,7 @@ void* handleClient(void *arg){
         int len = 0;
 
         for(int i = 0; header[i].data != NULL; i++){
-            if(containsString(header[i].data, "Content-Length:")){
+            if(stringStartsWith(header[i].data, "Content-Length:")){
                 String contentLength = newString(header[i].data+16);
                 len = intFromString(contentLength);
                 deleteString(contentLength);
@@ -151,15 +151,15 @@ String handleGetRequest(int index, StringList request){
     String type;
 
     /// handling the request
-    if(containsString(request[1].data, "/comments/top/")){
+    if(stringStartsWith(request[1].data, "/comments/top/")){
         type = newString("application/json");
         content = getTopComments(request[1], &status);
     }
-    else if(containsString(request[1].data, "/comments/")){    //client wants comments
+    else if(stringStartsWith(request[1].data, "/comments/")){    //client wants comments
         type = newString("application/json");
         content = getComments(request[1], &status);
     }
-    else if(containsString(request[1].data, "/sites/top/")){
+    else if(stringStartsWith(request[1].data, "/sites/top/")){
         type = newString("application/json");
         content = getTopSites(request[1], &status);
     }
@@ -274,19 +274,19 @@ String handlePostRequest(int index, StringList request, String payload){
     String type;
 
     /// handling the request
-    if(containsString(request[1].data, "/comments/")){    //client wants to post a comment
+    if(stringStartsWith(request[1].data, "/comments/")){    //client wants to post a comment
         type = newString("application/json");
         content = postComment(payload, &status);
     }
-    else if(containsString(request[1].data, "/users/create")){    //client wants to create a new account
+    else if(stringStartsWith(request[1].data, "/users/create")){    //client wants to create a new account
         type = newString("application/json");
         content = createUser(payload, &status);
     }
-    else if(containsString(request[1].data, "/users/exists/")){
+    else if(stringStartsWith(request[1].data, "/users/exists/")){
         type = newString("application/json");
         content = existsUser(payload, &status);
     }
-    else if(containsString(request[1].data, "/users/login/")){
+    else if(stringStartsWith(request[1].data, "/users/login/")){
         type = newString("application/json");
         content = checkUser(payload, &status);
     }
@@ -333,7 +333,7 @@ String handlePatchRequest(int index, StringList request, String payload){
     String type;
 
     /// handling the request
-    if(containsString(request[1].data, "/comments/vote")){    //client wants to vote
+    if(stringStartsWith(request[1].data, "/comments/vote")){    //client wants to vote
         type = newString("application/json");
         content = voteComment(payload, &status);
     }

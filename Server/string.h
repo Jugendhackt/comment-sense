@@ -38,10 +38,10 @@ StringList stringListAppend(StringList list, String str);
 StringList stringListAppendList(StringList list, StringList list2);
 
 String removeAll(String str, char c);
-int containsString(char *str, char *str2);
-int stringContainsAnyOf(String str, char *chars);
+int stringStartsWith(char *str, char *str2);
+char* stringContainsAnyOf(String str, const char *chars);
 int compareString(char *str, char *str2);
-int stringFindSubStr(String str, char *substr);
+char* stringFindSubStr(String str, char *substr);
 void printStringList(StringList list);
 int stringListLen(StringList list);
 void deleteStringList(StringList list);
