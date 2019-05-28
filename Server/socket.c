@@ -141,7 +141,7 @@ void bindSocket(socket_t *sock, unsigned long adress, unsigned short port) {
 }
 
 void listenSocket( socket_t *sock ) {
-    if(listen(*sock, 5) == -1 )
+    if(listen(*sock, 64) == -1 )
         fprintf(stderr, "error: couldn't listen socket: %s\n", strerror(errno));
 }
 
