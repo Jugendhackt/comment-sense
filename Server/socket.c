@@ -156,7 +156,7 @@ void acceptSocket(socket_t *socket, socket_t *new_socket ){
     struct timeval tv;
     tv.tv_sec = 10;
     tv.tv_usec = 0;
-    setsockopt(*new_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
+    setsockopt(*new_socket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
 
 void connectSocket(socket_t *sock, char *serv_addr, unsigned short port) {
@@ -166,14 +166,14 @@ void connectSocket(socket_t *sock, char *serv_addr, unsigned short port) {
 
     memset( &server, 0, sizeof (server));
     if((addr = inet_addr(serv_addr)) != INADDR_NONE) {
-        memcpy( (char *)&server.sin_addr, &addr, sizeof(addr));
+        memcpy(&server.sin_addr, &addr, sizeof(addr));
     }
     else {
         host_info = gethostbyname(serv_addr);
-    if(NULL == host_info)
-        fprintf(stderr, "error: unknown server: %s\n", strerror(errno));
-        memcpy( (char *)&server.sin_addr, host_info->h_addr,
-        host_info->h_length);
+        if(NULL == host_info)
+            fprintf(stderr, "error: unknown server: %s\n", strerror(errno));
+        else
+            memcpy(&server.sin_addr, host_info->h_addr, host_info->h_length);
     }
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
@@ -225,7 +225,7 @@ void UDPSend(socket_t *sock, char *data, size_t size, char *addr, unsigned short
         fprintf(stderr, "error: unknown host: %s\n", strerror(errno));
 
     addr_sento.sin_family = h->h_addrtype;
-    memcpy((char *)&addr_sento.sin_addr.s_addr, h->h_addr_list[0], h->h_length);
+    memcpy(&addr_sento.sin_addr.s_addr, h->h_addr_list[0], h->h_length);
     addr_sento.sin_port = htons (port);
 
     rc = sendto(*sock, data, size, 0, (struct sockaddr*)&addr_sento, sizeof(addr_sento));
