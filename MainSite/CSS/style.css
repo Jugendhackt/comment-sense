@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+@font-face {
+  font-family: "Roboto";
+  src: url(../assets/font/Roboto-Medium.ttf);
+}
 
 html {
     width: 100%;
