@@ -1,6 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("button-save").addEventListener("click", sendsaveData);
   document.getElementById("setting").addEventListener("click", createModalBox);
+  document.getElementById("labelPassword").addEventListener("mouseover", function(){
+    document.getElementById("inputPassword").type = "text";
+  });
+  document.getElementById("labelPassword").addEventListener("mouseout", function(){
+    document.getElementById("inputPassword").type = "password";
+  });
 
   const ipAdress = '192.168.5.163'
 
