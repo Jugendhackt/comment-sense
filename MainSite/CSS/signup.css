@@ -1,23 +1,19 @@
 .flexbox {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 80%;
-}
-
-.input, .button {
-  padding: 0.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 80%;
 }
 
 @media only screen and (min-width: 1060px) {
-  .flexbox>* {
-    margin: 1%;
-  }
+    .flexbox>* {
+        margin: 1%;
+    }
 }
 
 @media only screen and (max-width: 1060px) {
-  .flexbox>* {
-    margin: 2%;
-  }
+    .flexbox>* {
+        margin: 2%;
+    }
 }

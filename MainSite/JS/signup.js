@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
     document.getElementById("button-save").addEventListener("click", sendsaveData);
-    document.getElementById("button-clear").addEventListener("click", clearData);
 
     var ipAdress = '192.168.5.163'
 
