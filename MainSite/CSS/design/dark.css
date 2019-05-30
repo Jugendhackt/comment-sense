@@ -1,25 +1,31 @@
 body {
-  background-color: #252525;
+  background-color: #191A1C;
 }
 
 * {
   color: white;
 }
 
+.nav {
+  background-color: #191A1C;
+  box-shadow: 0px 0px 5px 1px;
+}
+
+.a {
+  color: white;
+}
+
 .select {
   background-color: black;
-  width: 30vw;
-  padding: 5px;
+  color: white;
 }
 
-
-
-.option {
-  color: black;
+#setting {
+  background-color: #191A1C;
 }
 
-.button {
-  background-color: #333333;
+.button, .visitComment, .visitWebsite {
+  background-color: #31AF91;
   border: none;
   color: white;
 }
@@ -35,21 +41,13 @@ body {
 }
 
 @media only screen and (min-width: 1060px) {
-  .button:hover {
-    border: 2px solid black;
-    background-color: #4285f4;
-    color: black;
+  .button:hover, .visitWebsite:hover, .visitComment:hover {
+    border: 2px solid #31AF91;
+    background-color: #333333;
+    color: white;
   }
 
-  .select:hover {
-    background-color: white;
-    color: black;
-  }
-}
-
-@media only screen and (min-width: 1060px) {
-  .select:focus {
-    background-color: white;
-    color: black;
-  }
+  .websites:hover, .comments:hover, .nav:hover {
+		box-shadow: 0px 0px 10px 3px;
+	}
 }

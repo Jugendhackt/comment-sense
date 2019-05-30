@@ -1,13 +1,24 @@
 document.addEventListener("DOMContentLoaded", function() {
   function getDesign() {
     var design = localStorage.getItem("design");
+    console.log(window.location.pathname.split("/").pop());
     console.log(design);
     if (typeof design == "undefined" || design == "light" || design == null) {
-      loadjscssfile("CSS/design/light.css", "css");
-      loadjscssfile("assets/icons/settingLight512.png", "png", "setting");
+      if (window.location.pathname.split("/").pop() == "index.html") {
+        loadjscssfile("CSS/design/light.css", "css");
+        loadjscssfile("assets/icons/settingLight512.png", "png", "setting");
+      } else {
+        loadjscssfile("../CSS/design/light.css", "css");
+        loadjscssfile("../assets/icons/settingLight512.png", "png", "setting");
+      }
     } else if (design == "dark") {
-      loadjscssfile("CSS/design/dark.css", "css");
-      loadjscssfile("assets/icons/settingDark512.png", "png", "setting");
+      if (window.location.pathname.split("/").pop() == "index.html") {
+        loadjscssfile("CSS/design/dark.css", "css");
+        loadjscssfile("assets/icons/settingDark512.png", "png", "setting");
+      } else {
+        loadjscssfile("../CSS/design/dark.css", "css");
+        loadjscssfile("../assets/icons/settingDark512.png", "png", "setting");
+      }
     }
   }
 
@@ -22,9 +33,9 @@ document.addEventListener("DOMContentLoaded", function() {
       fileref.setAttribute("type", "text/css");
       fileref.setAttribute("href", filename);
     } else if (filetype == "png") {
-        console.log(filename);
-        console.log(document.getElementById(id));
-        document.getElementById(id).src = filename;
+      console.log(filename);
+      console.log(document.getElementById(id));
+      document.getElementById(id).src = filename;
     }
     if (typeof fileref != "undefined")
       document.getElementsByTagName("head")[0].appendChild(fileref);

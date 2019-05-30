@@ -2,10 +2,23 @@ body {
   background-color: white;
 }
 
+.nav {
+  background-color: white;
+  box-shadow: 0px 0px 5px 1px;
+}
+
+#setting {
+  background-color: white;
+}
+
 .button, .visitComment, .visitWebsite {
   background-color: #31AF91;
   border: none;
   color: white;
+}
+
+.a {
+  color: black;
 }
 
 .select {
@@ -13,13 +26,13 @@ body {
 }
 
 .input {
-	border: none;
-	border-bottom: 2px solid gray;
+  border: none;
+  border-bottom: 2px solid gray;
 }
 
 ::selection {
-    color: white;
-    background-color: #31AF91;
+  color: white;
+  background-color: #31AF91;
 }
 
 @media only screen and (min-width: 1060px) {
@@ -28,4 +41,8 @@ body {
     background-color: white;
     color: black;
   }
+
+  .websites:hover, .comments:hover, .nav:hover {
+		box-shadow: 0px 0px 10px 3px;
+	}
 }

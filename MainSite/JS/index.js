@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("createAcc").addEventListener("click", function() {
-		window.location.href = "signup.html";
+		window.location.href = "HTML/signup.html";
 	});
 	document.getElementById("setting").addEventListener("click", function() {
 		createModalBox();
 	});
 
 	const ipAdress = "192.168.5.163";
-    
+
     function setTopComments() {
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", "http://" + ipAdress + "/comments/top/", true);
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			if (design == null || design == "light")
 				modal.style.backgroundColor = "lightgray";
 			else if (design == "dark")
-				modal.style.backgroundColor = "black";
+				modal.style.backgroundColor = "#292929";
 			modal.classList.add("modal");
 			modal.style.height = "500px";
 			modal.style.width = "100vw";
@@ -100,13 +100,14 @@ document.addEventListener("DOMContentLoaded", function() {
 			button.textContent = "Speichern";
 			button.classList.add("button");
 			modal.appendChild(button);
-			
+
 			var a = document.createElement("a");
 			a.id = "linkToIcon";
 			a.classList.add("a");
 			a.textContent = "Links are from: https://www.iconfinder.com/Chanut-is";
+			a.href = "https://www.iconfinder.com/Chanut-is";
 			modal.appendChild(a);
-			
+
 			document.getElementById("nav").appendChild(modal);
 			document.getElementById("save").addEventListener("click", function() {
 				localStorage.setItem("design", document.getElementById("design").value);
