@@ -17,6 +17,11 @@ body {
 	border-bottom: 2px solid gray;
 }
 
+::selection {
+    color: white;
+    background-color: #31AF91;
+}
+
 @media only screen and (min-width: 1060px) {
   .button:hover, .visitWebsite:hover, .visitComment:hover {
     border: 2px solid #31AF91;

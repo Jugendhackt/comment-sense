@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", function() {
       fileref.setAttribute("type", "text/css");
       fileref.setAttribute("href", filename);
     } else if (filetype == "png") {
-      if (typeof id != "undefined" || id != null)
+        console.log(filename);
+        console.log(document.getElementById(id));
         document.getElementById(id).src = filename;
     }
     if (typeof fileref != "undefined")
