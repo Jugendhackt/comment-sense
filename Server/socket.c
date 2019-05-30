@@ -154,7 +154,7 @@ void acceptSocket(socket_t *socket, socket_t *new_socket ){
         fprintf(stderr, "error: couldn't accept socket: %s\n", strerror(errno));
 
     struct timeval tv;
-    tv.tv_sec = 10;
+    tv.tv_sec = 5;
     tv.tv_usec = 0;
     setsockopt(*new_socket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
