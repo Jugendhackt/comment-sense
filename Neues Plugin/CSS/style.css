@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+@font-face {
+  font-family: "Roboto";
+  src: url(../assets/font/Roboto-Medium.ttf);
+}
 
 html {
 	width: 100%;
@@ -13,8 +16,8 @@ html {
 }
 
 /*Keine Scrollbar*/
-::-webkit-scrollbar { 
-	display: none; 
+::-webkit-scrollbar {
+	display: none;
 }
 
 .title {
@@ -63,4 +66,3 @@ textarea {
 	transition: 0.3s;
 	padding: 5px;
 }
-
