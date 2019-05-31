@@ -175,7 +175,7 @@ String getComments(String request, int *status){
             *status = HttpStatus_Forbidden;
             return newString("{\"error\":\"we don't like sql injections\"");
         }
-        String querry = combineString(3, "SELECT * FROM comments WHERE id IN (", commentIDs.data, ");");
+        String querry = combineString(3, "SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments WHERE id IN (", commentIDs, ");");
 
         clearResult(&result);
         sqlite3_exec(db, querry.data, callback, &result, NULL);

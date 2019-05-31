@@ -234,6 +234,8 @@ int HttpServer::getRequestType(std::string str){
 std::string HttpServer::httpResponsetoString(HttpResponse response){
 	std::stringstream ss;
 	ss<<"HTTP/1.1 "<<HttpStatus_string(response.status)<<"\n";
+    if(isCorsEnabled())
+        ss<<"Access-Control-Allow-Origin:*\n";
 	ss<<"Content-Type:"<<response.contentType<<"\n";
 	ss<<"Content-Length:"<<response.data.size()<<"\n\n";
 	ss<<response.data;
@@ -302,5 +304,15 @@ void HttpServer::handleClient(Client *client){
 		}
 	}
 	//std::cout<<"sending response\n"<<httpResponsetoString(response);
-	socket->send(httpResponsetoString(response));
+    socket->send(httpResponsetoString(response));
+}
+
+bool HttpServer::isCorsEnabled()
+{
+    return corsEnabled;
+}
+
+void HttpServer::setCorsEnabled(bool value)
+{
+    corsEnabled = value;
 }

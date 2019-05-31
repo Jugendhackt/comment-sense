@@ -45,7 +45,25 @@ TCPSocket* TCPSocket::accept(){
 }
 
 void TCPSocket::connect(std::string servAddr, unsigned short port){
-	;
+    struct sockaddr_in server;
+    struct hostent *host_info;
+    unsigned long addr;
+
+    memset( &server, 0, sizeof (server));
+    if((addr = inet_addr(servAddr.c_str())) != INADDR_NONE) {
+        memcpy(&server.sin_addr, &addr, sizeof(addr));
+    }
+    else {
+        host_info = gethostbyname(servAddr.c_str());
+        if(host_info == nullptr)
+            fprintf(stderr, "error: unknown server: %s\n", strerror(errno));
+        else
+            memcpy(&server.sin_addr, host_info->h_addr, host_info->h_length);
+    }
+    server.sin_family = AF_INET;
+    server.sin_port = htons(port);
+    if(::connect(sock, (struct sockaddr*)&server, sizeof(server)) < 0)
+        fprintf(stderr, "error: couldn't connect to server: %s\n", strerror(errno));
 }
 
 void TCPSocket::disconnect(){
@@ -84,8 +102,9 @@ std::string TCPSocket::recv(int len){
 	int size = ::recv(sock, data, len, 0);
 	if(size < len)
 		data[size] = 0;
-	std::string str(data);
-	delete data;
+	std::string str(len, '\0');
+    memcpy(&str[0], data, len);
+	delete[] data;
 	return str;
 }
 

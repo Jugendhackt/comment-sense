@@ -39,6 +39,7 @@ struct dbResult{
     ~dbResult();
     void clear();
     int columns = 0;
+    int changes = 0;
     std::vector<std::string*> data;
 };
 

@@ -71,6 +71,130 @@ HttpResponse getTopComments(PluginArg arg)
     }
 }
 
+HttpResponse getTopSites(PluginArg arg)
+{
+    Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
+    std::string getTopSites = "SELECT id,url,(length(comments)-length(replace(comments, \",\", \"\"))+1) as count FROM sites order by count desc limit 5;";
+    dbResult *result = db->exec(getTopSites);
+    std::string json = sitesToJson(result);
+    delete result;
+    return {200,"application/json",json};
+}
+
+HttpResponse postComment(PluginArg arg){
+    return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+}
+
+HttpResponse voteComment(PluginArg arg){
+    return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+}
+
+HttpResponse createUser(PluginArg arg){
+    Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
+    cJSON *root = cJSON_Parse(arg.payload.data());
+    if(!cJSON_HasObjectItem(root, "userName")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "password")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"password missing in json\"}"};
+    }
+    char *userNameRaw = cJSON_GetObjectItem(root, "userName")->valuestring;
+    char *passwordRaw = cJSON_GetObjectItem(root, "password")->valuestring;
+    std::string userName = userNameRaw == nullptr ? "" : userNameRaw;
+    std::string password = passwordRaw == nullptr ? "" : passwordRaw;
+    
+    cJSON_Delete(root);
+    
+    std::stringstream ss;
+    ss<<"SELECT name FROM users WHERE name LIKE \'"<<userName<<"\';";
+    dbResult *result = db->exec(ss.str());
+    if(result->data.size() == 0){
+        delete result;
+        ss.str("");
+        ss<<"INSERT INTO users (name, password) VALUES (\'"<<userName<<"\',\'"<<password<<"\');";
+        result = db->exec(ss.str());
+        if(result->changes == 1){
+            delete result;
+            return {HttpStatus_OK,"application/json","{\"status\":\"user created\"}"};
+        }
+        else{
+            delete result;
+            return {HttpStatus_InternalServerError,"application/json","{\"error\":\"user couldn't be created\"}"};
+        }
+    }
+    else{
+        delete result;
+        return {HttpStatus_Conflict,"application/json","{\"error\":\"user already exists\"}"};
+    }
+    return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+}
+
+HttpResponse checkUser(PluginArg arg){
+    Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
+    cJSON *root = cJSON_Parse(arg.payload.data());
+    if(!cJSON_HasObjectItem(root, "userName")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "password")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"password missing in json\"}"};
+    }
+    char *userNameRaw = cJSON_GetObjectItem(root, "userName")->valuestring;
+    char *passwordRaw = cJSON_GetObjectItem(root, "password")->valuestring;
+    std::string userName = userNameRaw == nullptr ? "" : userNameRaw;
+    std::string password = passwordRaw == nullptr ? "" : passwordRaw;
+    
+    cJSON_Delete(root);
+    
+    std::stringstream ss;
+    ss<<"SELECT password FROM users WHERE name LIKE \'"<<userName<<"\';";
+    dbResult *result = db->exec(ss.str());
+    if(result->data.size() != 1){
+        delete result;
+        return {HttpStatus_NotFound,"application/json","{\"error\":\"username not found\"}"};
+    }
+    if(result->data[0][0] == password){
+        delete result;
+        return {HttpStatus_OK,"application/json","{\"status\":\"the user is valid\"}"};
+    }
+    else{
+        delete result;
+        return {HttpStatus_UnprocessableEntity,"application/json","{\"error\":\"wrong password or username\"}"};
+    }
+}
+
+HttpResponse existsUser(PluginArg arg){
+    Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
+    cJSON *root = cJSON_Parse(arg.payload.data());
+    if(!cJSON_HasObjectItem(root, "userName")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
+    }
+    char *userNameRaw = cJSON_GetObjectItem(root, "userName")->valuestring;
+    std::string userName = userNameRaw == nullptr ? "" : userNameRaw;
+    
+    cJSON_Delete(root);
+    
+    std::stringstream ss;
+    ss<<"SELECT name FROM users WHERE name LIKE \'"<<userName<<"\';";
+    dbResult *result = db->exec(ss.str());
+    if(result->data.size() != 1){
+        delete result;
+        return {HttpStatus_OK,"application/json","{\"status\":\"the user exists\"}"};
+    }
+    else{
+        delete result;
+        return {HttpStatus_NotFound,"application/json","{\"error\":\"username not found\"}"};
+    }
+}
+
+HttpResponse manageUser(PluginArg arg){
+    return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+}
+
 std::string commentsToJson(dbResult *comments)
 {
     int columns = comments->columns;
@@ -98,7 +222,54 @@ std::string commentsToJson(dbResult *comments)
         
         cJSON_AddItemToArray(comments_json, comment);
     }
-    std::string json = cJSON_Print(root);
+    char *data = cJSON_Print(root);
+    std::string json = data;
+    free(data);
     cJSON_Delete(root);
     return json;
+}
+
+std::string sitesToJson(dbResult *sites)
+{
+    int columns = sites->columns;
+    if(columns != 3)
+        return "{\"error\":\"no comments\"}";
+    
+    cJSON *root = cJSON_CreateObject();
+    cJSON *sites_json = cJSON_AddArrayToObject(root, "sites");
+    
+    for(std::string *row : sites->data){
+        int id = atoi(row[0].c_str());
+        int count = atoi(row[2].c_str());
+        std::string url = row[1];
+        
+        cJSON *comment = cJSON_CreateObject();
+        cJSON_AddNumberToObject(comment, "id", id);
+        cJSON_AddNumberToObject(comment, "count", count);
+        cJSON_AddStringToObject(comment, "url", url.c_str());
+        
+        cJSON_AddItemToArray(sites_json, comment);
+    }
+    char *data = cJSON_Print(root);
+    std::string json = data;
+    free(data);
+    cJSON_Delete(root);
+    return json;
+}
+
+bool isUserValid(std::string userName, std::string password, Sqlite3DB *db)
+{
+    std::stringstream ss;
+    ss<<"SELECT password FROM users WHERE name LIKE \'"<<userName<<"\';";
+    dbResult *result = db->exec(ss.str());
+    if(result->data.size() != 1){
+        delete result;
+        return false;
+    }
+    if(result->data[0][0] == password){
+        delete result;
+        return true;
+    }
+    delete result;
+    return false;
 }

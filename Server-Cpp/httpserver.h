@@ -181,13 +181,17 @@ class HttpServer
 
         void start();
 		void handleClient(Client *client);
-
-    protected:
-
-    private:
+        
+        bool isCorsEnabled();
+        void setCorsEnabled(bool value);
+        
+protected:
+        
+private:
         TCPSocket *server;
 		Client clients[MAX_CONNECTIONS];
 		std::vector<Plugin> plugins;
+        bool corsEnabled;
 };
 
 #endif // HTTPSERVER_H

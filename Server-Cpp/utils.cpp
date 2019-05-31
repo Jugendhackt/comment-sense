@@ -101,7 +101,12 @@ Sqlite3DB::Sqlite3DB(std::string fileName)
 dbResult* Sqlite3DB::exec(std::string querry)
 {
     dbResult *result = new dbResult;
-    sqlite3_exec(db, querry.data(), sqlite3db_callback, result, nullptr);
+    char *error = nullptr;
+    sqlite3_exec(db, querry.data(), sqlite3db_callback, result, &error);
+    if(error){
+        std::cout<<"[SQL ERROR] : \'"<<error<<"\'\n";
+    }
+    result->changes = sqlite3_changes(db);
     return result;
 }
 
