@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		createModalBox();
 	});
 
-	const ipAdress = "192.168.178.32";
+	const ipAdress = "192.168.178.34";
 
     function setTopComments() {
 		var xhr = new XMLHttpRequest();

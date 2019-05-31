@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("inputPassword").type = "password";
   });
 
-  const ipAdress = '192.168.178.32'
+  const ipAdress = '192.168.178.34'
 
   function sendsaveData() {
     if (document.getElementById("inputUsername").value == "" || document.getElementById("inputPassword").value == "") {
