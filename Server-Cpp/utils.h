@@ -10,12 +10,15 @@
 #include <sstream>
 
 #include "sqlite3.h"
+#include "cJSON.h"
 
 typedef unsigned char byte;
 typedef std::vector<byte> ByteArray;
 
 std::vector<std::string> split(const std::string& s, char delimiter);
 std::string removeAll(std::string str, std::string chars);
+std::string stringToHex(std::string str);
+std::string stringFromHex(std::string hex);
 
 class File{
 public:
@@ -33,7 +36,9 @@ private:
 };
 
 struct dbResult{
-    int columns;
+    ~dbResult();
+    void clear();
+    int columns = 0;
     std::vector<std::string*> data;
 };
 
@@ -42,7 +47,7 @@ int sqlite3db_callback(void *data, int argc, char **argv, char **azColName);
 class Sqlite3DB{
 public:
     Sqlite3DB(std::string fileName);
-    dbResult exec(std::string querry);
+    dbResult *exec(std::string querry);
 private:
     sqlite3 *db;
 };

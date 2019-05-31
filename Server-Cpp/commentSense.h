@@ -16,5 +16,7 @@ HttpResponse checkUser(PluginArg arg);
 HttpResponse existsUser(PluginArg arg);
 HttpResponse manageUser(PluginArg arg);
 
-std::string commentsToJson(dbResult comments);
+std::string commentsToJson(dbResult *comments);
+std::string sitesToJson(dbResult sites);
+
 #endif // COMMENTSENSE_H

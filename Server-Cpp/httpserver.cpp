@@ -201,11 +201,11 @@ HttpServer::HttpServer(unsigned short port)
     server = new TCPSocket(AF_INET, SOCK_STREAM, 0);
     server->bind();
 
-	addPlugin(newPlugin("default get", GET, "/", defaultGet));
-	addPlugin(newPlugin("default put", PUT, "/", defaultPut));
-	addPlugin(newPlugin("default post", POST, "/", defaultPost));
-	addPlugin(newPlugin("default patch", PATCH, "/", defaultPatch));
-	addPlugin(newPlugin("default delete", DELETE, "/", defaultDelete));
+	addPlugin(newPlugin("default get\t", GET, "/", defaultGet));
+	addPlugin(newPlugin("default put\t", PUT, "/", defaultPut));
+	addPlugin(newPlugin("default post\t", POST, "/", defaultPost));
+	addPlugin(newPlugin("default patch\t", PATCH, "/", defaultPatch));
+	addPlugin(newPlugin("default delete\t", DELETE, "/", defaultDelete));
 
     std::cout<<"server initialized\n";
 }
@@ -259,7 +259,7 @@ void HttpServer::start(){
 		client->server = this;
 		client->socket = server->accept();
 		//std::cout<<"client connected\n";
-		pthread_create(&client->thread, NULL, ::handleClient, client);
+		pthread_create(&client->thread, nullptr, ::handleClient, client);
 		pthread_detach(client->thread);
 	}
 }
@@ -288,7 +288,7 @@ void HttpServer::handleClient(Client *client){
 				payload = socket->recv(len);
 			}
 		}
-		PluginArg arg = {url, payload, nullptr};
+		PluginArg arg = {url, payload, this, nullptr};
 
 		for(Plugin p : plugins){
 			if(p.requestType != type)

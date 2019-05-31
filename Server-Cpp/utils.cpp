@@ -21,6 +21,24 @@ std::string removeAll(std::string str, std::string chars){
     return result;
 }
 
+std::string stringToHex(std::string str){
+    ;
+}
+
+std::string stringFromHex(std::string hex){
+    std::string str(hex.size()/2, '\0');
+    for(unsigned int i = 0; i < str.size(); i++){
+        int higher = hex[i*2] -48;
+        int lower = hex[i*2+1] - 48;
+        higher -= higher > 9 ? 7 : 0;
+        lower -= lower > 9 ? 7 : 0;
+        
+        int c = (higher<<4) + lower;
+        str[i] = char(c);
+    }
+    return str;
+}
+
 File::File(std::string fileName){
 	this->fileName = fileName;
 }
@@ -48,8 +66,8 @@ std::string File::readAll(){
 	fseek(file, 0, SEEK_SET);
 	//std::cout<<"reading file"<<fileName<<" size:"<<size<<"\n";
 	std::string content(size, '\0');
-    if(fread(&content[0], size, 1, file) != size){
-        std::cout<<"[ERROR] reading file\n";
+    if(fread(&content[0], size, 1, file) > size){
+        std::cout<<"[ERROR] reading file:\""<<fileName<<"\"\n";
     }
 	return content;
 }
@@ -58,7 +76,7 @@ std::string File::read(unsigned int len){
 	if(!m_isOpen)
 		return "";
     std::string content(len, '\0');
-	if(fread(&content[0], len, 1, file) != len){
+	if(fread(&content[0], len, 1, file) > len){
         std::cout<<"[ERROR] reading file:\""<<fileName<<"\"\n";
     }
 	return content;    
@@ -80,10 +98,10 @@ Sqlite3DB::Sqlite3DB(std::string fileName)
     sqlite3_open(fileName.data(), &db);
 }
 
-dbResult Sqlite3DB::exec(std::string querry)
+dbResult* Sqlite3DB::exec(std::string querry)
 {
-    dbResult result;
-    sqlite3_exec(db, querry.data(), sqlite3db_callback, &result, nullptr);
+    dbResult *result = new dbResult;
+    sqlite3_exec(db, querry.data(), sqlite3db_callback, result, nullptr);
     return result;
 }
 
@@ -102,4 +120,18 @@ int sqlite3db_callback(void *data, int argc, char **argv, char **azColName)
     }
     result->data.push_back(row);
     return 0;
+}
+
+dbResult::~dbResult()
+{
+    clear();
+}
+
+void dbResult::clear()
+{
+    for(std::string *row : data){
+        delete [] row;
+    }
+    data.clear();
+    columns = 0;
 }

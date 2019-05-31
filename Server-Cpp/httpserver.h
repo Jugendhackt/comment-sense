@@ -26,6 +26,7 @@ struct Client{
 struct PluginArg{
 	std::string url;
 	std::string payload;
+    HttpServer *server;
     void *arg;
 };
 
