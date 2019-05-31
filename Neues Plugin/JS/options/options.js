@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		window.location.href="../../HTML/options/settings.html";
 	});
 
-	const ipAdress = "192.168.2.110";
+	const ipAdress = "192.168.178.34";
 
 
 	function loginUser() {
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
 							setErr("angemeldet mit automatischen anmelden");
 							setErr("Bitte öffne das Plugin neu");
 							setAutoLoginErr("");
-						} else if (this.status === 400) 
+						} else if (this.status === 400)
 							setErr("Nutzerdaten nicht vollständig");
 						else
 							setErr(this.status);

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("send").addEventListener("click", writeComment);
 
 
-	const ipAdress = "192.168.2.110";
+	const ipAdress = "192.168.178.34";
 	//const userName = "Test1";
 	//const password = "123";
 
@@ -96,10 +96,10 @@ document.addEventListener("DOMContentLoaded", function() {
 						if (this.status === 201) {
 							changeDisplay("commentInput", "none");
 							changeDisplay("createCommentDiv", "block");
-							changeHeight("footer", "40px");	
+							changeHeight("footer", "40px");
 						}
 
-					}				
+					}
 					xhr.send(JSON.stringify({
 						userName: result.userName,
 						password: result.password,

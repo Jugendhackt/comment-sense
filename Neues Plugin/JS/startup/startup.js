@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function(){
-	const ipAdress = "192.168.2.110";
-	
-	
+	const ipAdress = "192.168.178.34";
+
+
 	function getUserData() {
 		chrome.storage.local.get(["userName", "password", "time"], function(result){
 			var date = new Date();
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function(){
 					userName: result.userName,
 					password: result.password
 				}));
-			} 
+			}
 		});
 	}
 
