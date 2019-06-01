@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function() {
       xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
       xhr.onload = function() {
         if (this.status == 200) {
-          setLoginData(document.getElementById("inputNickname").value, document.getElementById("inputPassword").value); 
+          setLoginData(document.getElementById("inputNickname").value, document.getElementById("inputPassword").value);
           setErr("Anmelden erfolgreich");
           setTimeout(window.location.href = "HTML/showAcc.html", 2000);
         } else if (this.status == 404 || this.status == 422) {
