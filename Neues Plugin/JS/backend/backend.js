@@ -14,15 +14,16 @@ document.addEventListener("DOMContentLoaded", function() {
 			xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "'", true);
 			xhr.onload = function() {
 				if (this.status === 200 || this.status === 404) {
+					console.log(this.responseText);
 					var data = JSON.parse(this.responseText);
 					document.getElementById("comments").innerHTML = "";
-					for (var i = 0; i < data.Comments.length; i++) {
-						let userid = data.Comments[i].userId;
-						let username = data.Comments[i].userName;
-						let id = data.Comments[i].id;
-						let headline = data.Comments[i].headline;
-						let comment = data.Comments[i].content;
-						let votes = data.Comments[i].votes;
+					for (var i = 0; i < data.comments.length; i++) {
+						let userid = data.comments[i].userId;
+						let username = data.comments[i].userName;
+						let id = data.comments[i].id;
+						let headline = data.comments[i].headline;
+						let comment = data.comments[i].content;
+						let votes = data.comments[i].votes;
 						console.log(username);
 						displayComment(username, headline, comment, votes, id);
 					}
