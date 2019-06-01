@@ -3,9 +3,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 	const ipAdress = "192.168.178.34";
-	//const userName = "Test1";
-	//const password = "123";
-
 
 	function refresh() {
 		chrome.tabs.query({
@@ -14,7 +11,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		}, function(tabs){
 			var url = tabs[0].url;
 			var xhr = new XMLHttpRequest();
-			xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "'", true);			xhr.onload = function() {
+			xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "'", true);
+			xhr.onload = function() {
 				if (this.status === 200 || this.status === 404) {
 					var data = JSON.parse(this.responseText);
 					document.getElementById("comments").innerHTML = "";
@@ -98,7 +96,6 @@ document.addEventListener("DOMContentLoaded", function() {
 							changeDisplay("createCommentDiv", "block");
 							changeHeight("footer", "40px");
 						}
-
 					}
 					xhr.send(JSON.stringify({
 						userName: result.userName,

@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		if (document.getElementById("commentInput").style.display != "none") {
 			changeDisplay("commentInput", "none");
 			changeDisplay("createCommentDiv", "block");
-			changeHeight("footer", "40px");	
+			changeHeight("footer", "40px");
 		}
 	}
 

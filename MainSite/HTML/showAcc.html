@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../CSS/style.css">
+    <link rel="stylesheet" type="text/css" href="../CSS/editAcc.css">
+    <link rel="shortcut icon" type="image/ico" href="../assets/icons/favicon.ico">
+    <title>Account verwalten</title>
+  </head>
+  <body>
+    <div class="flexbox">
+      <div>
+        <img id="setting" src="../assets/icons/settingLight512.png" width="3.5%">
+      </div>
+      <label class="label">Nickname:</label>
+      <input type="text" class="input" id="inputNickname" readonly>
+      <label class="label" id="labelPassword">Passwort:</label>
+      <input type="password" class="input" id="inputPassword" readonly>
+      <label class="label">E-Mail:</label>
+      <input type="text"class="input" id="inputEmail">
+      <button type="button" class="button" id="editAcc">Ändern</button>
+      <div id="error"></div>
+    </div>
+    <script type="application/javascript" charset="utf-8" src="../JS/showAcc.js"></script>
+    <script type="application/javascript" charset="utf-8" src="../JS/design.js"></script>
+  </body>
+</html>

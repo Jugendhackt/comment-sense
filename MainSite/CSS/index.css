@@ -3,14 +3,14 @@
   position: fixed;
   top: 0;
   transition: 0.2s;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   width: 100%;
   height: 10vh;
 }
 
-#createAcc {
-  width: 50vw;
+.button {
+  width: 30vw;
 }
 
 .row {
