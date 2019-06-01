@@ -93,24 +93,26 @@ std::string File::readAll(){
 }
 
 std::string File::read(unsigned int len){
-	if(!m_isOpen)
-		return "";
-    std::string content(len, '\0');
-	if(fread(&content[0], len, 1, file) > len){
-        std::cout<<"[ERROR] reading file:\""<<fileName<<"\"\n";
+    if(m_isOpen){
+        std::string content(len, '\0');
+        if(fread(&content[0], len, 1, file) > len){
+            std::cout<<"[ERROR] reading file:\""<<fileName<<"\"\n";
+        }
+        return content;
     }
-	return content;    
+    return "";  
 }
 
 void File::write(std::string data){
-	if(!m_isOpen)
-		return;
-    fwrite(data.data(), data.size(), 1, file);
+    if(m_isOpen){
+        fwrite(data.data(), data.size(), 1, file);
+    }
 }
 
 void File::close(){
-	if(!m_isOpen)
-		return;
+	if(m_isOpen){
+        fclose(file);
+    }
 }
 
 Sqlite3DB::Sqlite3DB(std::string fileName)
