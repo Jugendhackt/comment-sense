@@ -13,18 +13,23 @@ int main()
     HttpServer *server = new HttpServer();
     Sqlite3DB *db = new Sqlite3DB("./data/mainDataBase.db3");
     //add plugin
+    
+    std::string hex = stringToHex("Hallo Welt");
+    std::cout<<hex<<"\n"<<stringFromHex(hex)<<"\n";
+    
+    
 	server->addPlugin(newPlugin("get comments\t", HttpServer::GET, "/comments/", getComments, db));
     server->addPlugin(newPlugin("get top comments", HttpServer::GET, "/comments/top/", getTopComments, db));
     server->addPlugin(newPlugin("get top sites\t", HttpServer::GET, "/sites/top/", getTopSites, db));
     
     server->addPlugin(newPlugin("post comment\t", HttpServer::POST, "/comments/", postComment, db));
-    server->addPlugin(newPlugin("vote comment\t", HttpServer::POST, "/comments/", voteComment, db));
+    server->addPlugin(newPlugin("vote comment\t", HttpServer::PATCH, "/comments/", voteComment, db));
     
     server->addPlugin(newPlugin("create user\t", HttpServer::POST, "/users/create/", createUser, db));
     server->addPlugin(newPlugin("exists user\t", HttpServer::POST, "/users/exists/", existsUser, db));
     server->addPlugin(newPlugin("check  user\t", HttpServer::POST, "/users/check/", checkUser, db));
     server->addPlugin(newPlugin("check  user\t", HttpServer::POST, "/users/login/", checkUser, db));
-    server->addPlugin(newPlugin("manage user\t", HttpServer::POST, "/users/manage/", manageUser, db));
+    server->addPlugin(newPlugin("manage user\t", HttpServer::PATCH, "/users/manage/", manageUser, db));
     
     server->setCorsEnabled(true);
     

@@ -22,7 +22,18 @@ std::string removeAll(std::string str, std::string chars){
 }
 
 std::string stringToHex(std::string str){
-    ;
+    std::string hex(str.size()*2, '\0');
+    for(unsigned int i = 0; i < str.size(); i++){
+        unsigned char c = static_cast<unsigned char>(str[i]);
+        unsigned char higher = c>>4;
+        unsigned char lower = static_cast<unsigned char>(c<<4);
+        lower >>= 4;
+        higher += higher > 9 ? 7 : 0;
+        lower += lower > 9 ? 7 : 0;
+        hex[i*2] = char(higher+48);
+        hex[i*2+1] = char(lower+48);
+    }
+    return hex;
 }
 
 std::string stringFromHex(std::string hex){
@@ -37,6 +48,15 @@ std::string stringFromHex(std::string hex){
         str[i] = char(c);
     }
     return str;
+}
+
+std::string getDate()
+{
+    time_t now = time(nullptr);
+    struct tm tstruct = *localtime(&now);
+    char buf[80];
+    strftime(buf, sizeof(buf), "%d.%m.%Y", &tstruct);
+    return buf;
 }
 
 File::File(std::string fileName){
@@ -104,9 +124,10 @@ dbResult* Sqlite3DB::exec(std::string querry)
     char *error = nullptr;
     sqlite3_exec(db, querry.data(), sqlite3db_callback, result, &error);
     if(error){
-        std::cout<<"[SQL ERROR] : \'"<<error<<"\'\n";
+        std::cout<<"[SQL ERROR] : \'"<<error<<"\'\n"<<querry<<"\n";
     }
     result->changes = sqlite3_changes(db);
+    result->rowId = sqlite3_last_insert_rowid(db);
     return result;
 }
 

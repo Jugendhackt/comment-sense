@@ -260,19 +260,25 @@ void HttpServer::start(){
 		Client *client = new Client;
 		client->server = this;
 		client->socket = server->accept();
-		//std::cout<<"client connected\n";
-		pthread_create(&client->thread, nullptr, ::handleClient, client);
+#if defined(DEBUG)
+		std::cout<<"client connected\n";
+#endif
+        pthread_create(&client->thread, nullptr, ::handleClient, client);
 		pthread_detach(client->thread);
 	}
 }
 
 void HttpServer::handleClient(Client *client){
-	//std::cout<<"client gets handled\n";
-	TCPSocket *socket = client->socket;
+#if defined(DEBUG)
+	std::cout<<"client gets handled\n";
+#endif
+    TCPSocket *socket = client->socket;
 	std::vector<std::string> header = socket->recvHeader();
+#if defined(DEBUG)
 	for(std::string line : header){
-		//std::cout<<line<<"\n";
+		std::cout<<line<<"\n";
 	}
+#endif
 	HttpResponse response = {404,"text/plain","Error: Not found"};
 	if(header.size() == 0 || header[0].size() == 0){
 		response.status = HttpStatus_BadRequest;
@@ -281,13 +287,17 @@ void HttpServer::handleClient(Client *client){
 		std::vector<std::string> request = split(header[0], ' ');
 		std::string url = request[1];
 		int type = getRequestType(request[0]);
-		//std::cout<<"type: "<<type<<"\n";
-
+#if defined(DEBUG)
+		std::cout<<"type: "<<type<<"\n";
+#endif
 		std::string payload = "";
 		for(std::string line : header){
 			if(line.rfind("Content-Length:", 0) == 0){
 				int len = atoi(line.c_str()+15);
 				payload = socket->recv(len);
+#if defined(DEBUG)
+                std::cout<<"payload:"<<payload<<"\n";
+#endif
 			}
 		}
 		PluginArg arg = {url, payload, this, nullptr};
@@ -296,14 +306,18 @@ void HttpServer::handleClient(Client *client){
 			if(p.requestType != type)
 				continue;
 			if(url.rfind(p.subUrl, 0) == 0){
-				//std::cout<<"calling plugin\n";
+#if defined(DEBUG)
+				std::cout<<"calling plugin\n";
+#endif
                 arg.arg = p.arg;
 				response = p.callback(arg);
 				break;
 			}
 		}
 	}
-	//std::cout<<"sending response\n"<<httpResponsetoString(response);
+#if defined(DEBUG)
+	std::cout<<"sending response\n"<<httpResponsetoString(response);
+#endif
     socket->send(httpResponsetoString(response));
 }
 

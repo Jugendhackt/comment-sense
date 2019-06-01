@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <stdio.h>
+#include <time.h>
 
 #include <vector>
 #include <string>
@@ -19,6 +20,8 @@ std::vector<std::string> split(const std::string& s, char delimiter);
 std::string removeAll(std::string str, std::string chars);
 std::string stringToHex(std::string str);
 std::string stringFromHex(std::string hex);
+
+std::string getDate();
 
 class File{
 public:
@@ -40,6 +43,7 @@ struct dbResult{
     void clear();
     int columns = 0;
     int changes = 0;
+    int64_t rowId = 0;
     std::vector<std::string*> data;
 };
 

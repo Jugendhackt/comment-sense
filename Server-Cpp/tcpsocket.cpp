@@ -67,17 +67,45 @@ void TCPSocket::connect(std::string servAddr, unsigned short port){
 }
 
 void TCPSocket::disconnect(){
-	close(sock);
+#if defined(DEBUG)
+    std::cout<<"disconnected\n";
+#endif
+    if(sock >= 0){
+        std::cout<<getError();
+        if(shutdown(sock, SHUT_RDWR) < 0){
+            if (errno != ENOTCONN && errno != EINVAL)
+                std::cerr<<"error: shutdown socket failed\n";
+        }
+        if(close(sock) < 0){
+            std::cerr<<"error: close socket failed\n";
+        }
+    }
+    if(isConnected()){
+        std::cerr<<"error: socket still connected\n";
+    }
 }
 
 bool TCPSocket::isConnected(){
 	int error = 0;
     socklen_t errorlen = sizeof (error);
     if(getsockopt(sock, SOL_SOCKET, SO_ERROR, &error, &errorlen) != 0){
+#if defined (DEBUG)
         std::cerr<<"error: socket not connected: "<<strerror(errno)<<"\n";
+#endif
         return false;
     }
     return true;
+}
+
+std::string TCPSocket::getError()
+{
+    int err = 1;
+    socklen_t len = sizeof err;
+    if(getsockopt(sock, SOL_SOCKET, SO_ERROR, &err, &len) == -1)
+        return "getsockopt failed";
+    if (err)
+        return strerror(err);
+    return "";
 }
 
 void TCPSocket::setTimeout(unsigned int secs, unsigned int usecs){

@@ -14,7 +14,7 @@ HttpResponse getComments(PluginArg arg){
         if(result->columns != 1 || result->data.size() != 1){
             //std::cout<<"Error: no comments on this site\n";
             delete  result;
-            return {HttpStatus_NotFound,"text/plain","Error: no comments on this site"};
+            return {HttpStatus_NotFound,"application/json","{\"comments\":[{\"id\":-1,\"headline\":\"Keine Kommentare\",\"content\":\"F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. Du kannst gern damit anfangen.\",\"votes\":0,\"userID\":-1,\"userName\":\"CommentSense\"}]}"};
         }
         else{
             //std::cout<<"found some comments\n";
@@ -29,7 +29,7 @@ HttpResponse getComments(PluginArg arg){
         }
     }
     else
-        return {400,"text/plain","Error: site not specified"};
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"no site specified\"}"};
 }
 
 HttpResponse getTopComments(PluginArg arg)
@@ -82,6 +82,71 @@ HttpResponse getTopSites(PluginArg arg)
 }
 
 HttpResponse postComment(PluginArg arg){
+    Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
+    cJSON *root = cJSON_Parse(arg.payload.data());
+    if(!cJSON_HasObjectItem(root, "userName")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "password")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"password missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "headline")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"headline missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "content")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"content missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "url")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"url missing in json\"}"};
+    }
+    
+    char *userNameRaw = cJSON_GetObjectItem(root, "userName")->valuestring;
+    char *passwordRaw = cJSON_GetObjectItem(root, "password")->valuestring;
+    char *headlineRaw = cJSON_GetObjectItem(root, "headline")->valuestring;
+    char *contentRaw = cJSON_GetObjectItem(root, "content")->valuestring;
+    char *urlRaw = cJSON_GetObjectItem(root, "url")->valuestring;
+    std::string userName = userNameRaw == nullptr ? "" : userNameRaw;
+    std::string password = passwordRaw == nullptr ? "" : passwordRaw;
+    std::string headline = headlineRaw == nullptr ? "" : headlineRaw;
+    std::string content = contentRaw == nullptr ? "" : contentRaw;
+    std::string url = urlRaw == nullptr ? "" : urlRaw;
+    
+    cJSON_Delete(root);
+    
+    if(isUserValid(userName, password, db)){
+        std::string headlineData = stringToHex(headline);
+        std::string contentData = stringToHex(content);
+        std::string date = getDate();
+        
+        int userId = getUserId(userName, db);
+        
+        std::stringstream querry;
+        querry<<"INSERT INTO comments (userId, votes, date, headline, content, url) VALUES (\'"<<userId
+              <<"\',\'\',\'"<<date<<"\',\'"<<headlineData<<"\',\'"<<contentData<<"\',\'"<<url<<"\');";
+        dbResult *result = db->exec(querry.str());
+        if(result->changes == 1){
+            int64_t commentId = result->rowId;
+            delete result;
+            if(addCommentToSite(commentId, url, db)){
+                return {HttpStatus_Created,"application/json","{\"status\":\"comment successfully posted\"}"};
+            }
+            else{
+                return {HttpStatus_InternalServerError,"application/json","{\"error\":\"couldn't add comment to sites\"}"};
+            }
+        }
+        else{
+            delete result;
+            return {HttpStatus_InternalServerError,"application/json","{\"error\":\"sql insert failed\"}"};
+        }
+    }
+    else{
+        return {HttpStatus_Unauthorized,"application/json","{\"error\":\"user not valid\"}"};
+    }    
     return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
 }
 
@@ -158,7 +223,7 @@ HttpResponse checkUser(PluginArg arg){
     }
     if(result->data[0][0] == password){
         delete result;
-        return {HttpStatus_OK,"application/json","{\"status\":\"the user is valid\"}"};
+        return {HttpStatus_OK,"application/json","{\"status\":\"login data valid\"}"};
     }
     else{
         delete result;
@@ -257,11 +322,27 @@ std::string sitesToJson(dbResult *sites)
     return json;
 }
 
+int getUserId(std::string userName, Sqlite3DB *db)
+{
+    std::stringstream querry;
+    querry<<"SELECT id FROM users WHERE name LIKE \'"<<userName<<"\';";
+    dbResult *result = db->exec(querry.str());
+    if(result->data.size() != 1){
+        delete result;
+        return -1;
+    }
+    else{
+        int id = atoi(result->data[0][0].c_str());
+        delete result;
+        return id;
+    }
+}
+
 bool isUserValid(std::string userName, std::string password, Sqlite3DB *db)
 {
-    std::stringstream ss;
-    ss<<"SELECT password FROM users WHERE name LIKE \'"<<userName<<"\';";
-    dbResult *result = db->exec(ss.str());
+    std::stringstream querry;
+    querry<<"SELECT password FROM users WHERE name LIKE \'"<<userName<<"\';";
+    dbResult *result = db->exec(querry.str());
     if(result->data.size() != 1){
         delete result;
         return false;
@@ -272,4 +353,48 @@ bool isUserValid(std::string userName, std::string password, Sqlite3DB *db)
     }
     delete result;
     return false;
+}
+
+bool addCommentToSite(int64_t commentId, std::string url, Sqlite3DB *db)
+{
+    std::string id = std::to_string(commentId);
+    std::stringstream querry;
+    querry<<"SELECT comments FROM sites WHERE url LIKE \'"<<url<<"\';";
+    dbResult *result = db->exec(querry.str());
+    if(result->data.size() == 0){
+        delete result;
+        querry.str("");
+        querry<<"INSERT INTO sites (url, comments) VALUES (\'"<<url<<"\', \'"<<id<<"\');";
+        result = db->exec(querry.str());
+        if(result->changes){
+            delete result;
+            return true;
+        }
+        else{
+            delete result;
+            return false;
+        }
+    }
+    else if(result->data.size() == 1){
+        std::string comments = result->data[0][0];
+        delete result;
+        comments += ',';
+        comments += id;
+        querry.str("");
+        querry<<"UPDATE sites SET comments = \'"<<comments<<"\' WHERE url LIKE \'"<<url<<"\';";
+        result = db->exec(querry.str());
+        if(result->changes){
+            delete result;
+            return true;
+        }
+        else{
+            delete result;
+            return false;
+        }
+    }
+    else{
+        delete result;
+        return false;
+    }
+    return true;
 }

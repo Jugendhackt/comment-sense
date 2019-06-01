@@ -46,7 +46,7 @@ fi
 if [ "cJSON.c" -nt "cJSON.o" ] || [ "cJSON.h" -nt "cJSON.o" ] || [ "$rebuild" == "1" ]
 	then
 	echo "rebuilding cJSON"
-	gcc -c cJSON.c $options $defines
+	gcc -c cJSON.c $options
 fi
 
 if [ "tcpsocket.cpp" -nt "tcpsocket.o" ] || [ "tcpsocket.h" -nt "tcpsocket.o" ] || [ "$rebuild" == "1" ]
@@ -58,7 +58,7 @@ fi
 if [ "sqlite3.c" -nt "sqlite3.o" ] || [ "sqlite3.h" -nt "sqlite3.o" ] || [ "$rebuild" == "1" ]
 	then
 	echo "rebuilding sqlite3"
-	gcc -c sqlite3.c $options $defiens
+	gcc -c sqlite3.c $options
 fi
 
 if [ "utils.cpp" -nt "utils.o" ] || [ "utils.h" -nt "utils.o" ] || [ "$rebuild" == "1" ]
@@ -82,3 +82,10 @@ fi
 echo "building server:"
 echo "g++ main.cpp $link -o server $libs $options -Wall $defines $args"
 g++ main.cpp $link -o server $libs $options -Wall $defines $args
+
+if [ -d data ]
+    then
+	rm data -r
+fi
+mkdir data
+cp ../MainSite/* data/ -r
