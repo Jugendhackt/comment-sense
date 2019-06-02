@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
 						let username = data.comments[i].userName;
 						let id = data.comments[i].id;
 						let headline = data.comments[i].headline;
+						console.log(data.comments[i]);
 						let comment = data.comments[i].content;
 						let votes = data.comments[i].votes;
 						console.log(username);
@@ -102,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
 						userName: result.userName,
 						password: result.password,
 						headline: title,
-						comment: comment,
+						content: comment,
 						url: url
 					}));
 				});
