@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <dirent.h>
 
 #include <vector>
 #include <string>
@@ -22,16 +26,19 @@ std::string stringToHex(std::string str);
 std::string stringFromHex(std::string hex);
 
 std::string getDate();
+std::vector<std::string> getDirContent(std::string path);
 
 class File{
 public:
 	File(std::string fileName = "");
-
+    void setFileName(std::string file);
 	bool open(std::string mode, std::string fileName = "");
 	std::string readAll();
 	std::string read(unsigned int len);
 	void write(std::string data);
 	void close();
+    
+    bool isDir();
 private:
 	std::string fileName;
 	FILE *file;

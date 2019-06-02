@@ -59,8 +59,28 @@ std::string getDate()
     return buf;
 }
 
+std::vector<std::string> getDirContent(std::string path)
+{
+    DIR *dir;
+    struct dirent *ent;
+    std::vector<std::string> entrys;
+    if((dir = opendir(path.c_str())) != nullptr){
+        while((ent = readdir(dir)) != nullptr){
+            entrys.push_back(ent->d_name);
+        }
+        closedir(dir);
+    }
+    return  entrys;
+}
+
+
 File::File(std::string fileName){
-	this->fileName = fileName;
+    this->fileName = fileName;
+}
+
+void File::setFileName(std::string file)
+{
+    fileName = file;
 }
 
 bool File::open(std::string mode, std::string fileName){
@@ -113,6 +133,13 @@ void File::close(){
 	if(m_isOpen){
         fclose(file);
     }
+}
+
+bool File::isDir()
+{
+    struct stat pathStat;
+    stat(fileName.c_str(), &pathStat);
+    return S_ISDIR(pathStat.st_mode);
 }
 
 Sqlite3DB::Sqlite3DB(std::string fileName)

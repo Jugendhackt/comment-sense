@@ -132,26 +132,55 @@ const char* HttpContentType(std::string ending){
 		return "text/plain";
 }
 
+std::string getDir(std::string dir)
+{
+    std::vector<std::string> entrys = getDirContent(dir);
+    std::stringstream html;
+    for(std::string entry : entrys){
+        if(entry == ".")
+            html<<"<a href="<<"/"<<dir<<">"<<entry<<"</a><br>";
+        else if(entry == ".."){
+            std::string parent = dir;
+            while(parent.back() != '/' && parent.size())
+                parent.pop_back();
+            html<<"<a href="<<"/"<<parent<<">"<<entry<<"</a><br>";
+        }
+        else
+            html<<"<a href="<<"/"<<dir<<"/"<<entry<<">"<<entry<<"</a><br>";
+    }
+    return html.str();
+}
+
 HttpResponse defaultGet(PluginArg arg){
 	std::string url = arg.url;
-	if(url == "/")
-		url = "/index.html";
-	url.insert(0, "./data");
-	//std::cout<<url<<"\n";
+    url.erase(0,1);
+	if(url.size() == 0)
+		url = "index.html";
+    if(url.rfind("data") > 0)
+        url.insert(0, "data/");
+    if(url.back() == '/')
+        url.pop_back();
 	File file(url);
 	std::string content, type;
 	int status;
-	if(file.open("rb")){
-		content = file.readAll();
-		type = HttpContentType(split(url, '.').back());
-		status = HttpStatus_OK;
-		file.close();
-	}
-	else{
-		content = "Error: File not found";
-		type = "text/plain";
-		status = HttpStatus_NotFound;
-	}
+    if(file.isDir()){
+        content = getDir(url);
+        type = "text/html";
+        status = HttpStatus_OK;
+    }
+    else{
+        if(file.open("rb")){
+            content = file.readAll();
+            type = HttpContentType(split(url, '.').back());
+            status = HttpStatus_OK;
+            file.close();
+        }
+        else{
+            content = "Error: File not found";
+            type = "text/plain";
+            status = HttpStatus_NotFound;
+        }
+    }
 	return {status, type, content};
 }
 
