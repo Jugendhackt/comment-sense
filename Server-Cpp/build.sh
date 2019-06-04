@@ -83,9 +83,9 @@ echo "building server:"
 echo "g++ main.cpp $link -o server $libs $options -Wall $defines $args"
 g++ main.cpp $link -o server $libs $options -Wall $defines $args
 
-if [ -d data ]
-    then
-	rm data -r
-fi
-mkdir data
-cp ../MainSite/* data/ -r
+#if [ -d data ]
+#    then
+#	rm data -r
+#fi
+#mkdir data
+#cp ../MainSite/* data/ -r

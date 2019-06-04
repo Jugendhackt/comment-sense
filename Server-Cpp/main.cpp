@@ -12,12 +12,8 @@ int main()
 {
     HttpServer *server = new HttpServer();
     Sqlite3DB *db = new Sqlite3DB("./data/mainDataBase.db3");
+    
     //add plugin
-    
-    std::string hex = stringToHex("Hallo Welt");
-    std::cout<<hex<<"\n"<<stringFromHex(hex)<<"\n";
-    
-    
 	server->addPlugin(newPlugin("get comments\t", HttpServer::GET, "/comments/", getComments, db));
     server->addPlugin(newPlugin("get top comments", HttpServer::GET, "/comments/top/", getTopComments, db));
     server->addPlugin(newPlugin("get top sites\t", HttpServer::GET, "/sites/top/", getTopSites, db));

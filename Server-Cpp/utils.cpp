@@ -101,10 +101,7 @@ std::string File::readAll(){
 		std::cout<<"Error: file not open\n";
 		return "";
 	}
-	fseek(file, 0, SEEK_END);
-	unsigned long size = static_cast<unsigned long>(ftell(file));
-	fseek(file, 0, SEEK_SET);
-	//std::cout<<"reading file"<<fileName<<" size:"<<size<<"\n";
+	unsigned long size = this->size();
 	std::string content(size, '\0');
     if(fread(&content[0], size, 1, file) > size){
         std::cout<<"[ERROR] reading file:\""<<fileName<<"\"\n";
@@ -112,7 +109,7 @@ std::string File::readAll(){
 	return content;
 }
 
-std::string File::read(unsigned int len){
+std::string File::read(unsigned long len){
     if(m_isOpen){
         std::string content(len, '\0');
         if(fread(&content[0], len, 1, file) > len){
@@ -133,6 +130,17 @@ void File::close(){
 	if(m_isOpen){
         fclose(file);
     }
+}
+
+unsigned long File::size()
+{
+    unsigned long size = 0;
+    if(m_isOpen){
+        fseek(file, 0, SEEK_END);
+        size = static_cast<unsigned long>(ftell(file));
+        fseek(file, 0, SEEK_SET);
+    }
+    return size;
 }
 
 bool File::isDir()

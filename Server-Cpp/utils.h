@@ -34,9 +34,11 @@ public:
     void setFileName(std::string file);
 	bool open(std::string mode, std::string fileName = "");
 	std::string readAll();
-	std::string read(unsigned int len);
+	std::string read(unsigned long len);
 	void write(std::string data);
 	void close();
+    
+    unsigned long size();
     
     bool isDir();
 private:

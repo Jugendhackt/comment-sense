@@ -138,17 +138,34 @@ std::string getDir(std::string dir)
     std::stringstream html;
     for(std::string entry : entrys){
         if(entry == ".")
-            html<<"<a href="<<"/"<<dir<<">"<<entry<<"</a><br>";
+            html<<"<a href=\""<<"/"<<dir<<"\">"<<entry<<"</a><br>";
         else if(entry == ".."){
             std::string parent = dir;
             while(parent.back() != '/' && parent.size())
                 parent.pop_back();
-            html<<"<a href="<<"/"<<parent<<">"<<entry<<"</a><br>";
+            html<<"<a href=\""<<"/"<<parent<<"\">"<<entry<<"</a><br>";
         }
         else
-            html<<"<a href="<<"/"<<dir<<"/"<<entry<<">"<<entry<<"</a><br>";
+            html<<"<a href=\""<<"/"<<dir<<"/"<<entry<<"\">"<<entry<<"</a><br>";
     }
     return html.str();
+}
+
+void getBigFile(File *file, TCPSocket *socket){
+    unsigned long chunk = 1024*1024;
+    unsigned long size = file->size();
+    unsigned long chunks = size/chunk;
+    unsigned long rest = size%chunk;
+#if defined(DEBUG)
+    std::cout<<"getting big file: "<<size<<" bytes\n";
+    std::cout<<"sending "<<chunks<<" chunks of size "<<chunk<<"bytes and "<<rest<<" bytes\n";
+#endif
+    for(unsigned long i = 0; i < chunks; i++){
+        std::string data = file->read(chunk);
+        socket->send(data);
+    }
+    std::string data = file->read(rest);
+    socket->send(data);
 }
 
 HttpResponse defaultGet(PluginArg arg){
@@ -170,7 +187,13 @@ HttpResponse defaultGet(PluginArg arg){
     }
     else{
         if(file.open("rb")){
-            content = file.readAll();
+            if(file.size() > 1024*1024){
+                getBigFile(&file, arg.client->socket);
+                content = "";
+            }
+            else{
+                content = file.readAll();
+            }
             type = HttpContentType(split(url, '.').back());
             status = HttpStatus_OK;
             file.close();
@@ -329,7 +352,7 @@ void HttpServer::handleClient(Client *client){
 #endif
 			}
 		}
-		PluginArg arg = {url, payload, this, nullptr};
+		PluginArg arg = {url, payload, this, client, nullptr};
 
 		for(Plugin p : plugins){
 			if(p.requestType != type)
