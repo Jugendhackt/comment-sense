@@ -115,12 +115,15 @@ void TCPSocket::setTimeout(unsigned int secs, unsigned int usecs){
     setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
 
-void TCPSocket::send(std::string data){
+bool TCPSocket::send(std::string data){
 	if(isConnected()){
         if(::send(sock, data.c_str(), (size_t)data.size(), MSG_NOSIGNAL) == -1 ){
             std::cerr<<"error: tcp send(): "<<strerror(errno)<<"\n";
+            return false;
 		}
+        return true;
 	}
+    return false;
 }
 
 std::string TCPSocket::recv(int len){

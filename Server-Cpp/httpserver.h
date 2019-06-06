@@ -155,6 +155,7 @@ bool comparePlugin(Plugin p1, Plugin p2);
 void* handleClient(void *data);
 
 std::string getDir(std::string dir);
+void getBigFile(File *file, TCPSocket *socket, HttpServer *server);
 HttpResponse defaultGet(PluginArg arg);
 HttpResponse defaultPut(PluginArg arg);
 HttpResponse defaultPost(PluginArg arg);

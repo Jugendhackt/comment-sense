@@ -151,7 +151,7 @@ std::string getDir(std::string dir)
     return html.str();
 }
 
-void getBigFile(File *file, TCPSocket *socket){
+void getBigFile(File *file, TCPSocket *socket, HttpServer *server){
     unsigned long chunk = 1024*1024;
     unsigned long size = file->size();
     unsigned long chunks = size/chunk;
@@ -160,9 +160,19 @@ void getBigFile(File *file, TCPSocket *socket){
     std::cout<<"getting big file: "<<size<<" bytes\n";
     std::cout<<"sending "<<chunks<<" chunks of size "<<chunk<<"bytes and "<<rest<<" bytes\n";
 #endif
+    std::stringstream ss;
+    ss<<"HTTP/1.1 "<<HttpStatus_string(HttpStatus_OK)<<"\n";
+    if(server->isCorsEnabled())
+        ss<<"Access-Control-Allow-Origin:*\n";
+    ss<<"Content-Type:"<<"text/plain"<<"\n";
+    ss<<"Content-Length:"<<size<<"\n\n";
+    socket->send(ss.str());
+    
     for(unsigned long i = 0; i < chunks; i++){
         std::string data = file->read(chunk);
-        socket->send(data);
+        if(!socket->send(data)){
+            return;
+        }
     }
     std::string data = file->read(rest);
     socket->send(data);
@@ -188,14 +198,15 @@ HttpResponse defaultGet(PluginArg arg){
     else{
         if(file.open("rb")){
             if(file.size() > 1024*1024){
-                getBigFile(&file, arg.client->socket);
+                getBigFile(&file, arg.client->socket, arg.server);
                 content = "";
+                status = -1;
             }
             else{
                 content = file.readAll();
+                status = HttpStatus_OK;
             }
             type = HttpContentType(split(url, '.').back());
-            status = HttpStatus_OK;
             file.close();
         }
         else{
@@ -284,14 +295,17 @@ int HttpServer::getRequestType(std::string str){
 }
 
 std::string HttpServer::httpResponsetoString(HttpResponse response){
-	std::stringstream ss;
-	ss<<"HTTP/1.1 "<<HttpStatus_string(response.status)<<"\n";
-    if(isCorsEnabled())
-        ss<<"Access-Control-Allow-Origin:*\n";
-	ss<<"Content-Type:"<<response.contentType<<"\n";
-	ss<<"Content-Length:"<<response.data.size()<<"\n\n";
-	ss<<response.data;
-	return ss.str();
+    if(response.status >= 0){
+        std::stringstream ss;
+        ss<<"HTTP/1.1 "<<HttpStatus_string(response.status)<<"\n";
+        if(isCorsEnabled())
+            ss<<"Access-Control-Allow-Origin:*\n";
+        ss<<"Content-Type:"<<response.contentType<<"\n";
+        ss<<"Content-Length:"<<response.data.size()<<"\n\n";
+        ss<<response.data;
+        return ss.str();
+    }
+    return "";
 }
 
 void HttpServer::addPlugin(Plugin plugin){

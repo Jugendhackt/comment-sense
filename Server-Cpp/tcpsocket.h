@@ -38,7 +38,7 @@ class TCPSocket
         std::string getError();
         void setTimeout(unsigned int secs = 5, unsigned int usecs = 0);
 
-		void send(std::string text);
+		bool send(std::string text);
         std::string recv(int len);
 		std::vector<std::string> recvHeader();
 
