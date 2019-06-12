@@ -109,25 +109,36 @@ document.addEventListener("DOMContentLoaded", function() {
       a.href = "https://www.iconfinder.com/Chanut-is";
       modal.appendChild(a);
 
-      var button = document.createElement("button");
-      button.id = "logout";
-      button.classList.add("button");
-      button.classList.add("modalButton");
-      button.textContent = "Abmelden";
-      modal.appendChild(button);
+      var username = localStorage.getItem("username");
+      var password = localStorage.getItem("password");
+      
+      if (username != "null" && password != "null") {
+        var button = document.createElement("button");
+        button.id = "logout";
+        button.classList.add("button");
+        button.classList.add("modalButton");
+        button.textContent = "Abmelden";
+        button.addEventListener("click", function() {
+          setLoginData(null, null);
+          setErr("Du wurdest abgemeldet");
+        });
+        modal.appendChild(button);
+      }
 
+      var error = document.createElement("div");
+      error.id = "error";
+      error.classList.add("error");
+      modal.appendChild(error);
 
       document.getElementById("nav").appendChild(modal);
-      document.getElementById("logout").addEventListener("click", function() {
-        setLoginData("undefined", "undefined");
-      });
+
       document.getElementById("save").addEventListener("click", function() {
         localStorage.setItem("design", document.getElementById("design").value);
         window.location.reload();
       });
 
       window.onclick = function(event) {
-        if (event.target.id != "modal" && event.target.id != "save" && event.target.id != "setting" && event.target.id != "design") {
+        if (event.target.id != "modal" && event.target.id != "save" && event.target.id != "setting" && event.target.id != "design" && event.target.id != "logout") {
           modal.remove();
         }
       }
@@ -245,7 +256,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (this.status == 200) {
           setLoginData(document.getElementById("inputNickname").value, document.getElementById("inputPassword").value);
           setErr("Anmelden erfolgreich");
-          setTimeout(window.location.href = "HTML/showAcc.html", 2000);
+          setTimeout(function() {
+            window.location.href = "HTML/showAcc.html"
+          }, 1500);
         } else if (this.status == 404 || this.status == 422) {
           setLoginData("undefined", "undefined");
           setErr("Nutzer existiert nicht oder Passwort ist falsch");
