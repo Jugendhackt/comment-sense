@@ -138,7 +138,7 @@ html {
 /*Handy/Tablet*/
 @media only screen and (max-width: 1060px) {
   * {
-    font-size: 1.2em;
+    font-size: 1.6rem;
   }
 
   .button, .input, .select {
@@ -150,9 +150,13 @@ html {
     font-size: 18px;
   }
 
-  .modalButton, .modalInput {
+  .modalButton, .modalInput   {
     width: 80vw !important;
     font-size: 2em;
+  }
+
+  #login {
+    width: 60vw;
   }
 
   .modalLabel {
