@@ -185,7 +185,6 @@ HttpResponse voteComment(PluginArg arg){
         if(result->columns == 1 && result->data.size() == 1){
             std::string votes = *result->data[0];
             int userId = getUserId(userName, db);
-            std::cout<<"voting comment "<<id<<" votes: "<<votes<<" user: "<<userId<<"\n";
             std::vector<std::string> voters = split(votes, ',');
             bool alreadyVoted = false;
             for(std::string current : voters){
@@ -194,25 +193,35 @@ HttpResponse voteComment(PluginArg arg){
                     break;
                 }
             }
-            if(!alreadyVoted){
-                std::stringstream ss;
-                ss<<votes<<","<<userId;
-                querry.str("");
-                querry<<"UPDATE comments SET votes = \'"<<ss.str()<<"\' WHERE id LIKE "<<id<<";";
-                delete result;
-                result = db->exec(querry.str());
-                if(result->changes > 0){
+            if(vote == 1){
+                if(!alreadyVoted){
+                    std::stringstream ss;
+                    ss<<votes<<","<<userId;
+                    querry.str("");
+                    querry<<"UPDATE comments SET votes = \'"<<ss.str()<<"\' WHERE id LIKE "<<id<<";";
                     delete result;
-                    return {HttpStatus_OK,"text/plain","status: successfully voted"};
+                    result = db->exec(querry.str());
+                    if(result->changes > 0){
+                        delete result;
+                        return {HttpStatus_OK,"text/plain","status: successfully voted"};
+                    }
+                    else{
+                        delete result;
+                        return {HttpStatus_InternalServerError,"text/plain","error: can't write to database"};
+                    }
                 }
                 else{
                     delete result;
-                    return {HttpStatus_InternalServerError,"text/plain","error: can't write to database"};
+                    return {HttpStatus_Conflict,"text/plain","Error: already voted"};
                 }
+            }
+            else if(vote == -1){
+                delete result;
+                return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
             }
             else{
                 delete result;
-                return {HttpStatus_Conflict,"text/plain","Error: already voted"};
+                return {HttpStatus_BadRequest,"text/plain","Error: invalid vote type"};
             }
         }
         else{
