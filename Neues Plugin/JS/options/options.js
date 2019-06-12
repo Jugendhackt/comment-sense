@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		window.location.href="../../HTML/options/settings.html";
 	});
 
-	const ipAdress = "192.168.178.34";
+	const ipAdress = "192.168.2.108";
 
 
 	function loginUser() {
