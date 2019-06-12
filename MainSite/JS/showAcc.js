@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     sendData();
   });
 
-  const ipAdress = "192.168.178.34";
+  const ipAdress = here;
 
   function setData() {
     document.getElementById("inputNickname").value = localStorage.getItem("username");
