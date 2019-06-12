@@ -151,6 +151,78 @@ HttpResponse postComment(PluginArg arg){
 }
 
 HttpResponse voteComment(PluginArg arg){
+    Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
+    cJSON *root = cJSON_Parse(arg.payload.c_str());
+
+    if(!cJSON_HasObjectItem(root, "userName")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "password")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"password missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "id")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"headline missing in json\"}"};
+    }
+    if(!cJSON_HasObjectItem(root, "vote")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"content missing in json\"}"};
+    }
+
+    char *userNameRaw = cJSON_GetObjectItem(root, "userName")->valuestring;
+    char *passwordRaw = cJSON_GetObjectItem(root, "password")->valuestring;
+    int id = cJSON_GetObjectItem(root, "id")->valueint;
+    int vote = cJSON_GetObjectItem(root, "vote")->valueint;
+    std::string userName = userNameRaw == nullptr ? "" : userNameRaw;
+    std::string password = passwordRaw == nullptr ? "" : passwordRaw;
+
+    if(isUserValid(userName, password, db)){
+        std::stringstream querry;
+        querry<<"SELECT votes FROM comments WHERE id LIKE "<<id<<";";
+        dbResult *result = db->exec(querry.str());
+        if(result->columns == 1 && result->data.size() == 1){
+            std::string votes = *result->data[0];
+            int userId = getUserId(userName, db);
+            std::cout<<"voting comment "<<id<<" votes: "<<votes<<" user: "<<userId<<"\n";
+            std::vector<std::string> voters = split(votes, ',');
+            bool alreadyVoted = false;
+            for(std::string current : voters){
+                if(atoi(current.c_str()) == userId){
+                    alreadyVoted = true;
+                    break;
+                }
+            }
+            if(!alreadyVoted){
+                std::stringstream ss;
+                ss<<votes<<","<<userId;
+                querry.str("");
+                querry<<"UPDATE comments SET votes = \'"<<ss.str()<<"\' WHERE id LIKE "<<id<<";";
+                delete result;
+                result = db->exec(querry.str());
+                if(result->changes > 0){
+                    delete result;
+                    return {HttpStatus_OK,"text/plain","status: successfully voted"};
+                }
+                else{
+                    delete result;
+                    return {HttpStatus_InternalServerError,"text/plain","error: can't write to database"};
+                }
+            }
+            else{
+                delete result;
+                return {HttpStatus_Conflict,"text/plain","Error: already voted"};
+            }
+        }
+        else{
+            delete result;
+            return {HttpStatus_NotFound,"text/plain","Error: comment not in databse"};
+        }
+    }
+    else{
+        return {HttpStatus_Forbidden,"text/plain","Error: wrong username or password"};
+    }
     return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
 }
 
