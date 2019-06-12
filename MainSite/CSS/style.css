@@ -77,6 +77,7 @@ html {
   width: 100vw;
   height: 70vh;
   align-items: center;
+  text-align: center;
 }
 
 .modal>* {
@@ -150,9 +151,8 @@ html {
     font-size: 18px;
   }
 
-  .modalButton, .modalInput   {
+  .modalButton, .modalInput, .modalSelect {
     width: 80vw !important;
-    font-size: 2em;
   }
 
   #login {

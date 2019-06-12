@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("login").addEventListener("click", createModalBoxLogin);
-  document.getElementById("setting").addEventListener("click", function() {
-    createModalBox();
-  });
+  document.getElementById("setting").addEventListener("click", createModalBox);
 
   const ipAdress = here;
 
@@ -63,6 +61,11 @@ document.addEventListener("DOMContentLoaded", function() {
         modal.style.backgroundColor = "#292929";
       modal.classList.add("modal");
 
+      var span = document.createElement("span");
+      span.innerHTML = "&times";
+      span.classList.add("closeSpan");
+      modal.appendChild(span);
+
       var label = document.createElement("LABEL");
       label.classList.add("label");
       label.textContent = "Design auswählen";
@@ -71,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var comboBox = document.createElement("SELECT");
       comboBox.id = "design";
       comboBox.classList.add("select");
+      comboBox.classList.add("modalSelect");
 
       var light = document.createElement("OPTION");
       light.appendChild(document.createTextNode("hell"));
@@ -95,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
       button.id = "save";
       button.textContent = "Speichern";
       button.classList.add("button");
+      button.classList.add("modalButton");
       modal.appendChild(button);
 
       var a = document.createElement("a");
@@ -107,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var button = document.createElement("button");
       button.id = "logout";
       button.classList.add("button");
+      button.classList.add("modalButton");
       button.textContent = "Abmelden";
       modal.appendChild(button);
 
@@ -121,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function() {
       });
 
       window.onclick = function(event) {
-        if (event.target.id != "save" && event.target.id != "setting" && event.target.id != "design") {
+        if (event.target.id != "modal" && event.target.id != "save" && event.target.id != "setting" && event.target.id != "design") {
           modal.remove();
         }
       }
