@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
-	const ipAdress = "192.168.178.34";
+	const ipAdress = "192.168.2.108";
 
 
 	function getUserData() {

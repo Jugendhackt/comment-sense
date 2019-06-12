@@ -12,6 +12,7 @@ html {
   padding: 0;
   margin: 0;
   font-family: 'Roboto', sans-serif;
+  font-size: 0.5em;
 }
 
 .input {
@@ -53,8 +54,9 @@ html {
 #setting {
   position: fixed;
   background-color: white;
-  right: 20px;
-  top: 20px;
+  right: 2vh;
+  top: 2vh;
+  width: 6.5vh;
 }
 
 #icons {
@@ -71,19 +73,20 @@ html {
   flex-direction: column;
   justify-content: center;
   width: 100vw;
-  height: 500px;
+  height: 70vh;
   align-items: center;
 }
 
 .modal>* {
-  margin: 10px;
+  margin: 1vh;
 }
 
 .closeSpan {
   position: absolute;
   top: 0vh;
   right: 2vh;
-  color: black;
+  font-size: 4em;
+  cursor: pointer;
 }
 
 .comments {
@@ -129,10 +132,11 @@ html {
   margin-top: 1vh;
 }
 
+
 /*Handy/Tablet*/
 @media only screen and (max-width: 1060px) {
   * {
-    font-size: 40px;
+    font-size: 1.2em;
   }
 
   .button, .input, .select {
@@ -144,7 +148,12 @@ html {
     font-size: 18px;
   }
 
-  .closeSpan {
+  .modalButton, .modalInput {
+    width: 80vw !important;
+    font-size: 2em;
+  }
+
+  .modalLabel {
     font-size: 2em;
   }
 }
@@ -152,7 +161,7 @@ html {
 /*Desktop*/
 @media only screen and (min-width: 1060px) {
   * {
-    font-size: 18px;
+    font-size: 1em;
   }
 
   .button, .input, .select {
@@ -166,9 +175,5 @@ html {
 
   #error {
     font-size: 13px;
-  }
-
-  .closeSpan {
-    font-size: 3em;
   }
 }
