@@ -16,7 +16,7 @@ target=""
 defines=""
 options=""
 libs='-lpthread -ldl'
-link='cJSON.o tcpsocket.o sqlite3.o utils.o httpServer.o commentSense.o'
+link='cJSON.o tcpsocket.o sqlite3.o utils.o httpserver.o commentSense.o'
 args='-std=c++11 -Wall'
 
 for i in "$@"
@@ -67,10 +67,10 @@ if [ "utils.cpp" -nt "utils.o" ] || [ "utils.h" -nt "utils.o" ] || [ "$rebuild" 
 	g++ -c utils.cpp $options $defines $args
 fi
 
-if [ "httpServer.cpp" -nt "httpServer.o" ] || [ "httpServer.h" -nt "httpServer.o" ] || [ "$rebuild" == "1" ]
+if [ "httpserver.cpp" -nt "httpserver.o" ] || [ "httpserver.h" -nt "httpserver.o" ] || [ "$rebuild" == "1" ]
 	then
-	echo "rebuilding httpServer"
-	g++ -c httpServer.cpp $options $defines $args
+	echo "rebuilding httpserver"
+	g++ -c httpserver.cpp $options $defines $args
 fi
 
 if [ "commentSense.cpp" -nt "commentSense.o" ] || [ "commentSense.h" -nt "commentSense.o" ] || [ "$rebuild" == "1" ]
@@ -83,9 +83,9 @@ echo "building server:"
 echo "g++ main.cpp $link -o server $libs $options -Wall $defines $args"
 g++ main.cpp $link -o server $libs $options -Wall $defines $args
 
-#if [ -d data ]
-#    then
-#	rm data -r
-#fi
-#mkdir data
-#cp ../MainSite/* data/ -r
+if [ -d data ]
+    then
+	rm data -r
+fi
+mkdir data
+cp ../MainSite/* data/ -r
