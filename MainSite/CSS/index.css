@@ -28,6 +28,7 @@
     align-items: center;
     flex-direction: column;
     margin: 5vh;
+    width: 100vw;
   }
 
   #topWebsites>*, #topComments>* {
