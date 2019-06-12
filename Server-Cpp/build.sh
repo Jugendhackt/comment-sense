@@ -16,6 +16,7 @@ target=""
 defines=""
 options=""
 libs='-lpthread -ldl'
+staticLibs='-static-libstdc++ -static-libgcc -static'
 link='cJSON.o tcpsocket.o sqlite3.o utils.o httpserver.o commentSense.o'
 args='-std=c++11 -Wall'
 
@@ -24,8 +25,9 @@ for i in "$@"
     	case $i in
 	    -d | --debug ) target="debug";;
 		-r | --release ) target="release";;
-		--rebuild ) rebuild=1;;
 		-t=* | --target=* ) target="${i#*=}";;
+		-s | --static ) libs="$libs $staticLibs";;
+		--rebuild ) rebuild=1;;
 	    * ) echo "unknown arg";;
 	esac
 	shift
