@@ -12,7 +12,6 @@ html {
   padding: 0;
   margin: 0;
   font-family: 'Roboto', sans-serif;
-  font-size: 0.5em;
 }
 
 .input {
@@ -52,11 +51,14 @@ html {
 }
 
 #setting {
-  position: fixed;
+  position: absolute;
+  display: flex;
   background-color: white;
   right: 2vh;
   top: 2vh;
   width: 6.5vh;
+  height: 6.5vh;
+  font-size: 1em;
 }
 
 #icons {
