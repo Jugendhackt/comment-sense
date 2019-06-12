@@ -89,3 +89,7 @@ if [ -d data ]
 fi
 mkdir data
 cp ../MainSite/* data/ -r
+
+ipAdress=($(hostname -I))
+echo $ipAdress
+sed -i -- "s/const ipAdress = here;/const ipAdress = \"$ipAdress\"/g" ./data/JS/*.js
