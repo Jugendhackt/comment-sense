@@ -96,6 +96,7 @@ html {
   height: 5vh;
   width: 30vw;
   transition: 0.2s;
+  cursor: pointer;
 }
 
 .ipt {
