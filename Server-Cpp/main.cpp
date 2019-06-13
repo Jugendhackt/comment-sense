@@ -26,9 +26,9 @@ int main()
     server->addPlugin(newPlugin("check  user\t", HttpServer::POST, "/users/check/", checkUser, db));
     server->addPlugin(newPlugin("check  user\t", HttpServer::POST, "/users/login/", checkUser, db));
     server->addPlugin(newPlugin("manage user\t", HttpServer::PATCH, "/users/manage/", manageUser, db));
-    
+#if defined(DEBUG)
     server->setCorsEnabled(true);
-    
+#endif
     server->start();
     delete server;
     return 0;
