@@ -1,12 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <string>
-
-#include "utils.hpp"
-#include "httpServer.hpp"
 #include "commentSense.hpp"
-
-using namespace std;
+#include "httpServer.hpp"
+#include "utils.hpp"
 
 int main()
 {
