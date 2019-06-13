@@ -1,0 +1,28 @@
+body, .settingIcon {
+  background-color: #191A1C;
+}
+
+* {
+  color: white;
+}
+
+.nav {
+  background-color: #191A1C;
+  box-shadow: 0px 0px 5px 1px;
+}
+
+.slct {
+  background-color: black;
+}
+
+.btn {
+  background-color: #31AF91;
+  border: none;
+}
+
+@media only screen and (min-width: 1060px) {
+  .btn:hover, .visitComment:hover, .visitWebsite:hover {
+    border: 2px solid #31AF91;
+    background-color: #333333;
+  }
+}

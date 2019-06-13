@@ -1,0 +1,118 @@
+@font-face {
+  font-family: "Roboto";
+  src: url(../assets/font/Roboto-Medium.ttf);
+}
+
+html {
+  width: 100vw;
+  height: 100vh;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.5vw;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 10vh;
+  position: fixed;
+  top: 0;
+  transition: 0.2s;
+}
+
+.row {
+  margin-top: 15vh;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  width: 100%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+
+.settingIcon {
+  position: absolute;
+  top: 2vh;
+  right: 2vh;
+  width: 6.5vh;
+}
+
+.btn {
+  height: 5vh;
+  width: 30vw;
+  transition: 0.2s;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.topComments, .topWebsites {
+  display: flex;
+  align-items: center;
+}
+
+.commentDiv, .websiteDiv {
+  transition: 0.2s;
+  box-shadow: 0px 0px 7px 1px;
+  border-radius: 1vh;
+  width: 40vw;
+}
+
+.topComments>*, .topWebsites>* {
+  margin: 2vh;
+}
+
+.visitComment, .visitWebsite {
+  width: 40vw;
+  border-radius: 0 0 1vh 1vh;
+}
+
+@media only screen and (min-width: 1060px) {
+  .commentDiv:hover, .websiteDiv:hover, .nav:hover {
+    box-shadow: 0px 0px 10px 3px;
+  }
+
+  .lne {
+    display: none;
+    width: 0;
+    height: 0;
+    border: none;
+  }
+}
+
+@media only screen and (max-width: 1060px) {
+  * {
+    font-size: 4vw;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .topComments {
+    margin-bottom: 5vh;
+  }
+
+  .topWebsites {
+    margin-top: 5vh;
+  }
+
+  .lne {
+    width: 100vw;
+    border-top: 0.2vh solid gray;
+  }
+}
