@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("login").addEventListener("click", createModalBoxLogin);
   document.getElementById("setting").addEventListener("click", createModalBox);
 
-  const ipAdress = here;
+  //const ipAdress = here;
 
   function setTopComments() {
     var xhr = new XMLHttpRequest();
@@ -111,19 +111,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
       var username = localStorage.getItem("username");
       var password = localStorage.getItem("password");
-      
+
+      var button = document.createElement("button");
+      button.id = "logout";
+      button.classList.add("button");
+      button.classList.add("modalButton");
+
       if (username != "null" && password != "null") {
-        var button = document.createElement("button");
-        button.id = "logout";
-        button.classList.add("button");
-        button.classList.add("modalButton");
         button.textContent = "Abmelden";
         button.addEventListener("click", function() {
           setLoginData(null, null);
           setErr("Du wurdest abgemeldet");
         });
-        modal.appendChild(button);
+      } else {
+        button.textContent = "Anmelden";
+        button.addEventListener("click", function(){
+          modal.remove();
+          createModalBoxLogin();
+        });
       }
+      modal.appendChild(button);
 
       var error = document.createElement("div");
       error.id = "error";
@@ -138,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
       });
 
       window.onclick = function(event) {
-        if (event.target.id != "modal" && event.target.id != "save" && event.target.id != "setting" && event.target.id != "design" && event.target.id != "logout") {
+        if (event.target.id != "logout" && event.target.id != "modal" && event.target.id != "save" && event.target.id != "setting" && event.target.id != "design" && event.target.id != "logout") {
           modal.remove();
         }
       }
@@ -234,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       window.onclick = function(event) {
         console.log(event.target);
-        if (event.target.id != "modal" && event.target.id != "login" && event.target.id != "loginModal" && event.target.id != "inputNickname" && event.target.id != "inputPassword") {
+        if (event.target.id != "logout" && event.target.id != "modal" && event.target.id != "login" && event.target.id != "loginModal" && event.target.id != "inputNickname" && event.target.id != "inputPassword") {
           modal.remove();
         }
       }
