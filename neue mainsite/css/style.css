@@ -26,6 +26,13 @@ html {
   transition: 0.2s;
 }
 
+.linkToGithub {
+  font-size: 0.75vw;
+  position: absolute;
+  top: 4vh;
+  left: 2vh;
+}
+
 .row {
   margin-top: 15vh;
   display: flex;
@@ -41,6 +48,43 @@ html {
   flex: 1;
 }
 
+.modal {
+  display: none;
+  position: absolute;
+  top: 15vh;
+  z-index: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 70vw;
+  height: 70vh;
+  text-align: center;
+}
+
+.modalHead {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  justify-content: center;
+  top: 3vh;
+  width: 70vw;
+  box-shadow: 0 4px 2px -2px gray;
+  padding: 0 0 1vh 0;
+  margin: 0 !important;
+}
+
+.modal>* {
+  margin: 1vh;
+}
+
+.closeSpan {
+  position: absolute;
+  top: -3vh;
+  right: 2vh;
+  font-size: 3.5vw;
+  cursor: pointer;
+}
+
 .settingIcon {
   position: absolute;
   top: 2vh;
@@ -52,6 +96,15 @@ html {
   height: 5vh;
   width: 30vw;
   transition: 0.2s;
+}
+
+.ipt {
+  padding: 1vh;
+}
+
+.a {
+  text-decoration: none;
+  border-bottom: 0.1vh solid transparent;
 }
 
 .bold {
@@ -86,9 +139,10 @@ html {
 
   .lne {
     display: none;
-    width: 0;
-    height: 0;
-    border: none;
+  }
+
+  .a {
+    transition: 0.2s;
   }
 }
 
@@ -114,5 +168,13 @@ html {
   .lne {
     width: 100vw;
     border-top: 0.2vh solid gray;
+  }
+
+  .closeSpan {
+    font-size: 6vh;
+  }
+
+  .linkToGithub {
+    font-size: 2.5vw;
   }
 }

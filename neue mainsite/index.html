@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>CommentSense</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
-    <link rel="stylesheet" href="css/index.css" type="text/css">
-    <link rel="stylesheet" href="css/design/dark.css">
-    <link rel="shortcut icon" href="assets/icons/favicon.ico" type="image/ico">
-  </head>
-  <body>
-    <div class="nav">
-      <button id="btnLogin" type="button" class="btn">Anmelden</button>
-      <img id="settingIcon" class="settingIcon" src="assets/icons/settingDark512.png">
+
+<head>
+  <title>CommentSense</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+  <link rel="stylesheet" href="css/index.css" type="text/css">
+  <link rel="stylesheet" href="css/design/dark.css">
+  <link rel="shortcut icon" href="assets/icons/favicon.ico" type="image/ico">
+</head>
+
+<body>
+  <div id="nav" class="nav">
+    <a href="https://github.com/Jugendhackt/comment-sense" class="a linkToGithub">CommentSense auf Github</a>
+    <button id="btnLogin" type="button" class="btn">Anmelden</button>
+    <img id="settingIcon" class="settingIcon" src="assets/icons/settingDark512.png">
+  </div>
+  <div class="row">
+    <div class="column topComments" id="topComments">
     </div>
-    <div class="row">
-      <div class="column topComments" id="topComments">
-      </div>
-      <h2 class="lne"></h2>
-      <div class="column topWebsites" id="topWebsites">
-      </div>
+    <h2 class="lne"></h2>
+    <div class="column topWebsites" id="topWebsites">
     </div>
-    <script src="js/design.js" charset="utf-8" type="text/javascript"></script>
-    <script src="js/index.js" charset="utf-8" type="text/javascript"></script>
-  </body>
+  </div>
+  <script src="js/design.js" charset="utf-8" type="text/javascript"></script>
+  <script src="js/index.js" charset="utf-8" type="text/javascript"></script>
+</body>
+
 </html>
