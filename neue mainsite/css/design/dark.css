@@ -12,6 +12,10 @@ body, .settingIcon {
 }
 
 .modal {
+  background-color: #333333;
+  border: 0.5vh solid #31AF91;
+}
+
 .slct {
   background-color: black;
 }
@@ -21,9 +25,19 @@ body, .settingIcon {
   border: none;
 }
 
+.ipt {
+  border: none;
+  background-color: #555555;
+}
+
+
 @media only screen and (min-width: 1060px) {
   .btn:hover, .visitComment:hover, .visitWebsite:hover {
     border: 2px solid #31AF91;
     background-color: #333333;
+  }
+
+  .a:hover{
+    border-bottom: 0.1vh solid white;
   }
 }
