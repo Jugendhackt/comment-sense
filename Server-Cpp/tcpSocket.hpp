@@ -24,11 +24,21 @@ typedef int socket_t;
 class TCPSocket
 {
     public:
+        enum Adress{
+            Any = INADDR_ANY,
+            Broadcast = INADDR_BROADCAST,
+            LoopBack = INADDR_LOOPBACK,
+            UnspecGroup = INADDR_UNSPEC_GROUP,
+            AllHostGroup = INADDR_ALLHOSTS_GROUP,
+            AllRtrsGroup = INADDR_ALLRTRS_GROUP,
+            MaxLocalGroup = INADDR_MAX_LOCAL_GROUP,
+            None
+        };
         TCPSocket(int af, int type, int protocol);
         TCPSocket(socket_t other);
         ~TCPSocket();
 
-        void bind(unsigned long address = INADDR_ANY, unsigned short port = 80);
+        void bind(unsigned long address = Adress::Any, unsigned short port = 80);
         void listen();
         TCPSocket* accept();
         void connect(std::string servAddr, unsigned short port = 80);

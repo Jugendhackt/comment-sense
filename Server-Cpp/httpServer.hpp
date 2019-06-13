@@ -174,7 +174,7 @@ class HttpServer
             DELETE = 16
         };
 
-        HttpServer(unsigned short port = 80);
+        HttpServer(unsigned long adress = TCPSocket::Adress::Any, unsigned short port = 80);
         ~HttpServer();
 
 		int getRequestType(std::string);
