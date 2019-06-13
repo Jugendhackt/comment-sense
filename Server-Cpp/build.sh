@@ -43,7 +43,7 @@ defines=""
 options=""
 libs='-lpthread -ldl'
 staticLibs='-static-libstdc++ -static-libgcc -static'
-link='cJSON.o tcpsocket.o sqlite3.o utils.o httpserver.o commentSense.o'
+link='cJSON.o tcpSocket.o sqlite3.o utils.o httpServer.o commentSense.o'
 args='-std=c++11 -Wall'
 
 for i in "$@"
@@ -73,11 +73,11 @@ checkRequirement "build-essential";
 
 echo "starting build (target = $target)"
 buildCLib   "cJSON" $rebuild $options;
-buildCppLib "tcpsocket" $rebuild $options;
+buildCppLib "tcpSocket" $rebuild $options;
 buildCLib   "sqlite3" $rebuild $options;
 buildCppLib "utils" $rebuild $options;
-buildCppLib "httpserver" $rebuild $options;
-buildCppLib "commentsense" $rebuild $options;
+buildCppLib "httpServer" $rebuild $options;
+buildCppLib "commentSense" $rebuild $options;
 
 echo "building server"
 g++ main.cpp $link -o server $libs $options -Wall $defines $args

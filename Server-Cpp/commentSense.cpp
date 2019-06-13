@@ -1,4 +1,4 @@
-#include "commentSense.h"
+#include "commentSense.hpp"
 
 HttpResponse getComments(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);

@@ -2,9 +2,9 @@
 #include <vector>
 #include <string>
 
-#include "utils.h"
-#include "httpserver.h"
-#include "commentSense.h"
+#include "utils.hpp"
+#include "httpServer.hpp"
+#include "commentSense.hpp"
 
 using namespace std;
 

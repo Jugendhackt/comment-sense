@@ -1,8 +1,8 @@
 #ifndef COMMENTSENSE_H
 #define COMMENTSENSE_H
 
-#include "httpserver.h"
-#include "utils.h"
+#include "httpServer.hpp"
+#include "utils.hpp"
 
 HttpResponse getComments(PluginArg arg);        //done
 HttpResponse getTopComments(PluginArg arg);     //done

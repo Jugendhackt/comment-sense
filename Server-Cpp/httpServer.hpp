@@ -8,8 +8,8 @@
 #include <functional>
 #include <algorithm>
 
-#include "tcpsocket.h"
-#include "utils.h"
+#include "tcpSocket.hpp"
+#include "utils.hpp"
 
 #define MAX_CONNECTIONS 1024
 

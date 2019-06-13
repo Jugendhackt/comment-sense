@@ -1,4 +1,4 @@
-#include "tcpsocket.h"
+#include "tcpSocket.hpp"
 
 TCPSocket::TCPSocket(int af, int type, int protocol)
 {
