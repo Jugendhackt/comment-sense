@@ -21,6 +21,7 @@ typedef unsigned char byte;
 typedef std::vector<byte> ByteArray;
 
 std::vector<std::string> split(const std::string& s, char delimiter);
+std::vector<std::string> split(const std::string& str, std::string delimiter);
 std::string removeAll(std::string str, std::string chars);
 std::string stringToHex(std::string str);
 std::string stringFromHex(std::string hex);
@@ -61,6 +62,7 @@ int sqlite3db_callback(void *data, int argc, char **argv, char **azColName);
 class Sqlite3DB{
 public:
     Sqlite3DB(std::string fileName);
+    ~Sqlite3DB();
     dbResult *exec(std::string querry);
 private:
     sqlite3 *db;

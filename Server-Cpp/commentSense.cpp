@@ -3,21 +3,26 @@
 HttpResponse getComments(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
     std::string url = arg.url.data()+10;
-    //std::cout<<url<<"\n";
     if(url.rfind("site='") == 0){
         std::string site = url.data()+6;
         site.pop_back();
-        //std::cout<<"getting comments on:\""<<site<<"\n";
+#if defined(DEBUG)
+        std::cerr<<"getting comments on:\""<<site<<"\n";
+#endif
         std::stringstream ss;
         ss<<"SELECT comments FROM sites WHERE url LIKE \'"<<site<<"\';";
         dbResult *result = db->exec(ss.str());
         if(result->columns != 1 || result->data.size() != 1){
-            //std::cout<<"Error: no comments on this site\n";
+#if defined(DEBUG)
+            std::cerr<<"Error: no comments on this site\n";
+#endif
             delete  result;
-            return {HttpStatus_NotFound,"application/json","{\"comments\":[{\"id\":-1,\"headline\":\"Keine Kommentare\",\"content\":\"F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. Du kannst gern damit anfangen.\",\"votes\":0,\"userID\":-1,\"userName\":\"CommentSense\"}]}"};
+            return {HttpStatus_NotFound,"application/json",noCommentsStr};
         }
         else{
-            //std::cout<<"found some comments\n";
+#if defined(DEBUG)
+            std::cerr<<"found "<<result->columns<<" comment(s)\n";
+#endif
             std::string commentIDs = result->data[0][0];
             ss.str(std::string());
             ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments WHERE id IN ("<<commentIDs<<");";
@@ -36,21 +41,26 @@ HttpResponse getTopComments(PluginArg arg)
 {
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
     std::string url = arg.url.data()+10;
-    //std::cout<<url<<"\n";
     if(url.rfind("site='") == 0){
         std::string site = url.data()+6;
         site.pop_back();
-        //std::cout<<"getting comments on:\""<<site<<"\n";
+#if defined(DEBUG)
+        std::cerr<<"getting comments on:\""<<site<<"\n";
+#endif
         std::stringstream ss;
         ss<<"SELECT comments FROM sites WHERE url LIKE \'"<<site<<"\';";
         dbResult *result = db->exec(ss.str());
         if(result->columns != 1 || result->data.size() != 1){
-            //std::cout<<"Error: no comments on this site\n";
+#if defined(DEBUG)
+            std::cerr<<"Error: no comments on this site\n";
+#endif
             delete  result;
-            return {HttpStatus_NotFound,"text/plain","Error: no comments on this site"};
+            return {HttpStatus_NotFound,"application/json","{\"error\":\"no comments on this site\"}"};
         }
         else{
-            //std::cout<<"found some comments\n";
+#if defined(DEBUG)
+            std::cerr<<"found "<<result->columns<<" comment(s)\n";
+#endif
             std::string commentIDs = result->data[0][0];
             ss.str(std::string());
             ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments WHERE id IN ("<<commentIDs<<") order by count desc limit 5;";
@@ -147,7 +157,7 @@ HttpResponse postComment(PluginArg arg){
     else{
         return {HttpStatus_Unauthorized,"application/json","{\"error\":\"user not valid\"}"};
     }    
-    return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+    return {HttpStatus_NotImplemented,"application/json","{\"error\":\"not implemented\"}"};
 }
 
 HttpResponse voteComment(PluginArg arg){
@@ -203,36 +213,54 @@ HttpResponse voteComment(PluginArg arg){
                     result = db->exec(querry.str());
                     if(result->changes > 0){
                         delete result;
-                        return {HttpStatus_OK,"text/plain","status: successfully voted"};
+                        return {HttpStatus_OK,"application/json","{\"status\":\"successfully voted\"}"};
                     }
                     else{
                         delete result;
-                        return {HttpStatus_InternalServerError,"text/plain","error: can't write to database"};
+                        return {HttpStatus_InternalServerError,"application/json","{\"error\":\"can't write to database\"}"};
                     }
                 }
                 else{
                     delete result;
-                    return {HttpStatus_Conflict,"text/plain","Error: already voted"};
+                    return {HttpStatus_Conflict,"application/json","{\"error\":\"already voted\"}"};
                 }
             }
             else if(vote == -1){
-                delete result;
-                return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+                if(alreadyVoted){
+                    std::string userIdStr = std::to_string(userId);
+                    votes.replace(votes.find(userIdStr), userIdStr.size()+1, "");
+                    querry.str("");
+                    querry<<"UPDATE comments SET votes = \'"<<votes<<"\' WHERE id LIKE "<<id<<";";
+                    delete result;
+                    result = db->exec(querry.str());
+                    if(result->changes > 0){
+                        delete result;
+                        return {HttpStatus_OK,"application/json","{\"status\":\"successfully unvoted\"}"};
+                    }
+                    else{
+                        delete result;
+                        return {HttpStatus_InternalServerError,"application/json","{\"error\":\"can't write to database\"}"};
+                    }
+                }
+                else{
+                    delete result;
+                    return {HttpStatus_Conflict,"application/json","{\"error\":\"you have to vote before you can unvote\"}"};
+                }
             }
             else{
                 delete result;
-                return {HttpStatus_BadRequest,"text/plain","Error: invalid vote type"};
+                return {HttpStatus_BadRequest,"application/json","{\"error\":\"invalid vote type\"}"};
             }
         }
         else{
             delete result;
-            return {HttpStatus_NotFound,"text/plain","Error: comment not in databse"};
+            return {HttpStatus_NotFound,"application/json","{\"error\":\"comment not in databse\"}"};
         }
     }
     else{
-        return {HttpStatus_Forbidden,"text/plain","Error: wrong username or password"};
+        return {HttpStatus_Forbidden,"application/json","{\"error\":\"wrong username or password\"}"};
     }
-    return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+    return {HttpStatus_NotImplemented,"application/json","{\"error\":\"not implemented\"}"};
 }
 
 HttpResponse createUser(PluginArg arg){
@@ -274,7 +302,7 @@ HttpResponse createUser(PluginArg arg){
         delete result;
         return {HttpStatus_Conflict,"application/json","{\"error\":\"user already exists\"}"};
     }
-    return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+    return {HttpStatus_NotImplemented,"application/json","{\"error\":\"not implemented\"}"};
 }
 
 HttpResponse checkUser(PluginArg arg){
@@ -338,7 +366,7 @@ HttpResponse existsUser(PluginArg arg){
 }
 
 HttpResponse manageUser(PluginArg arg){
-    return {HttpStatus_NotImplemented,"text/plain","Error: Not implemented"};
+    return {HttpStatus_NotImplemented,"application/json","{\"error\":\"not implemented\"}"};
 }
 
 std::string commentsToJson(dbResult *comments)

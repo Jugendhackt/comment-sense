@@ -25,5 +25,6 @@ int main()
 #endif
     server->start();
     delete server;
+    delete db;
     return 0;
 }

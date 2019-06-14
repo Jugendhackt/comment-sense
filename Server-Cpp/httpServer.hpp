@@ -20,7 +20,7 @@ struct Client{
     TCPSocket *socket;
 	HttpServer *server;
     pthread_t thread;
-    int state;
+    int state, index;
 };
 
 struct PluginArg{
@@ -40,11 +40,11 @@ struct HttpResponse{
 HttpResponse defaultCallback(PluginArg arg);
 
 struct Plugin{
-	std::string name;
+	std::string name = "";
 	int requestType = 0;
 	std::string subUrl = "";
 	std::function<HttpResponse(PluginArg)> callback = defaultCallback;
-    void *arg;
+    void *arg = nullptr;
 };
 
 Plugin newPlugin(std::string name, int requestType, std::string subUrl, std::function<HttpResponse(PluginArg)> callback, void *arg = nullptr);
@@ -153,6 +153,7 @@ const char* HttpContentType(std::string ending);
 bool comparePlugin(Plugin p1, Plugin p2);
 
 void* handleClient(void *data);
+void* stopServer(void *data);
 
 std::string getDir(std::string dir);
 void getBigFile(File *file, TCPSocket *socket, HttpServer *server);
@@ -183,6 +184,7 @@ class HttpServer
 		void addPlugin(Plugin plugin);
 
         void start();
+        void stop();
 		void handleClient(Client *client);
         
         bool isCorsEnabled();
@@ -192,9 +194,10 @@ protected:
         
 private:
         TCPSocket *server;
-		Client clients[MAX_CONNECTIONS];
+        pthread_t stopThread;
 		std::vector<Plugin> plugins;
-        bool corsEnabled;
+        bool corsEnabled = false, keepRunning = true;
+        int lastIndex = 0;
 };
 
 #endif // HTTPSERVER_H

@@ -73,12 +73,12 @@ checkRequirement "gcc";
 checkRequirement "build-essential";
 
 echo "starting build (target = $target)"
-buildCLib   "cJSON" $rebuild $options;
-buildCppLib "tcpSocket" $rebuild $options;
-buildCLib   "sqlite3" $rebuild $options;
-buildCppLib "utils" $rebuild $options;
-buildCppLib "httpServer" $rebuild $options;
-buildCppLib "commentSense" $rebuild $options;
+buildCLib   "cJSON" $rebuild "$options $defines";
+buildCppLib "tcpSocket" $rebuild "$options $defines";
+buildCLib   "sqlite3" $rebuild "$options $defines";
+buildCppLib "utils" $rebuild "$options $defines";
+buildCppLib "httpServer" $rebuild "$options $defines";
+buildCppLib "commentSense" $rebuild "$options $defines";
 
 echo "building server"
 g++ main.cpp $link -o server $libs $options -Wall $defines $args
@@ -90,5 +90,5 @@ echo "done"
 
 if [ "$start" == "1" ]; then
 	echo "starting server ..."
-	sudo ./server
+	sudo ./server 2> log.txt
 fi

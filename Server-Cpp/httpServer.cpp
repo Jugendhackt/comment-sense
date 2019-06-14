@@ -254,9 +254,34 @@ void* handleClient(void *data){
 	Client *client = reinterpret_cast<Client*>(data);
 	client->server->handleClient(client);
 	client->socket->disconnect();
+#if defined(DEBUG)
+		std::cerr<<"client "<<client->index<<": disconnected"<<"\n";
+#endif
 	delete client->socket;
 	delete client;
     return nullptr;
+}
+
+void *stopServer(void *data)
+{
+    HttpServer *server = reinterpret_cast<HttpServer*>(data);
+    std::string input;
+    std::cout<<">";
+    while(true){
+        std::cin>>input;
+        unsigned pos;
+        if(input == "stop")
+            break;
+        else if((pos = input.find("cors=")+5) < input.size()){
+            bool cors = input.at(pos)-48;
+            server->setCorsEnabled(cors);
+            std::cout<<"cors set to "<<(cors ? "true" : "false")<<"\n";
+        }
+        else
+            std::cout<<"unknown command \'"<<input<<"\'\n";
+        std::cout<<">";
+    }
+    server->stop();
 }
 
 HttpServer::HttpServer(unsigned long adress, unsigned short port)
@@ -275,8 +300,8 @@ HttpServer::HttpServer(unsigned long adress, unsigned short port)
 
 HttpServer::~HttpServer()
 {
-    delete server;
-    std::cout<<"server stopped\n";
+	delete server;
+	std::cout<<"server stopped\n";
 }
 
 int HttpServer::getRequestType(std::string str){
@@ -317,32 +342,47 @@ void HttpServer::start(){
 	std::sort(plugins.begin(), plugins.end(), comparePlugin);
 	std::cout<<"loaded Plugins: \n";
 	for(Plugin p : plugins){
-		std::cout<<"\t"<<p.name<<"\t :  \""<<p.subUrl<<"\"\n";
-	}
-	//start server
+        std::cout<<"\t"<<p.name<<"\t :  \""<<p.subUrl<<"\"\n";
+    }
+    //start server
     server->listen();
     std::cout<<"server running\n";
-	for(;;){
+    pthread_create(&stopThread, nullptr, stopServer, this);
+    while(keepRunning){
 		Client *client = new Client;
 		client->server = this;
 		client->socket = server->accept();
+        client->index = lastIndex++;
 #if defined(DEBUG)
-		std::cout<<"client connected\n";
+		std::cerr<<"client "<<client->index<<": connected\n";
 #endif
-        pthread_create(&client->thread, nullptr, ::handleClient, client);
+		pthread_create(&client->thread, nullptr, ::handleClient, client);
 		pthread_detach(client->thread);
-	}
+    }
+}
+
+void HttpServer::stop()
+{
+#if defined(DEBUG)
+    std::cerr<<"stopping server\n";
+#endif
+    keepRunning = false;
+    TCPSocket *socket = new TCPSocket(AF_INET, SOCK_STREAM, 0);
+    socket->connect("localhost");
+    socket->disconnect();
+    delete socket;
 }
 
 void HttpServer::handleClient(Client *client){
 #if defined(DEBUG)
-	std::cout<<"client gets handled\n";
+	std::cerr<<"client "<<client->index<<": gets handled\n";
 #endif
     TCPSocket *socket = client->socket;
 	std::vector<std::string> header = socket->recvHeader();
 #if defined(DEBUG)
+    std::cerr<<"client "<<client->index<<": header:\n";
 	for(std::string line : header){
-		std::cout<<line<<"\n";
+		std::cerr<<"client "<<client->index<<":\t"<<line<<"\n";
 	}
 #endif
 	HttpResponse response = {404,"text/plain","Error: Not found"};
@@ -353,16 +393,14 @@ void HttpServer::handleClient(Client *client){
 		std::vector<std::string> request = split(header[0], ' ');
 		std::string url = request[1];
 		int type = getRequestType(request[0]);
-#if defined(DEBUG)
-		std::cout<<"type: "<<type<<"\n";
-#endif
 		std::string payload = "";
 		for(std::string line : header){
 			if(line.rfind("Content-Length:", 0) == 0){
 				int len = atoi(line.c_str()+15);
 				payload = socket->recv(len);
 #if defined(DEBUG)
-                std::cout<<"payload:"<<payload<<"\n";
+                if(payload.size() < 250)
+                    std::cerr<<"client "<<client->index<<": payload("<<payload.size()<<" bytes): "<<client->index<<":"<<payload<<"\n";
 #endif
 			}
 		}
@@ -373,7 +411,7 @@ void HttpServer::handleClient(Client *client){
 				continue;
 			if(url.rfind(p.subUrl, 0) == 0){
 #if defined(DEBUG)
-				std::cout<<"calling plugin\n";
+				std::cerr<<"client "<<client->index<<": calling plugin \'"<<p.name<<"\'\n";
 #endif
                 arg.arg = p.arg;
 				response = p.callback(arg);
@@ -382,7 +420,13 @@ void HttpServer::handleClient(Client *client){
 		}
 	}
 #if defined(DEBUG)
-	std::cout<<"sending response\n"<<httpResponsetoString(response);
+    std::string headerStr = split(httpResponsetoString(response), "\n\n")[0];
+    header = split(headerStr, '\n');
+	std::cerr<<"client "<<client->index<<": sending response\n";
+    std::cerr<<"client "<<client->index<<": header:\n";
+    for(std::string line : header){
+		std::cerr<<"client "<<client->index<<":\t"<<line<<"\n";
+	}
 #endif
     socket->send(httpResponsetoString(response));
 }

@@ -67,9 +67,6 @@ void TCPSocket::connect(std::string servAddr, unsigned short port){
 }
 
 void TCPSocket::disconnect(){
-#if defined(DEBUG)
-    std::cout<<"disconnected\n";
-#endif
     if(sock >= 0){
         std::cout<<getError();
         if(shutdown(sock, SHUT_RDWR) < 0){
@@ -79,9 +76,6 @@ void TCPSocket::disconnect(){
         if(close(sock) < 0){
             std::cerr<<"error: close socket failed\n";
         }
-    }
-    if(isConnected()){
-        std::cerr<<"error: socket still connected\n";
     }
 }
 

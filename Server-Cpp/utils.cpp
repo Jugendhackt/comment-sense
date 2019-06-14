@@ -2,14 +2,28 @@
 
 std::vector<std::string> split(const std::string& s, char delimiter)
 {
-   std::vector<std::string> tokens;
-   std::string token;
-   std::istringstream tokenStream(s);
-   while (std::getline(tokenStream, token, delimiter))
-   {
-      tokens.push_back(token);
-   }
-   return tokens;
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream tokenStream(s);
+    while (std::getline(tokenStream, token, delimiter))
+    {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
+
+std::vector<std::string> split(const std::string& str, std::string delimiter)
+{
+    std::string s = str;
+    std::vector<std::string> tokens;
+    size_t pos = 0;
+    std::string token;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        token = s.substr(0, pos);
+        tokens.push_back(token);
+        s.erase(0, pos + delimiter.length());
+    }
+    return tokens;
 }
 
 std::string removeAll(std::string str, std::string chars){
@@ -153,6 +167,11 @@ bool File::isDir()
 Sqlite3DB::Sqlite3DB(std::string fileName)
 {
     sqlite3_open(fileName.data(), &db);
+}
+
+Sqlite3DB::~Sqlite3DB()
+{
+    sqlite3_close(db);
 }
 
 dbResult* Sqlite3DB::exec(std::string querry)
