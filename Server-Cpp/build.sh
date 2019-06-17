@@ -54,7 +54,7 @@ for i in "$@"
 		-r | --release ) target="release";;
 		-t=* | --target=* ) target="${i#*=}";;
 		-s | --static ) libs="$libs $staticLibs";;
-		-a | --start ) start=1;;
+		-e | --exec ) start=1;;
 		--rebuild ) rebuild=1;;
 		* ) echo "unknown arg ${i#*=}";;
 	esac

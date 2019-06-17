@@ -153,7 +153,7 @@ const char* HttpContentType(std::string ending);
 bool comparePlugin(Plugin p1, Plugin p2);
 
 void* handleClient(void *data);
-void* stopServer(void *data);
+void* console(void *data);
 
 std::string getDir(std::string dir);
 void getBigFile(File *file, TCPSocket *socket, HttpServer *server);
@@ -186,6 +186,7 @@ class HttpServer
         void start();
         void stop();
 		void handleClient(Client *client);
+		void showStats();
         
         bool isCorsEnabled();
         void setCorsEnabled(bool value);
@@ -198,6 +199,7 @@ private:
 		std::vector<Plugin> plugins;
         bool corsEnabled = false, keepRunning = true;
         int lastIndex = 0;
+		int clients = 0;
 };
 
 #endif // HTTPSERVER_H

@@ -262,7 +262,7 @@ void* handleClient(void *data){
     return nullptr;
 }
 
-void *stopServer(void *data)
+void *console(void *data)
 {
     HttpServer *server = reinterpret_cast<HttpServer*>(data);
     std::string input;
@@ -277,6 +277,9 @@ void *stopServer(void *data)
             server->setCorsEnabled(cors);
             std::cout<<"cors set to "<<(cors ? "true" : "false")<<"\n";
         }
+		else if(input == "stat"){
+			server->showStats();
+		}
         else
             std::cout<<"unknown command \'"<<input<<"\'\n";
         std::cout<<">";
@@ -347,7 +350,7 @@ void HttpServer::start(){
     //start server
     server->listen();
     std::cout<<"server running\n";
-    pthread_create(&stopThread, nullptr, stopServer, this);
+    pthread_create(&stopThread, nullptr, console, this);
     while(keepRunning){
 		Client *client = new Client;
 		client->server = this;
@@ -374,6 +377,7 @@ void HttpServer::stop()
 }
 
 void HttpServer::handleClient(Client *client){
+	clients += 1;
 #if defined(DEBUG)
 	std::cerr<<"client "<<client->index<<": gets handled\n";
 #endif
@@ -428,7 +432,13 @@ void HttpServer::handleClient(Client *client){
 		std::cerr<<"client "<<client->index<<":\t"<<line<<"\n";
 	}
 #endif
-    socket->send(httpResponsetoString(response));
+	socket->send(httpResponsetoString(response));
+	clients -= 1;
+}
+
+void HttpServer::showStats()
+{
+	std::cout<<clients<<" client(s) connected\n";
 }
 
 bool HttpServer::isCorsEnabled()
