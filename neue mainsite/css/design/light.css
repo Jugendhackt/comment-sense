@@ -1,0 +1,33 @@
+body, .settingIcon {
+  background-color: white;
+}
+
+* {
+  color: black;
+}
+
+.nav {
+  background-color: white;
+  box-shadow: 0px 0px 5px 1px;
+}
+
+.modal {
+  border: 0.5vh solid #31AF91;
+  background-color: #E8E8E8;
+}
+
+.btn {
+  background-color: #31AF91;
+  border: none;
+  color: white;
+}
+
+.slct {
+  background-color: #BEBEBE;
+  border: none;
+}
+
+.ipt {
+  border: none;
+  border-bottom: 0.2vh solid gray;
+}
