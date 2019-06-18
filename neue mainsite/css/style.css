@@ -1,181 +1,188 @@
 @font-face {
-  font-family: "Roboto";
-  src: url(../assets/font/Roboto-Medium.ttf);
+    font-family: "Roboto";
+    src: url(../assets/font/Roboto-Medium.ttf);
 }
 
 html {
-  width: 100vw;
-  height: 100vh;
+    width: 100vw;
+    height: 100vh;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  font-family: "Roboto", sans-serif;
-  font-size: 1.5vw;
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.5vw;
 }
 
 .nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 10vh;
-  position: fixed;
-  top: 0;
-  transition: 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 10vh;
+    position: fixed;
+    top: 0;
+    transition: 0.2s;
 }
 
 .linkToGithub {
-  font-size: 0.75vw;
-  position: absolute;
-  top: 4vh;
-  left: 2vh;
+    font-size: 0.75vw;
+    position: absolute;
+    top: 4vh;
+    left: 2vh;
 }
 
 .row {
-  margin-top: 15vh;
-  display: flex;
-  flex-direction: row;
-  text-align: center;
-  width: 100%;
+    margin-top: 15vh;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    width: 100%;
 }
 
 .column {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
 }
 
 .modal {
-  display: none;
-  position: absolute;
-  top: 15vh;
-  z-index: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 70vw;
-  height: 70vh;
-  text-align: center;
+    display: none;
+    position: absolute;
+    top: 15vh;
+    z-index: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70vw;
+    height: 70vh;
+    text-align: center;
 }
 
 .modalHead {
-  display: flex;
-  flex-direction: row;
-  position: absolute;
-  justify-content: center;
-  top: 3vh;
-  width: 70vw;
-  box-shadow: 0 4px 2px -2px gray;
-  padding: 0 0 1vh 0;
-  margin: 0 !important;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    justify-content: center;
+    top: 3vh;
+    width: 70vw;
+    box-shadow: 0 4px 2px -2px gray;
+    padding: 0 0 1vh 0;
+    margin: 0 !important;
 }
 
 .modal>* {
-  margin: 1vh;
+    margin: 1vh;
 }
 
 .closeSpan {
-  position: absolute;
-  top: -3vh;
-  right: 2vh;
-  font-size: 3.5vw;
-  cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 2vh;
+    font-size: 3.5vw;
+    cursor: pointer;
 }
 
 .settingIcon {
-  position: absolute;
-  top: 2vh;
-  right: 2vh;
-  width: 6.5vh;
+    position: absolute;
+    top: 2vh;
+    right: 2vh;
+    width: 6.5vh;
 }
 
 .btn {
+    height: 5vh;
+    width: 30vw;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.ipt {
+    padding: 1vh;
+}
+
+.slct {
   height: 5vh;
   width: 30vw;
   transition: 0.2s;
   cursor: pointer;
 }
 
-.ipt {
-  padding: 1vh;
-}
-
 .a {
-  text-decoration: none;
-  border-bottom: 0.1vh solid transparent;
+    text-decoration: none;
+    border-bottom: 0.1vh solid transparent;
 }
 
 .bold {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .topComments, .topWebsites {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .commentDiv, .websiteDiv {
-  transition: 0.2s;
-  box-shadow: 0px 0px 7px 1px;
-  border-radius: 1vh;
-  width: 40vw;
+    transition: 0.2s;
+    box-shadow: 0px 0px 7px 1px;
+    border-radius: 1vh;
+    width: 40vw;
 }
 
 .topComments>*, .topWebsites>* {
-  margin: 2vh;
+    margin: 2vh;
 }
 
 .visitComment, .visitWebsite {
-  width: 40vw;
-  border-radius: 0 0 1vh 1vh;
+    width: 40vw;
+    border-radius: 0 0 1vh 1vh;
 }
 
 @media only screen and (min-width: 1060px) {
-  .commentDiv:hover, .websiteDiv:hover, .nav:hover {
-    box-shadow: 0px 0px 10px 3px;
-  }
+    .commentDiv:hover, .websiteDiv:hover, .nav:hover {
+        box-shadow: 0px 0px 10px 3px;
+    }
 
-  .lne {
-    display: none;
-  }
+    .lne {
+        display: none;
+    }
 
-  .a {
-    transition: 0.2s;
-  }
+    .a {
+        transition: 0.2s;
+    }
 }
 
 @media only screen and (max-width: 1060px) {
-  * {
-    font-size: 4vw;
-  }
+    * {
+        font-size: 4vw;
+    }
 
-  .row {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-  .topComments {
-    margin-bottom: 5vh;
-  }
+    .topComments {
+        margin-bottom: 5vh;
+    }
 
-  .topWebsites {
-    margin-top: 5vh;
-  }
+    .topWebsites {
+        margin-top: 5vh;
+    }
 
-  .lne {
-    width: 100vw;
-    border-top: 0.2vh solid gray;
-  }
+    .lne {
+        width: 100vw;
+        border-top: 0.2vh solid gray;
+    }
 
-  .closeSpan {
-    font-size: 6vh;
-  }
+    .closeSpan {
+        font-size: 6vh;
+    }
 
-  .linkToGithub {
-    font-size: 2.5vw;
-  }
+    .linkToGithub {
+        font-size: 2.5vw;
+    }
 }

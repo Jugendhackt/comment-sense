@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   function getDesign() {
     var design = localStorage.getItem("design");
+    console.log(design);
     if (typeof design == "undefined" || design == null || design == "light") {
       if (window.location.pathname.split("/").pop() == "index.html") {
         loadjscssfile("css/design/light.css", "css");
