@@ -272,8 +272,8 @@ void *console(void *data)
         unsigned pos;
         if(input == "stop")
             break;
-        else if((pos = input.find("cors=")+5) < input.size()){
-            bool cors = input.at(pos)-48;
+        else if((pos = input.find("cors=")) < input.size()){
+            bool cors = input.at(pos+5)-48;
             server->setCorsEnabled(cors);
             std::cout<<"cors set to "<<(cors ? "true" : "false")<<"\n";
         }
