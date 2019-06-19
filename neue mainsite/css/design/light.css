@@ -24,7 +24,7 @@ body, .settingIcon {
 
 .slct {
   background-color: #BEBEBE;
-  border: none;
+  border: 2px solid transparent;
 }
 
 .ipt {
@@ -32,6 +32,29 @@ body, .settingIcon {
   border-bottom: 0.2vh solid gray;
 }
 
-@media only screen and (min-width: 1060px) {
+.lneModal {
+  border-left: 0.2vh solid gray;
+}
 
+@media only screen and (min-width: 1060px) {
+  .btn:hover, .slct:hover {
+    border: 2px solid #31AF91;
+    background-color: white;
+    color: black;
+  }
+
+  .a:hover {
+    box-shadow: 0px 1px 2px -2px;
+  }
+}
+
+@media only screen and (max-width: 1060px) {
+  .lneModal {
+    border-bottom: 0.2vh solid gray;
+    border-left: none;
+  }
+
+  .lne {
+    border-top: 0.2vh solid gray;
+  }
 }

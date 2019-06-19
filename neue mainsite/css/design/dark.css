@@ -36,14 +36,12 @@ body, .settingIcon {
   background-color: white;
 }
 
-.lne {}
-
 .lneModal {
   border-left: 0.2vh solid gray;
 }
 
 @media only screen and (min-width: 1060px) {
-  .btn:hover, .visitComment:hover, .visitWebsite:hover, .slct:hover {
+  .btn:hover, .slct:hover {
     border: 2px solid #31AF91;
     background-color: #333333;
   }
