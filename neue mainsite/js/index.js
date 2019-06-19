@@ -118,46 +118,104 @@ document.addEventListener("DOMContentLoaded", function() {
       closeSpan.innerHTML = "&times";
       modal.appendChild(closeSpan);
 
-      var labelUsername = document.createElement("label");
+      var modalSignIn = document.createElement("div");
+      modalSignIn.id = "modalSignIn";
+      modalSignIn.classList.add("modalColumn");
+      modalSignIn.classList.add("modalSignIn");
+      modal.appendChild(modalSignIn);
+
+      var labelUsername = document.createElement("lbl");
       labelUsername.textContent = "Nickname:";
-      labelUsername.classList.add("label");
-      labelUsername.classList.add("modalLabel");
-      modal.appendChild(labelUsername);
+      labelUsername.classList.add("lbl");
+      labelUsername.classList.add("modalLbl");
+      modalSignIn.appendChild(labelUsername);
 
       var inputUsername = document.createElement("input");
-      inputUsername.id = "inputUsername";
+      inputUsername.id = "inputUsernameSignIn";
       inputUsername.classList.add("ipt");
-      inputUsername.classList.add("modalipt");
+      inputUsername.classList.add("modalIpt");
       inputUsername.placeholder = "Dein Nickname";
-      modal.appendChild(inputUsername);
+      modalSignIn.appendChild(inputUsername);
 
-      var labelPassword = document.createElement("label");
-      labelPassword.classList.add("label");
-      labelPassword.classList.add("modalLabel");
+      var labelPassword = document.createElement("lbl");
+      labelPassword.classList.add("lbl");
+      labelPassword.classList.add("modalLbl");
       labelPassword.textContent = "Passwort:";
-      modal.appendChild(labelPassword);
+      modalSignIn.appendChild(labelPassword);
 
       var inputPassword = document.createElement("input");
-      inputPassword.id = "inputPassword";
+      inputPassword.id = "inputPasswordSignIn";
       inputPassword.type = "password";
       inputPassword.classList.add("ipt");
       inputPassword.classList.add("modalIpt");
       inputPassword.placeholder = "Dein Passwort";
-      modal.appendChild(inputPassword);
+      modalSignIn.appendChild(inputPassword);
 
       var btnLoginModal = document.createElement("button");
       btnLoginModal.id = "btnLoginModal";
       btnLoginModal.classList.add("btn");
       btnLoginModal.classList.add("modalBtn");
       btnLoginModal.textContent = "Anmelden";
-      modal.appendChild(btnLoginModal);
+      modalSignIn.appendChild(btnLoginModal);
 
-      var btnSignUpModal = document.createElement("button");
-      btnSignUpModal.id = "btnSignUpModal";
-      btnSignUpModal.classList.add("btn");
-      btnSignUpModal.classList.add("modalBtn");
-      btnSignUpModal.textContent = "Registieren";
-      modal.appendChild(btnSignUpModal);
+      var lneModal = document.createElement("h2");
+      lneModal.id = "lne";
+      lneModal.classList.add("lneModal");
+      modal.appendChild(lneModal);
+
+      var modalSignUp = document.createElement("div");
+      modalSignUp.id = "modalSignUp";
+      modalSignUp.classList.add("modalColumn");
+      modalSignUp.classList.add("modalSignUp");
+      modal.appendChild(modalSignUp);
+
+      var labelUsername = document.createElement("lbl");
+      labelUsername.classList.add("lbl");
+      labelUsername.classList.add("modalLbl");
+      labelUsername.textContent = "Nickname";
+      modalSignUp.appendChild(labelUsername);
+
+      var inputUsername = document.createElement("input");
+      inputUsername.id = "inputUsernameSignUp";
+      inputUsername.classList.add("ipt");
+      inputUsername.classList.add("modalIpt");
+      inputUsername.placeholder = "Dein Nickname";
+      modalSignUp.appendChild(inputUsername);
+
+      var labelPassword = document.createElement("label");
+      labelPassword.classList.add("lbl");
+      labelPassword.classList.add("modalLbl");
+      labelPassword.textContent = "Passwort:";
+      modalSignUp.appendChild(labelPassword);
+
+      var inputPassword = document.createElement("input");
+      inputPassword.id = "inputPasswordSignUp";
+      inputPassword.classList.add("ipt");
+      inputPassword.classList.add("modalIpt");
+      inputPassword.type = "password";
+      inputPassword.placeholder = "Dein Passwort";
+      modalSignUp.appendChild(inputPassword);
+
+      var labelEmail = document.createElement("label");
+      labelEmail.classList.add("lbl");
+      labelEmail.classList.add("modalLbl");
+      labelEmail.textContent = "Email:";
+      modalSignUp.appendChild(labelEmail);
+
+      var inputEmail = document.createElement("input");
+      inputEmail.id = "inputEmailSignUp";
+      inputEmail.classList.add("ipt");
+      inputEmail.classList.add("modalIpt");
+      inputEmail.placeholder = "Deine Email (optional)";
+      modalSignUp.appendChild(inputEmail);
+
+      var buttonSignUp = document.createElement("button");
+      buttonSignUp.id = "btnSignUp";
+      buttonSignUp.classList.add("btn");
+      buttonSignUp.classList.add("modalBtn");
+      buttonSignUp.textContent = "Registieren";
+      modalSignUp.appendChild(buttonSignUp);
+
 
       document.getElementById("nav").appendChild(modal);
 
@@ -195,9 +253,9 @@ document.addEventListener("DOMContentLoaded", function() {
       closeSpan.innerHTML = "&times";
       modalSettings.appendChild(closeSpan);
 
-      var labelDesign = document.createElement("label");
-      labelDesign.classList.add("label");
-      labelDesign.classList.add("modalLabel");
+      var labelDesign = document.createElement("lbl");
+      labelDesign.classList.add("lbl");
+      labelDesign.classList.add("modalLbl");
       labelDesign.textContent = "Design:";
       modalSettings.appendChild(labelDesign);
 

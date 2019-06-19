@@ -46,12 +46,12 @@ html {
   position: absolute;
   top: 15vh;
   z-index: 1;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
   width: 70vw;
   height: 70vh;
   text-align: center;
+  overflow: auto;
 }
 
 .modalHead {
@@ -66,8 +66,16 @@ html {
   margin: 0 !important;
 }
 
-.modal>* {
+.modalColumn>* {
   margin: 1vh;
+}
+
+.modalColumn {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 35vw;
+  height: calc(100% - 15vh);
 }
 
 .closeSpan {
@@ -157,6 +165,12 @@ html {
   border-radius: 0 0 1vh 1vh;
 }
 
+.lneModal {
+  position: relative;
+  top: 3vh;
+  height: 55vh;
+}
+
 @media only screen and (min-width: 1060px) {
   .commentDiv:hover, .websiteDiv:hover, .nav:hover {
     box-shadow: 0px 0px 10px 3px;
@@ -170,6 +184,7 @@ html {
     transition: 0.2s;
   }
 }
+
 
 @media only screen and (max-width: 1060px) {
   * {
@@ -192,7 +207,6 @@ html {
 
   .lne {
     width: 100vw;
-    border-top: 0.2vh solid gray;
   }
 
   .closeSpan {
@@ -205,5 +219,28 @@ html {
 
   .linkTo {
     font-size: 2.5vw;
+  }
+
+  .lneModal {
+    width: 55vw;
+    margin-top: 5vh;
+  }
+
+  .modal {
+    display: flex;
+    flex-direction: column;
+    max-height: 200vh;
+    overflow-y: auto;
+  }
+
+  .modalSignIn {
+    position: relative;
+    top: 7vh;
+    margin-bottom: 3vh;
+  }
+
+  .modalSignUp {
+    position: relative;
+    top: 7vh;
   }
 }
