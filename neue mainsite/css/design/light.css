@@ -31,3 +31,7 @@ body, .settingIcon {
   border: none;
   border-bottom: 0.2vh solid gray;
 }
+
+@media only screen and (min-width: 1060px) {
+
+}

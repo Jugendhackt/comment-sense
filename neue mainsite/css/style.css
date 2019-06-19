@@ -54,6 +54,16 @@ html {
   overflow: auto;
 }
 
+.modalSettings {
+  display: flex;
+  flex-direction: column !important;
+  justify-content: center;
+}
+
+.modalSettings>*{
+  margin: 1vh;
+}
+
 .modalHead {
   display: flex;
   flex-direction: row;
