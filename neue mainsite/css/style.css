@@ -124,7 +124,7 @@ html {
 .githubIcon {
   position: absolute;
   top: 2vh;
-  right: 10vh;
+  left: 2vh;
   width: 6.5vh;
 }
 
