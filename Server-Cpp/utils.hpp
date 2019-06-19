@@ -5,6 +5,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/sysinfo.h>
 #include <unistd.h>
 #include <dirent.h>
 
@@ -28,6 +29,14 @@ std::string stringFromHex(std::string hex);
 
 std::string getDate();
 std::vector<std::string> getDirContent(std::string path);
+
+namespace sys {
+	int getTotalMem();
+	int getFreeMem();
+	int getCurrentMem();
+	float getTotalCpuUsage();
+	float getCpuUsage();
+}
 
 class File{
 public:

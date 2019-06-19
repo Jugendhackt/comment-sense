@@ -24,3 +24,4 @@ Server/server
 Server/build.sh
 Server/test
 Backend
+Server-Cpp/log.txt

@@ -15,14 +15,18 @@ checkRequirement () {
 buildCLib () {
 	if [ "$1.c" -nt "$1.o" ] || [ "$1.h" -nt "$1.o" ] || [ "$2" == "1" ]; then
 		echo "building lib '$1'"
-		gcc -c $1.c $3
+		if ! gcc -c $1.c $3; then
+                    exit -1;
+                fi
 	fi
 }
 
 buildCppLib () {
 	if [ "$1.cpp" -nt "$1.o" ] || [ "$1.hpp" -nt "$1.o" ] || [ "$2" == "1" ]; then
 		echo "building lib '$1'"
-		g++ -c $1.cpp $3 -std=c++11
+		if ! g++ -c $1.cpp $3 -std=c++11; then
+                    exit -1;
+                fi
 	fi
 }
 
@@ -40,11 +44,11 @@ loadData () {
 
 rebuild=0, start=0
 target="debug"
-defines=""
+defines="-D TLS_AMALGAMATION"
 options=""
 libs='-lpthread -ldl'
 staticLibs='-static-libstdc++ -static-libgcc -static'
-link='cJSON.o tcpSocket.o sqlite3.o utils.o httpServer.o commentSense.o'
+link='cJSON.o tlse.o tcpSocket.o tlsSocket.o sqlite3.o utils.o httpServer.o commentSense.o'
 args='-std=c++11 -Wall'
 
 for i in "$@"
@@ -62,7 +66,7 @@ for i in "$@"
 done
 
 if [ "$target" == "debug" ]; then
-	defines="-D DEBUG"
+	defines="$defines -D DEBUG"
 	options="-g"
 else
 	options="-O3"
@@ -74,7 +78,9 @@ checkRequirement "build-essential";
 
 echo "starting build (target = $target)"
 buildCLib   "cJSON" $rebuild "$options $defines";
+buildCLib	"tlse" $rebuild "$options $defines";
 buildCppLib "tcpSocket" $rebuild "$options $defines";
+buildCppLib "tlsSocket" $rebuild "$options $defines";
 buildCLib   "sqlite3" $rebuild "$options $defines";
 buildCppLib "utils" $rebuild "$options $defines";
 buildCppLib "httpServer" $rebuild "$options $defines";

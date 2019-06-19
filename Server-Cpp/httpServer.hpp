@@ -3,16 +3,17 @@
 
 #include <pthread.h>
 
-#include <iostream>
-#include <sstream>
 #include <functional>
 #include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <ctime>
 
 #include "tcpSocket.hpp"
+#include "tlsSocket.hpp"
 #include "utils.hpp"
 
 #define MAX_CONNECTIONS 1024
-
 
 class HttpServer;
 
@@ -154,6 +155,8 @@ bool comparePlugin(Plugin p1, Plugin p2);
 
 void* handleClient(void *data);
 void* console(void *data);
+void* httpServer(void *data);
+void* httpsServer(void *data);
 
 std::string getDir(std::string dir);
 void getBigFile(File *file, TCPSocket *socket, HttpServer *server);
@@ -174,6 +177,11 @@ class HttpServer
             PATCH = 8,
             DELETE = 16
         };
+		
+		enum Protocols{
+			Http = 0,
+			Https = 1
+		};
 
         HttpServer(unsigned long adress = TCPSocket::Adress::Any, unsigned short port = 80);
         ~HttpServer();
@@ -184,6 +192,8 @@ class HttpServer
 		void addPlugin(Plugin plugin);
 
         void start();
+		void httpServer();
+		void httpsServer();
         void stop();
 		void handleClient(Client *client);
 		void showStats();
@@ -194,12 +204,14 @@ class HttpServer
 protected:
         
 private:
-        TCPSocket *server;
+        TCPSocket *httpSock;
+		TLSSocket *httpsSock;
         pthread_t stopThread;
 		std::vector<Plugin> plugins;
         bool corsEnabled = false, keepRunning = true;
         int lastIndex = 0;
 		int clients = 0;
+		std::time_t startTime;
 };
 
 #endif // HTTPSERVER_H

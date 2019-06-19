@@ -36,25 +36,23 @@ class TCPSocket
         };
         TCPSocket(int af, int type, int protocol);
         TCPSocket(socket_t other);
-        ~TCPSocket();
+		virtual ~TCPSocket();
 
         void bind(unsigned long address = Adress::Any, unsigned short port = 80);
-        void listen();
-        TCPSocket* accept();
-        void connect(std::string servAddr, unsigned short port = 80);
-		void disconnect();
+        virtual void listen();
+        virtual TCPSocket* accept();
+        virtual void connect(std::string servAddr, unsigned short port = 80);
+		virtual void disconnect();
 
 		bool isConnected();
         std::string getError();
         void setTimeout(unsigned int secs = 5, unsigned int usecs = 0);
 
-		bool send(std::string text);
-        std::string recv(int len);
-		std::vector<std::string> recvHeader();
+		virtual bool send(std::string text);
+        virtual std::string recv(int len);
+		virtual std::vector<std::string> recvHeader();
 
-    protected:
-
-    private:
+	protected:
       socket_t sock;
 };
 
