@@ -5,3 +5,7 @@ data
 *.user
 server
 *.o
+*.txt
+*.crt
+*.key
+*.pem

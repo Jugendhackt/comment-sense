@@ -1,5 +1,44 @@
 #include "tlsSocket.hpp"
 
+int verify(struct TLSContext *context, struct TLSCertificate **certificate_chain, int len) {
+    int i;
+    int err;
+    if (certificate_chain) {
+        for (i = 0; i < len; i++) {
+            struct TLSCertificate *certificate = certificate_chain[i];
+            // check validity date
+            err = tls_certificate_is_valid(certificate);
+            if (err)
+                return err;
+            // check certificate in certificate->bytes of length certificate->len
+            // the certificate is in ASN.1 DER format
+        }
+    }
+    // check if chain is valid
+    err = tls_certificate_chain_is_valid(certificate_chain, len);
+    if (err)
+        return err;
+
+    const char *sni = tls_sni(context);
+    if ((len > 0) && (sni)) {
+        err = tls_certificate_valid_subject(certificate_chain[0], sni);
+        if (err)
+            return err;
+    }
+
+    // Perform certificate validation agains ROOT CA
+    err = tls_certificate_chain_is_valid_root(context, certificate_chain, len);
+    if (err)
+        return err;
+
+    fprintf(stderr, "Certificate OK\n");
+
+    //return certificate_expired;
+    //return certificate_revoked;
+    //return certificate_unknown;
+    return no_error;
+}
+
 TLSSocket::TLSSocket(int af, int type, int protocol):
 	TCPSocket(af, type, protocol)
 {
@@ -53,31 +92,45 @@ TLSSocket *TLSSocket::accept()
 
 void TLSSocket::connect(std::string servAddr, unsigned short port)
 {
+	int portno;
 	struct sockaddr_in server;
     struct hostent *host_info;
     unsigned long addr;
-
-    memset( &server, 0, sizeof (server));
+    int ret;
+	
+	context = SSL_CTX_new(SSLv3_client_method());
+	int res = SSL_CTX_root_ca(context, "root.pem");
+#if defined(DEBUG)
+	std::cerr<<"Loaded"<<res<<"certificates\n";
+#endif
+	SSL_CTX_set_verify(context, SSL_VERIFY_PEER, verify);
+	if (!context) {
+		std::cerr<<"Error initializing client context\n";
+		return;
+	}
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	memset(&server, 0, sizeof (server));
     if((addr = inet_addr(servAddr.c_str())) != INADDR_NONE) {
         memcpy(&server.sin_addr, &addr, sizeof(addr));
     }
-    else {
-        host_info = gethostbyname(servAddr.c_str());
-		if(host_info == nullptr){
-#if defined(DEBUG)
+	else{
+		host_info = gethostbyname(servAddr.c_str());
+        if(host_info == nullptr)
             fprintf(stderr, "error: unknown server: %s\n", strerror(errno));
-#endif
-		}
         else
             memcpy(&server.sin_addr, host_info->h_addr, host_info->h_length);
-    }
-    server.sin_family = AF_INET;
+	}
+	server.sin_family = AF_INET;
     server.sin_port = htons(port);
 	if(::connect(sock, (struct sockaddr*)&server, sizeof(server)) < 0){
-#if defined(DEBUG)
-        fprintf(stderr, "error: couldn't connect to server: %s\n", strerror(errno));
-#endif
+		fprintf(stderr, "error: couldn't connect to server: %s\n", strerror(errno));
+		return;
 	}
+	SSL_set_fd(context, sock);
+	//tls_sni_set(clientssl, argv[1]);
+	if ((ret = SSL_connect(context)) != 1) {
+        std::cerr<<"Handshake Error"<<ret<<"\n";
+    }
 }
 
 void TLSSocket::disconnect()

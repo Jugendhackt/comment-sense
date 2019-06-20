@@ -426,12 +426,10 @@ void HttpServer::stop()
     http->connect("localhost", 80);
     http->disconnect();
 	delete http;
-	std::cout<<"http server stopped\n";
 	TLSSocket *https = new TLSSocket(AF_INET, SOCK_STREAM, 0);
 	https->connect("localhost", 443);
     https->disconnect();
     delete https;
-	std::cout<<"https server stopped\n";
 }
 
 void HttpServer::handleClient(Client *client){

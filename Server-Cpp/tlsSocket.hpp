@@ -9,6 +9,8 @@
 #include "tcpSocket.hpp"
 #include "utils.hpp"
 
+int verify(struct TLSContext *context, struct TLSCertificate **certificate_chain, int len);
+
 class TLSSocket : public TCPSocket
 {
 public:
