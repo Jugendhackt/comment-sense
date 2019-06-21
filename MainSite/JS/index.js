@@ -1,9 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("btnLogin").addEventListener("click", showLoginModalBox);
   document.getElementById("settingIcon").addEventListener("click", showSettingsModalBox);
-  document.getElementById("linkToGithub").addEventListener("click", function() {
-    window.location.href = "http://www.github.com/Jugendhackt/comment-sense";
-  });
 
   const ipAdress = "192.168.2.110";
 
