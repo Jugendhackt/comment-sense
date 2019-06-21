@@ -348,6 +348,7 @@ std::string HttpServer::httpResponsetoString(HttpResponse response){
             ss<<"Access-Control-Allow-Origin:*\n";
         ss<<"Content-Type:"<<response.contentType<<"\n";
         ss<<"Content-Length:"<<response.data.size()<<"\n\n";
+		//std::cout<<response.data.size()<<"\n"<<ss.str()<<"\n";
         ss<<response.data;
         return ss.str();
     }
