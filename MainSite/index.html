@@ -2,68 +2,29 @@
 <html>
 
 <head>
-  <title>Comment-Sense</title>
-  <link rel="stylesheet" href="CSS/style.css" type="text/css">
-  <link rel="stylesheet" href="CSS/index.css" type="text/css">
-  <link rel="shortcut icon" href="assets/icons/favicon.ico" type="image/ico">
+  <title>CommentSense</title>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+  <link rel="stylesheet" href="css/index.css" type="text/css">
+  <link rel="shortcut icon" href="assets/icons/favicon.ico" type="image/ico">
 </head>
 
 <body>
-  <div class="nav" id="nav">
-    <button id="login" type="button" class="button">Anmelden</button>
-    <img id="setting" src="assets/icons/settingLight512.png">
+  <div id="nav" class="nav">
+    <img id="linkToGithub" class="icon githubIcon" src="assets/icons/github512.png">
+    <button id="btnLogin" type="button" class="btn">Anmelden</button>
+    <img id="settingIcon" class="icon settingIcon" src="assets/icons/settingDark512.png">
+    <img id="userIcon" class="icon userIcon" src="assets/icons/userDark512.png">
   </div>
   <div class="row">
-    <div class="column" id="topComments">
-      <div id="comment0" class="comments">
-        <div id="commentTitle0" class="bold">Kommentar 0</div>
-        <div id="commentContent0" class="commentContent"></div>
-        <div class="btnDiv"><button class="visitComment" id="commentVisitBtn0">Zum Kommentar wechseln</button></div>
-      </div>
-
-      <div id="comment1" class="comments">
-        <div id="commentTitle1" class="commentTitle">Kommentar 1</div>
-        <div id="commentContent1" class="commentContent"></div>
-        <div class="btnDiv"><button class="visitComment" id="commentVisitBtn1">Zum Kommentar wechseln</button></div>
-      </div>
-      <div id="comment2" class="comments">
-        <div id="commentTitle2" class="commentTitle">Kommentar 2</div>
-        <div id="commentContent2" class="commentContent"></div>
-        <div class="btnDiv"><button class="visitComment" id="commentVisitBtn2">Zum Kommentar wechseln</button></div>
-      </div>
-      <div id="comment3" class="comments">
-        <div id="commentTitle3" class="commentTitle">Kommentar 3</div>
-        <div id="commentContent3" class="commentContent"></div>
-        <div class="btnDiv"><button class="visitComment" id="commentVisitBtn3">Zum Kommentar wechseln</button></div>
-      </div>
-      <div id="comment4" class="comments">
-        <div id="commentTitle4" class="commentTitle">Kommentar 4</div>
-        <div id="commentContent4" class="commentContent"></div>
-        <div class="btnDiv"><button class="visitComment" id="commentVisitBtn4">Zum Kommentar wechseln</button></div>
-      </div>
+    <div class="column topComments" id="topComments">
     </div>
-    <div class="column" id="topWebsites">
-      <div id="website0" class="websites">
-        <div id="websiteTitle0">Titel 0</div>
-        <div class="btnDiv"><button id="websiteVisitBtn0" class="visitWebsite">Zur Website wechseln</button></div>
-      </div>
-      <div id="website1" class="websites">
-        <div id="websiteTitle1">Titel 1</div>
-        <div class="btnDiv"><button id="websiteVisitBtn1" class="visitWebsite">Zur Website wechseln</button></div>
-      </div>
-      <div id="website2" class="websites">
-        <div id="websiteTitle2">Titel 2</div>
-        <div class="btnDiv"><button id="websiteVisitBtn2" class="visitWebsite">Zur Website wechseln</button></div>
-      </div>
-      <div id="website3" class="websites">
-        <div id="websiteTitle3">Titel 3</div>
-        <div class="btnDiv"><button id="websiteVisitBtn3" class="visitWebsite">Zur Website wechseln</button></div>
-      </div>
+    <h2 class="lne"></h2>
+    <div class="column topWebsites" id="topWebsites">
     </div>
   </div>
-  <script src="JS/design.js" charset="utf-8" type="application/javascript"></script>
-  <script src="JS/index.js" charset="utf-8" type="application/javascript"></script>
+  <script src="js/design.js" charset="utf-8" type="text/javascript"></script>
+  <script src="js/index.js" charset="utf-8" type="text/javascript"></script>
 </body>
 
 </html>

@@ -4,44 +4,45 @@
 }
 
 html {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
 * {
-  padding: 0;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
-}
-
-.input {
-  border: none;
-}
-
-.select {
-  border: none;
-}
-
-.a, .a:visited {
-  text-decoration: none;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.5vw;
 }
 
 .nav {
   display: flex;
-  position: fixed;
-  top: 0;
-  transition: 0.2s;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   width: 100vw;
   height: 10vh;
+  position: fixed;
+  top: 0;
+  transition: 0.2s;
+}
+
+.footer {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  justify-content: center;
+  text-align: center;
+  flex-direction: row;
+  height: 5vh;
+  width: 100vw;
 }
 
 .row {
+  margin-top: 15vh;
   display: flex;
   flex-direction: row;
   text-align: center;
-  width: 100vw;
+  width: 100%;
 }
 
 .column {
@@ -51,136 +52,260 @@ html {
   flex: 1;
 }
 
-#setting {
-  position: absolute;
-  display: flex;
-  background-color: white;
-  right: 2vh;
-  top: 2vh;
-  width: 6.5vh;
-  height: 6.5vh;
-  font-size: 1em;
-}
-
-#icons {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-}
-
 .modal {
   display: none;
   position: absolute;
   top: 15vh;
   z-index: 1;
-  flex-direction: column;
-  justify-content: center;
-  width: 100vw;
-  height: 70vh;
+  flex-direction: row;
   align-items: center;
+  width: 70vw;
+  height: 70vh;
   text-align: center;
+  overflow: auto;
 }
 
-.modal>* {
+.modalSettings {
+  display: flex;
+  flex-direction: column !important;
+  justify-content: center;
+}
+
+.modalSettings>* {
   margin: 1vh;
+}
+
+.modalHead {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  justify-content: center;
+  top: 3vh;
+  width: 70vw;
+  box-shadow: 0 4px 2px -2px gray;
+  padding: 0 0 1vh 0;
+  margin: 0 !important;
+}
+
+.modalColumn>* {
+  margin: 1vh;
+}
+
+.modalColumn {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 35vw;
+  height: calc(100% - 15vh);
 }
 
 .closeSpan {
   position: absolute;
-  top: 0vh;
+  top: 0;
   right: 2vh;
-  font-size: 4em;
+  font-size: 3.5vw;
   cursor: pointer;
 }
 
-.comments {
-  transition: 0.2s;
-  box-shadow: 0px 0px 7px 1px;
-  border-radius: 14px;
-  width: 50vw;
+.linkDiv {
+  position: absolute;
+  bottom: 0;
+  left: 0.5vh;
+  display: flex;
+  flex-direction: row;
+  height: 5vh;
+  width: 40vw;
 }
 
-.bold, .commentTitle {
+.linkDiv>* {
+  margin: 1vw;
+}
+
+.linkTo {
+  font-size: 1vw;
+}
+
+.settingIcon {
+  position: absolute;
+  top: 2vh;
+  right: 2vh;
+  width: 6.5vh;
+}
+
+.githubIcon {
+  position: absolute;
+  top: 2vh;
+  left: 2vh;
+  width: 6.5vh;
+}
+
+.userIcon {
+  display: none;
+  position: absolute;
+  top: 2vh;
+  right: 10vh;
+  width: 6.5vh;
+}
+
+.drpDwn {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 10vh;
+  right: 1vh;
+  height: 50vh;
+  width: 20vw;
+}
+
+.drpDwnCntnt {
+  text-align: center;
+  cursor: pointer;
+}
+
+.drpDwnHead {
+  padding: 1vh;
+  margin: 1vh;
+  box-shadow: 0 3px 2px -2px;
+}
+
+.btn {
+  height: 5vh;
+  width: 30vw;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.ipt {
+  padding: 1vh;
+}
+
+.slct {
+  height: 5vh;
+  width: 30vw;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.a {
+  text-decoration: none;
+}
+
+.err {
+  font-size: 1vw;
+}
+
+.bold {
   font-weight: bold;
 }
 
-.visitComment {
-  transition: 0.2s;
-  width: 50vw;
-  border-bottom-left-radius: 14px;
-  border-bottom-right-radius: 14px;
-  height: 4vh;
-  margin-top: 1vh;
+.center {
+  text-align: center;
 }
 
-.websites {
+.topComments, .topWebsites {
   display: flex;
-  flex-direction: column;
-  width: 40vw;
-  border-radius: 14px;
+  align-items: center;
+}
+
+.commentDiv, .websiteDiv {
+  transition: 0.2s;
   box-shadow: 0px 0px 7px 1px;
-  transition: 0.2s;
-}
-
-.btnDiv {
-  display: flex;
-  align-items: flex-end;
-}
-
-.visitWebsite {
-  transition: 0.2s;
+  border-radius: 1vh;
   width: 40vw;
-  height: 4vh;
-  border-bottom-right-radius: 14px;
-  border-bottom-left-radius: 14px;
-  margin-top: 1vh;
 }
 
-
-/*Handy/Tablet*/
-@media only screen and (max-width: 1060px) {
-  * {
-    font-size: 1.6rem;
-  }
-
-  .button, .input, .select {
-    width: 50vw;
-    height: 7vh;
-  }
-
-  #error {
-    font-size: 18px;
-  }
-
-  .modalButton, .modalInput, .modalSelect {
-    width: 80vw !important;
-  }
-
-  #login {
-    width: 60vw;
-  }
-
-  .modalLabel {
-    font-size: 2em;
-  }
+.topComments>*, .topWebsites>* {
+  margin: 2vh;
 }
 
-/*Desktop*/
+.visitComment, .visitWebsite {
+  width: 40vw;
+  border-radius: 0 0 1vh 1vh;
+}
+
+.lneModal {
+  position: relative;
+  top: 3vh;
+  height: 55vh;
+}
+
 @media only screen and (min-width: 1060px) {
-  * {
-    font-size: 1em;
+  .commentDiv:hover, .websiteDiv:hover, .nav:hover {
+    box-shadow: 0px 0px 10px 3px;
   }
 
-  .button, .input, .select {
-    width: 30vw;
-    height: 4vh;
+  .lne {
+    display: none;
   }
 
-  .button {
+  .a {
     transition: 0.2s;
   }
+}
 
-  #error {
-    font-size: 13px;
+@media only screen and (max-width: 1060px) {
+  * {
+    font-size: 4vw;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .topComments {
+    margin-bottom: 5vh;
+  }
+
+  .topWebsites {
+    margin-top: 5vh;
+  }
+
+  .lne {
+    width: 90vw;
+  }
+
+  .closeSpan {
+    font-size: 6vh;
+  }
+
+  .linkToGithub {
+    font-size: 2.5vw;
+  }
+
+  .linkTo {
+    font-size: 2.5vw;
+  }
+
+  .lneModal {
+    width: 55vw;
+    margin-top: 5vh;
+  }
+
+  .modal {
+    display: flex;
+    flex-direction: column;
+    max-height: 200vh;
+    overflow-y: auto;
+  }
+
+  .modalSignIn {
+    position: relative;
+    top: 7vh;
+    margin-bottom: 3vh;
+  }
+
+  .modalSignUp {
+    position: relative;
+    top: 7vh;
+  }
+
+  .drpDwn {
+    width: 40vw;
+  }
+
+  .err {
+    font-size: 2.5vw;
   }
 }

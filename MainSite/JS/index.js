@@ -1,8 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("login").addEventListener("click", createModalBoxLogin);
-  document.getElementById("setting").addEventListener("click", createModalBox);
+  document.getElementById("btnLogin").addEventListener("click", showLoginModalBox);
+  document.getElementById("settingIcon").addEventListener("click", showSettingsModalBox);
+  document.getElementById("linkToGithub").addEventListener("click", function() {
+    window.location.href = "http://www.github.com/Jugendhackt/comment-sense";
+  });
 
-  //const ipAdress = here;
+  const ipAdress = "192.168.2.110";
 
   function setTopComments() {
     var xhr = new XMLHttpRequest();
@@ -10,18 +13,41 @@ document.addEventListener("DOMContentLoaded", function() {
     xhr.onload = function() {
       if (this.status === 200) {
         var data = JSON.parse(this.responseText);
-        console.log(data);
-
         for (var i = 0; i < data.comments.length; i++) {
-          document.getElementById("commentTitle" + i).textContent = data.comments[i].headline;
-          document.getElementById("commentContent" + i).textContent = data.comments[i].content;
+          var commentDiv = document.createElement("div");
+          commentDiv.id = "comment" + i;
+          commentDiv.classList.add("commentDiv");
+
+          var title = document.createElement("div");
+          title.id = "commentTitle" + i;
+          title.classList.add("bold");
+          title.textContent = data.comments[i].headline;
+          commentDiv.appendChild(title);
+
+          var content = document.createElement("div");
+          content.id = "commentContent" + i;
+          content.classList.add("commentContent");
+          content.textContent = data.comments[i].content;
+          commentDiv.appendChild(content);
+
+          var btnDiv = document.createElement("div");
+          btnDiv.classList.add("btnDiv");
+          commentDiv.appendChild(btnDiv);
+
+          var visit = document.createElement("button");
+          visit.id = "btnVisitComment" + i;
+          visit.classList.add("btn");
+          visit.classList.add("visitComment");
+          visit.textContent = "Zum Kommentar wechseln";
+          btnDiv.appendChild(visit);
+
+          document.getElementById("topComments").appendChild(commentDiv);
         }
+
       }
     }
     xhr.send();
   }
-
-  setTopComments();
 
   function setTopWebsites() {
     var xhr = new XMLHttpRequest();
@@ -29,259 +55,412 @@ document.addEventListener("DOMContentLoaded", function() {
     xhr.onload = function() {
       if (this.status === 200) {
         var data = JSON.parse(this.responseText);
-        console.log(data);
-        for (var i = 0; i < 4; i++) {
-          var title;
-          if (data.sites[i].url.substring(0, 7) == "http://")
-            title = data.sites[i].url.substring(7, data.sites[i].url.length);
-          else if (data.sites[i].url.substring(0, 8) == "https://")
-            title = data.sites[i].url.substring(8, data.sites[i].url.length);
-          title = title.substring(0, title.length - 1);
-          document.getElementById("websiteTitle" + i).textContent = title;
-          document.getElementById("websiteVisitBtn" + i).addEventListener("click", function() {
-            window.location.href = data.sites[this.id.substring(15, this.id.length)].url;
+        console.log(data.sites[1]);
+
+        for (var i = 0; i < data.sites.length; i++) {
+          var websiteDiv = document.createElement("div");
+          websiteDiv.id = "websiteDiv" + i;
+          websiteDiv.classList.add("websiteDiv");
+
+          var title = document.createElement("div");
+          title.id = "websiteTitle" + i;
+          title.classList.add("bold");
+          var headline = data.sites[i].url;
+          if (headline.length > 25)
+            headline = headline.substring(0, 20) + "...";
+          title.textContent = headline;
+          websiteDiv.appendChild(title);
+
+          var btnDiv = document.createElement("div");
+          btnDiv.classList.add("btnDiv");
+          websiteDiv.appendChild(btnDiv);
+
+          var visit = document.createElement("button");
+          visit.id = "visitWebsite" + i;
+          visit.classList.add("btn");
+          visit.classList.add("visitWebsite");
+          visit.textContent = "Zur Website wechseln";
+          btnDiv.appendChild(visit);
+
+          visit.addEventListener("click", function() {
+            window.location.href = data.sites[this.id.substring(12, this.id.length)].url;
           });
+
+          document.getElementById("topWebsites").appendChild(websiteDiv);
         }
       }
     }
     xhr.send();
   }
 
-  setTopWebsites();
-
-  function createModalBox() {
-    if (document.getElementById("modal") == null) {
-      var design = localStorage.getItem("design");
-      var modal = document.createElement("DIV");
-      modal.id = "modal";
-
-      if (design == null || design == "light")
-        modal.style.backgroundColor = "lightgray";
-      else if (design == "dark")
-        modal.style.backgroundColor = "#292929";
-      modal.classList.add("modal");
-
-      var span = document.createElement("span");
-      span.innerHTML = "&times";
-      span.classList.add("closeSpan");
-      modal.appendChild(span);
-
-      var label = document.createElement("LABEL");
-      label.classList.add("label");
-      label.textContent = "Design auswählen";
-      modal.appendChild(label);
-
-      var comboBox = document.createElement("SELECT");
-      comboBox.id = "design";
-      comboBox.classList.add("select");
-      comboBox.classList.add("modalSelect");
-
-      var light = document.createElement("OPTION");
-      light.appendChild(document.createTextNode("hell"));
-      light.value = "light";
-      light.classList.add("option");
-      comboBox.appendChild(light);
-
-      var dark = document.createElement("OPTION");
-      dark.appendChild(document.createTextNode("dunkel"));
-      dark.value = "dark";
-      dark.classList.add("option");
-      comboBox.appendChild(dark);
-
-      modal.appendChild(comboBox);
-
-      if (design == null || design == "light")
-        comboBox.selectedIndex = 0;
-      else
-        comboBox.selectedIndex = 1;
-
-      var button = document.createElement("BUTTON");
-      button.id = "save";
-      button.textContent = "Speichern";
-      button.classList.add("button");
-      button.classList.add("modalButton");
-      modal.appendChild(button);
-
-      var a = document.createElement("a");
-      a.id = "linkToIcon";
-      a.classList.add("a");
-      a.textContent = "Links are from: https://www.iconfinder.com/Chanut-is";
-      a.href = "https://www.iconfinder.com/Chanut-is";
-      modal.appendChild(a);
-
-      var username = localStorage.getItem("username");
-      var password = localStorage.getItem("password");
-
-      var button = document.createElement("button");
-      button.id = "logout";
-      button.classList.add("button");
-      button.classList.add("modalButton");
-
-      if (username != "null" && password != "null") {
-        button.textContent = "Abmelden";
-        button.addEventListener("click", function() {
-          setLoginData(null, null);
-          setErr("Du wurdest abgemeldet");
-        });
-      } else {
-        button.textContent = "Anmelden";
-        button.addEventListener("click", function(){
-          modal.remove();
-          createModalBoxLogin();
-        });
-      }
-      modal.appendChild(button);
-
-      var error = document.createElement("div");
-      error.id = "error";
-      error.classList.add("error");
-      modal.appendChild(error);
-
-      document.getElementById("nav").appendChild(modal);
-
-      document.getElementById("save").addEventListener("click", function() {
-        localStorage.setItem("design", document.getElementById("design").value);
-        window.location.reload();
-      });
-
-      window.onclick = function(event) {
-        if (event.target.id != "logout" && event.target.id != "modal" && event.target.id != "save" && event.target.id != "setting" && event.target.id != "design" && event.target.id != "logout") {
-          modal.remove();
-        }
-      }
-
-      modal.style.display = "flex";
-    }
-  }
-
-  function createElement(type, id, text, classList) {
-    console.log(id);
-    var element = document.createElement(type);
-    if (id != "undefined" || id != null)
-      element.id = id;
-    if (type == "input")
-      element.value = text;
-    else
-      element.innerHTML = text;
-    element.classList.add(classList);
-    return element;
-  }
-
-  function createModalBoxLogin() {
-    console.log(document.getElementById("modal"));
-    if (document.getElementById("modal") == null) {
-      var design = localStorage.getItem("design");
+  function showLoginModalBox() {
+    if (document.getElementsByClassName("modal").length == 0) {
       var modal = document.createElement("div");
-      modal.id = "modal";
-
-      if (design == null || design == "light")
-        modal.style.backgroundColor = "lightgray";
-      else if (design == "dark")
-        modal.style.backgroundColor = "#292929";
+      modal.id = "modalLogin";
       modal.classList.add("modal");
+      modal.classList.add("modalLogin");
+
+      var modalHead = document.createElement("div");
+      modalHead.id = "modalHead";
+      modalHead.classList.add("modalHead");
+      modal.appendChild(modalHead);
+
+      var modalTitle = document.createElement("div");
+      modalTitle.id = "modalTitle";
+      modalTitle.classList.add("modalTitle");
+      modalTitle.classList.add("bold");
+      modalTitle.textContent = "Anmelden/Registieren";
+      modalHead.appendChild(modalTitle);
 
       var closeSpan = document.createElement("span");
       closeSpan.id = "closeSpan";
-      closeSpan.innerHTML = "&times";
       closeSpan.classList.add("closeSpan");
+      closeSpan.innerHTML = "&times";
       modal.appendChild(closeSpan);
 
-      var label = document.createElement("label");
-      label.textContent = "Nickname:";
-      label.classList.add("label");
-      label.classList.add("modalLabel");
-      modal.appendChild(label);
+      var modalSignIn = document.createElement("div");
+      modalSignIn.id = "modalSignIn";
+      modalSignIn.classList.add("modalColumn");
+      modalSignIn.classList.add("modalSignIn");
+      modal.appendChild(modalSignIn);
 
-      var input = createElement("input", "inputNickname", null, "input");
-      input.id = "inputNickname";
-      input.placeholder = "Dein Nickname";
-      input.classList.add("input");
-      input.classList.add("modalInput");
-      modal.appendChild(input);
+      var labelUsername = document.createElement("lbl");
+      labelUsername.textContent = "Nickname:";
+      labelUsername.classList.add("lbl");
+      labelUsername.classList.add("modalLbl");
+      modalSignIn.appendChild(labelUsername);
 
-      var label = document.createElement("label");
-      label.classList.add("label");
-      label.classList.add("modalLabel");
-      label.textContent = "Passwort:";
-      modal.appendChild(label);
+      var inputUsername = document.createElement("input");
+      inputUsername.id = "inputUsernameSignIn";
+      inputUsername.classList.add("ipt");
+      inputUsername.classList.add("modalIpt");
+      inputUsername.placeholder = "Dein Nickname";
+      modalSignIn.appendChild(inputUsername);
 
-      var input = document.createElement("input");
-      input.id = "inputPassword";
-      input.type = "password";
-      input.placeholder = "Dein Passwort";
-      input.classList.add("input");
-      input.classList.add("modalInput");
-      modal.appendChild(input);
+      var labelPassword = document.createElement("lbl");
+      labelPassword.classList.add("lbl");
+      labelPassword.classList.add("modalLbl");
+      labelPassword.textContent = "Passwort:";
+      modalSignIn.appendChild(labelPassword);
 
-      var button = document.createElement("button");
-      button.id = "loginModal";
-      button.classList.add("button");
-      button.classList.add("modalButton");
-      button.textContent = "Anmelden";
-      modal.appendChild(button);
+      var inputPassword = document.createElement("input");
+      inputPassword.id = "inputPasswordSignIn";
+      inputPassword.type = "password";
+      inputPassword.classList.add("ipt");
+      inputPassword.classList.add("modalIpt");
+      inputPassword.placeholder = "Dein Passwort";
+      modalSignIn.appendChild(inputPassword);
 
-      var button = document.createElement("button");
-      button.id = "createAcc";
-      button.classList.add("button");
-      button.classList.add("modalButton");
-      button.textContent = "Registrieren";
-      modal.appendChild(button);
+      var btnLoginModal = document.createElement("button");
+      btnLoginModal.id = "btnLoginModal";
+      btnLoginModal.classList.add("btn");
+      btnLoginModal.classList.add("modalBtn");
+      btnLoginModal.textContent = "Anmelden";
+      modalSignIn.appendChild(btnLoginModal);
+      btnLoginModal.addEventListener("click", sendLoginData);
 
-      var error = document.createElement("div");
-      error.id = "error";
-      error.classList.add("error");
-      error.classList.add("modalError");
-      modal.appendChild(error);
+      var errorSignIn = document.createElement("div");
+      errorSignIn.id = "errorSignIn";
+      errorSignIn.classList.add("err");
+      errorSignIn.classList.add("modalErr");
+      modalSignIn.appendChild(errorSignIn);
+
+      var lneModal = document.createElement("h2");
+      lneModal.id = "lne";
+      lneModal.classList.add("lneModal");
+      modal.appendChild(lneModal);
+
+      var modalSignUp = document.createElement("div");
+      modalSignUp.id = "modalSignUp";
+      modalSignUp.classList.add("modalColumn");
+      modalSignUp.classList.add("modalSignUp");
+      modal.appendChild(modalSignUp);
+
+      var labelUsername = document.createElement("lbl");
+      labelUsername.classList.add("lbl");
+      labelUsername.classList.add("modalLbl");
+      labelUsername.textContent = "Nickname";
+      modalSignUp.appendChild(labelUsername);
+
+      var inputUsername = document.createElement("input");
+      inputUsername.id = "inputUsernameSignUp";
+      inputUsername.classList.add("ipt");
+      inputUsername.classList.add("modalIpt");
+      inputUsername.placeholder = "Dein Nickname";
+      modalSignUp.appendChild(inputUsername);
+
+      var labelPassword = document.createElement("label");
+      labelPassword.classList.add("lbl");
+      labelPassword.classList.add("modalLbl");
+      labelPassword.textContent = "Passwort:";
+      modalSignUp.appendChild(labelPassword);
+
+      var inputPassword = document.createElement("input");
+      inputPassword.id = "inputPasswordSignUp";
+      inputPassword.classList.add("ipt");
+      inputPassword.classList.add("modalIpt");
+      inputPassword.type = "password";
+      inputPassword.placeholder = "Dein Passwort";
+      modalSignUp.appendChild(inputPassword);
+
+      var labelEmail = document.createElement("label");
+      labelEmail.classList.add("lbl");
+      labelEmail.classList.add("modalLbl");
+      labelEmail.textContent = "Email:";
+      modalSignUp.appendChild(labelEmail);
+
+      var inputEmail = document.createElement("input");
+      inputEmail.id = "inputEmailSignUp";
+      inputEmail.classList.add("ipt");
+      inputEmail.classList.add("modalIpt");
+      inputEmail.placeholder = "Deine Email (optional)";
+      modalSignUp.appendChild(inputEmail);
+
+      var buttonSignUp = document.createElement("button");
+      buttonSignUp.id = "btnSignUp";
+      buttonSignUp.classList.add("btn");
+      buttonSignUp.classList.add("modalBtn");
+      buttonSignUp.textContent = "Registieren";
+      modalSignUp.appendChild(buttonSignUp);
+      buttonSignUp.addEventListener("click", sendSignUpData);
+
+      var errorSignUp = document.createElement("div");
+      errorSignUp.id = "errorSignUp";
+      errorSignUp.classList.add("err");
+      errorSignUp.classList.add("modalErr");
+      modalSignUp.appendChild(errorSignUp);
 
       document.getElementById("nav").appendChild(modal);
-      document.getElementById("createAcc").addEventListener("click", function() {
-        window.location.href = "HTML/signup.html";
-      });
-      document.getElementById("loginModal").addEventListener("click", login);
+
+      modal.style.display = "flex";
 
       window.onclick = function(event) {
-        console.log(event.target);
-        if (event.target.id != "logout" && event.target.id != "modal" && event.target.id != "login" && event.target.id != "loginModal" && event.target.id != "inputNickname" && event.target.id != "inputPassword") {
+        if (event.target.id == "closeSpan")
           modal.remove();
-        }
       }
-      modal.style.display = "flex";
     }
   }
 
-  function setLoginData(username, password) {
-    localStorage.setItem("username", username);
-    localStorage.setItem("password", password);
+  function sendSignUpData() {
+    var username = document.getElementById("inputUsernameSignUp").value;
+    var password = document.getElementById("inputPasswordSignUp").value;
+    var email = document.getElementById("inputEmailSignUp").value;
+
+    if (username != "" && password != "") {
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://" + ipAdress + "/users/create/", true);
+      xhr.onload = function() {
+        if (this.status === 200) {
+          console.log("hi");
+          setErr("errorSignUp", "Account erfolgreich erstellt");
+        } else if (this.status === 409) {
+          setErr("errorSignUp", "Nutzer existiert schon");
+        }
+      }
+      if (email == "") {
+        xhr.send(JSON.stringify({
+          userName: username,
+          password: password
+        }));
+      } else {
+        xhr.send(JSON.stringify({
+          userName: username,
+          password: password,
+          email: email
+        }));
+      }
+    } else
+      document.getElementById("errorSignUp").textContent += "Nickname oder Passwort fehlt";
   }
 
-  function login() {
-    console.log("triggered");
-    if (document.getElementById("inputNickname").value != "" || document.getElementById("inputPassword").value != "") {
+  function sendLoginData() {
+    var username = document.getElementById("inputUsernameSignIn").value;
+    var password = document.getElementById("inputPasswordSignIn").value;
+
+    if (username != "" && password != "") {
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
       xhr.onload = function() {
-        if (this.status == 200) {
-          setLoginData(document.getElementById("inputNickname").value, document.getElementById("inputPassword").value);
-          setErr("Anmelden erfolgreich");
-          setTimeout(function() {
-            window.location.href = "HTML/showAcc.html"
-          }, 1500);
-        } else if (this.status == 404 || this.status == 422) {
-          setLoginData("undefined", "undefined");
-          setErr("Nutzer existiert nicht oder Passwort ist falsch");
+        if (this.status === 200) {
+          document.getElementById("userIcon").style.display = "block";
+          document.getElementById("userIcon").addEventListener("click", function(){
+            showUserDropMenu(username);
+          });
+          document.getElementById("btnLogin").textContent = "Sie sind angemeldet";
+          document.getElementById("btnLogin").removeEventListener("click", showLoginModalBox);
+          document.getElementById("modalLogin").remove();
+        } else if (this.status === 422) {
+          setErr("errorSignIn", "Nickname oder Passwort falsch");
         }
       }
       xhr.send(JSON.stringify({
-        userName: document.getElementById("inputNickname").value,
-        password: document.getElementById("inputPassword").value
+        userName: username,
+        password: password
       }));
     } else {
-      setErr("Kein Nickname oder Passwort angegeben");
+      setErr("errorSignIn", "Nickname oder Passwort fehlt");
     }
   }
 
-  function setErr(str) {
-    if (str != document.getElementById("error").textContent)
-      document.getElementById("error").textContent += str;
+  function showUserDropMenu(username) {
+    if (document.getElementById("modalUserDropMenu") == null) {
+      console.log("yeah");
+      var modalUserDropMenu = document.createElement("div");
+      modalUserDropMenu.id = "modalUserDropMenu";
+      modalUserDropMenu.classList.add("drpDwn");
+      modalUserDropMenu.classList.add("DrpDwnUserDropMenu");
+
+      var modalHead = document.createElement("div");
+      modalHead.id = "modalHeadUserDropMenu";
+      modalHead.classList.add("drpDwnHead");
+      modalUserDropMenu.appendChild(modalHead);
+
+      var modalTitle = document.createElement("div");
+      modalTitle.id = "modalTitleUserDropMenu";
+      modalTitle.classList.add("bold");
+      modalTitle.classList.add("center");
+      modalTitle.textContent = username;
+      modalHead.appendChild(modalTitle);
+
+      var closeSpan = document.createElement("span");
+      closeSpan.id = "closeSpan";
+      closeSpan.classList.add("closeSpan");
+      closeSpan.innerHTML = "&times";
+      modalUserDropMenu.appendChild(closeSpan);
+
+      var aManageAcc = document.createElement("a");
+      aManageAcc.id = "aManageAcc";
+      aManageAcc.classList.add("a");
+      aManageAcc.classList.add("center");
+      aManageAcc.classList.add("aManageAcc");
+      aManageAcc.classList.add("drpDwnCntnt");
+      aManageAcc.textContent = "Account Einstellungen";
+      aManageAcc.href = "html/manageAccount.html";
+      modalUserDropMenu.appendChild(aManageAcc);
+
+      document.getElementById("nav").appendChild(modalUserDropMenu);
+
+      modalUserDropMenu.style.display = "flex";
+
+      window.onclick = function() {
+        if (event.target.id == "closeSpan") {
+          modalUserDropMenu.remove();
+        }
+      }
+    }
   }
+
+  function setErr(id, text) {
+    if (text != document.getElementById(id).textContent)
+      document.getElementById(id).textContent = text;
+  }
+
+  function showSettingsModalBox() {
+    if (document.getElementsByClassName("modal").length == 0) {
+      var modalSettings = document.createElement("div");
+      modalSettings.id = "modalSettings";
+      modalSettings.classList.add("modal");
+      modalSettings.classList.add("modalSettings");
+
+      var modalHead = document.createElement("div");
+      modalHead.id = "modalHead";
+      modalHead.classList.add("modalHead");
+      modalSettings.appendChild(modalHead);
+
+      var modalTitle = document.createElement("div");
+      modalTitle.id = "modalTitle";
+      modalTitle.classList.add("modalTitle");
+      modalTitle.classList.add("bold");
+      modalTitle.textContent = "Einstellungen";
+      modalHead.appendChild(modalTitle);
+
+      var closeSpan = document.createElement("span");
+      closeSpan.id = "closeSpan";
+      closeSpan.classList.add("closeSpan");
+      closeSpan.innerHTML = "&times";
+      modalSettings.appendChild(closeSpan);
+
+      var labelDesign = document.createElement("lbl");
+      labelDesign.classList.add("lbl");
+      labelDesign.classList.add("modalLbl");
+      labelDesign.textContent = "Design:";
+      modalSettings.appendChild(labelDesign);
+
+      var selectDesign = document.createElement("select");
+      selectDesign.id = "selectDesign";
+      selectDesign.classList.add("slct");
+      selectDesign.classList.add("modalSlct");
+
+
+      var optionLight = document.createElement("option");
+      optionLight.id = "optionLight";
+      optionLight.value = "light";
+      optionLight.textContent = "hell";
+      optionLight.classList.add("option");
+      optionLight.classList.add("modalOption");
+      selectDesign.appendChild(optionLight);
+
+      var optionDark = document.createElement("option");
+      optionDark.id = "optionDark";
+      optionDark.value = "dark";
+      optionDark.textContent = "dunkel";
+      optionDark.classList.add("optn");
+      optionDark.classList.add("modalOptn");
+      selectDesign.appendChild(optionDark);
+
+      var design = localStorage.getItem("design");
+      if (design == null || typeof design == "undefined")
+        design = "light";
+
+      selectDesign.value = design;
+      modalSettings.appendChild(selectDesign);
+
+      var btnSave = document.createElement("button");
+      btnSave.id = "btnSave";
+      btnSave.classList.add("btn");
+      btnSave.classList.add("modalBtn");
+      btnSave.textContent = "Speichern";
+      modalSettings.appendChild(btnSave);
+
+      btnSave.addEventListener("click", function() {
+        localStorage.setItem("design", document.getElementById("selectDesign").value);
+        window.location.reload();
+      });
+
+      var linkDiv = document.createElement("div");
+      linkDiv.id = "linkDiv";
+      linkDiv.classList.add("linkDiv");
+      modalSettings.appendChild(linkDiv);
+
+      var linkToGithubIcon = document.createElement("a");
+      linkToGithubIcon.id = "linkToGithubIcon";
+      linkToGithubIcon.classList.add("a");
+      linkToGithubIcon.classList.add("modalA");
+      linkToGithubIcon.classList.add("linkTo");
+      linkToGithubIcon.href = "https://www.iconfinder.com/icons/298822/github_mark_icon";
+      linkToGithubIcon.textContent = "Github Icon";
+      linkDiv.appendChild(linkToGithubIcon);
+
+      var linkToSettingIcon = document.createElement("a");
+      linkToSettingIcon.id = "linkToSettingIcon";
+      linkToSettingIcon.classList.add("a");
+      linkToSettingIcon.classList.add("modalA");
+      linkToSettingIcon.classList.add("linkTo");
+      linkToSettingIcon.href = "https://www.iconfinder.com/Chanut-is";
+      linkToSettingIcon.textContent = "Einstellungen Icon";
+      linkDiv.appendChild(linkToSettingIcon);
+
+      document.getElementById("nav").appendChild(modalSettings);
+
+      window.onclick = function(event) {
+        if (event.target.id == "closeSpan")
+          modalSettings.remove();
+      }
+
+      modalSettings.style.display = "flex";
+    }
+  }
+
+  setTopComments();
+  setTopWebsites();
 });

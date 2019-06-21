@@ -1,4 +1,4 @@
-body {
+body, .settingIcon {
   background-color: #191A1C;
 }
 
@@ -11,28 +11,24 @@ body {
   box-shadow: 0px 0px 5px 1px;
 }
 
-.a {
-  color: white;
-}
-
-.select {
-  background-color: black;
-  color: white;
-}
-
-#setting {
-  background-color: #191A1C;
-}
-
-.button, .visitComment, .visitWebsite {
-  background-color: #31AF91;
-  border: none;
-  color: white;
-}
-
-.input {
-  border: none;
+.modal, .drpDwn {
   background-color: #333333;
+  border: 0.5vh solid #31AF91;
+}
+
+.slct {
+  background-color: #505050;
+  border: 2px solid transparent
+}
+
+.btn {
+  background-color: #31AF91;
+  border: 2px solid transparent
+}
+
+.ipt {
+  border: none;
+  background-color: #555555;
 }
 
 ::selection {
@@ -40,18 +36,28 @@ body {
   background-color: white;
 }
 
-.closeSpan {
-  color: white;
+.lneModal {
+  border-left: 0.2vh solid gray;
 }
 
 @media only screen and (min-width: 1060px) {
-  .button:hover, .visitWebsite:hover, .visitComment:hover {
+  .btn:hover, .slct:hover {
     border: 2px solid #31AF91;
     background-color: #333333;
-    color: white;
   }
 
-  .websites:hover, .comments:hover, .nav:hover {
-		box-shadow: 0px 0px 10px 3px;
-	}
+  .a:hover {
+    box-shadow: 0px 1px 2px -2px;
+  }
+}
+
+@media only screen and (max-width: 1060px) {
+  .lneModal {
+    border-bottom: 0.2vh solid gray;
+    border-left: none;
+  }
+
+  .lne {
+    border-top: 0.2vh solid gray;
+  }
 }

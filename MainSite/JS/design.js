@@ -1,23 +1,27 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function(){
+
   function getDesign() {
     var design = localStorage.getItem("design");
-    console.log(window.location.pathname.split("/").pop());
     console.log(design);
-    if (typeof design == "undefined" || design == "light" || design == null) {
+    if (typeof design == "undefined" || design == null || design == "light") {
       if (window.location.pathname.split("/").pop() == "index.html") {
-        loadjscssfile("CSS/design/light.css", "css");
-        loadjscssfile("assets/icons/settingLight512.png", "png", "setting");
+        loadjscssfile("css/design/light.css", "css");
+        loadjscssfile("assets/icons/settingLight512.png", "png", "settingIcon");
+        loadjscssfile("assets/icons/userLight512.png", "png", "userIcon");
       } else {
-        loadjscssfile("../CSS/design/light.css", "css");
-        loadjscssfile("../assets/icons/settingLight512.png", "png", "setting");
+        loadjscssfile("../css/design/light.css", "css");
+        loadjscssfile("../assets/icons/settingLight512.png", "png", "settingIcon");
+        loadjscssfile("../assets/icons/userLight512.png", "png", "userIcon");
       }
-    } else if (design == "dark") {
+    } else if (design == "dark"){
       if (window.location.pathname.split("/").pop() == "index.html") {
-        loadjscssfile("CSS/design/dark.css", "css");
-        loadjscssfile("assets/icons/settingDark512.png", "png", "setting");
+        loadjscssfile("css/design/dark.css", "css");
+        loadjscssfile("assets/icons/settingDark512.png", "png", "settingIcon");
+        loadjscssfile("assets/icons/userDark512.png", "png", "userIcon");
       } else {
-        loadjscssfile("../CSS/design/dark.css", "css");
-        loadjscssfile("../assets/icons/settingDark512.png", "png", "setting");
+        loadjscssfile("../css/design/dark.css", "css");
+        loadjscssfile("../assets/icons/settingDark512.png", "png", "settingIcon");
+        loadjscssfile("../assets/icons/userDark512.png", "png", "userIcon");
       }
     }
   }
