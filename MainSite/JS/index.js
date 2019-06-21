@@ -253,6 +253,12 @@ document.addEventListener("DOMContentLoaded", function() {
         if (this.status === 200) {
           console.log("hi");
           setErr("errorSignUp", "Account erfolgreich erstellt");
+          document.getElementById("userIcon").style.display = "block";
+          document.getElementById("userIcon").addEventListener("click", function(){
+            showUserDropMenu(username);
+          });
+          document.getElementById("btnLogin").textContent = "Sie sind angemeldet";
+          document.getElementById("btnLogin").removeEventListener("click", showLoginModalBox);
         } else if (this.status === 409) {
           setErr("errorSignUp", "Nutzer existiert schon");
         }
@@ -390,7 +396,6 @@ document.addEventListener("DOMContentLoaded", function() {
       selectDesign.id = "selectDesign";
       selectDesign.classList.add("slct");
       selectDesign.classList.add("modalSlct");
-
 
       var optionLight = document.createElement("option");
       optionLight.id = "optionLight";
