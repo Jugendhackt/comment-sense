@@ -1,10 +1,9 @@
 #include "tlsSocket.hpp"
 
 int verify(struct TLSContext *context, struct TLSCertificate **certificate_chain, int len) {
-    int i;
     int err;
     if (certificate_chain) {
-        for (i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
             struct TLSCertificate *certificate = certificate_chain[i];
             // check validity date
             err = tls_certificate_is_valid(certificate);
@@ -26,16 +25,12 @@ int verify(struct TLSContext *context, struct TLSCertificate **certificate_chain
             return err;
     }
 
-    // Perform certificate validation agains ROOT CA
+    // Perform certificate validation against ROOT CA
     err = tls_certificate_chain_is_valid_root(context, certificate_chain, len);
     if (err)
         return err;
 
-    fprintf(stderr, "Certificate OK\n");
-
-    //return certificate_expired;
-    //return certificate_revoked;
-    //return certificate_unknown;
+    std::cerr<<"Certificate OK\n";
     return no_error;
 }
 
@@ -127,7 +122,7 @@ void TLSSocket::connect(std::string servAddr, unsigned short port)
 		return;
 	}
 	SSL_set_fd(context, sock);
-	//tls_sni_set(clientssl, argv[1]);
+	//tls_sni_set(context, argv[1]);
 	if ((ret = SSL_connect(context)) != 1) {
         std::cerr<<"Handshake Error"<<ret<<"\n";
     }
@@ -158,15 +153,26 @@ void TLSSocket::disconnect()
 bool TLSSocket::send(std::string data)
 {
 	if(isConnected()){
-        if(SSL_write(context, data.c_str(), size_t(data.size())) <= 0 ){
+		unsigned long chunk = 16*1024;
+		unsigned long size = data.size();
+		unsigned long chunks = size/chunk;
+		unsigned long rest = size%chunk;
+		for(int i = 0; i < chunks; i++){
+			if(SSL_write(context, &data.c_str()[i*chunk], chunk) <= 0){
 #if defined(DEBUG)
-            std::cerr<<"error: tcp send(): "<<strerror(errno)<<"\n";
+		std::cerr<<"error: tcp send(): "<<strerror(errno)<<"\n";
 #endif
-            return false;
+				return false;
+			}
 		}
-        return true;
+		if(SSL_write(context, &data.c_str()[chunks*chunk], rest) <= 0){
+#if defined(DEBUG)
+		std::cerr<<"error: tcp send(): "<<strerror(errno)<<"\n";
+#endif
+			return false;
+		}
 	}
-    return false;
+    return true;
 }
 
 std::string TLSSocket::recv(int len)

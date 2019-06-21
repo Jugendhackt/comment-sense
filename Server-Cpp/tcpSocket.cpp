@@ -56,7 +56,7 @@ void TCPSocket::connect(std::string servAddr, unsigned short port){
     else {
         host_info = gethostbyname(servAddr.c_str());
         if(host_info == nullptr)
-            fprintf(stderr, "error: unknown server: %s\n", strerror(errno));
+            std::cerr<<"error: unknown server: "<<strerror(errno)<<"\n";
         else
             memcpy(&server.sin_addr, host_info->h_addr, host_info->h_length);
     }
@@ -99,13 +99,13 @@ std::string TCPSocket::getError()
         return "getsockopt failed";
     if (err)
         return strerror(err);
-    return "";
+    return std::string("");
 }
 
 void TCPSocket::setTimeout(unsigned int secs, unsigned int usecs){
     struct timeval tv;
-    tv.tv_sec = secs;
-    tv.tv_usec = usecs;
+    tv.tv_sec = long(secs);
+    tv.tv_usec = long(usecs);
     setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
 
@@ -122,7 +122,7 @@ bool TCPSocket::send(std::string data){
 
 std::string TCPSocket::recv(int len){
 	if(!isConnected())
-		return "";
+		return std::string("");
 	char *data = new char[len];
 	int size = ::recv(sock, data, len, 0);
 	if(size < len)
