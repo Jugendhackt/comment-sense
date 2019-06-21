@@ -259,7 +259,7 @@ void* handleClient(void *data){
 #endif
 	delete client->socket;
 	delete client;
-    return nullptr;
+    pthread_exit(nullptr);
 }
 
 void *console(void *data)
@@ -270,14 +270,14 @@ void *console(void *data)
     while(true){
         std::cin>>input;
         unsigned pos;
-        if(input == "stop")
+        if(input.find("stop") == 0)
             break;
         else if((pos = input.find("cors=")) < input.size()){
             bool cors = input.at(pos+5)-48;
             server->setCorsEnabled(cors);
             std::cout<<"cors set to "<<(cors ? "true" : "false")<<"\n";
         }
-		else if(input == "stat"){
+		else if(input.find("stat") == 0){
 			server->showStats();
 		}
         else
@@ -285,12 +285,29 @@ void *console(void *data)
         std::cout<<">";
     }
     server->stop();
+	pthread_exit(nullptr);
+}
+
+
+void* httpServer(void *data){
+	HttpServer *server = reinterpret_cast<HttpServer*>(data);
+	server->httpServer();
+	pthread_exit(nullptr);
+}
+
+void* httpsServer(void *data){
+	HttpServer *server = reinterpret_cast<HttpServer*>(data);
+	server->httpsServer();
+	pthread_exit(nullptr);
 }
 
 HttpServer::HttpServer(unsigned long adress, unsigned short port)
 {
-    server = new TCPSocket(AF_INET, SOCK_STREAM, 0);
-    server->bind(adress, port);
+    httpSock = new TCPSocket(AF_INET, SOCK_STREAM, 0);
+    httpSock->bind(adress, port);
+	
+	httpsSock = new TLSSocket(AF_INET, SOCK_STREAM, 0);
+    httpsSock->bind(adress, 443);
 
 	addPlugin(newPlugin("default get\t", GET, "/", defaultGet));
 	addPlugin(newPlugin("default put\t", PUT, "/", defaultPut));
@@ -303,7 +320,8 @@ HttpServer::HttpServer(unsigned long adress, unsigned short port)
 
 HttpServer::~HttpServer()
 {
-	delete server;
+	delete httpSock;
+	delete httpsSock;
 	std::cout<<"server stopped\n";
 }
 
@@ -348,20 +366,54 @@ void HttpServer::start(){
         std::cout<<"\t"<<p.name<<"\t :  \""<<p.subUrl<<"\"\n";
     }
     //start server
-    server->listen();
-    std::cout<<"server running\n";
-    pthread_create(&stopThread, nullptr, console, this);
+	startTime = std::time(nullptr);
+	pthread_t http, https;
+	pthread_create(&http, nullptr, ::httpServer, this);
+	pthread_create(&https, nullptr, ::httpsServer, this);
+	usleep(100000);
+	std::cout<<"setup finished\n";
+	pthread_create(&stopThread, nullptr, console, this);
+	pthread_join(http, nullptr);
+	pthread_join(https, nullptr);
+	pthread_join(stopThread, nullptr);
+}
+
+void HttpServer::httpServer()
+{
+	httpSock->listen();
+    std::cout<<"http server running\n";
     while(keepRunning){
 		Client *client = new Client;
 		client->server = this;
-		client->socket = server->accept();
+		client->socket = httpSock->accept();
         client->index = lastIndex++;
 #if defined(DEBUG)
-		std::cerr<<"client "<<client->index<<": connected\n";
+		std::cerr<<"client "<<client->index<<": connected (http)\n";
 #endif
 		pthread_create(&client->thread, nullptr, ::handleClient, client);
 		pthread_detach(client->thread);
-    }
+	}
+	std::cout<<"http server stopped\n";
+}
+
+void HttpServer::httpsServer()
+{
+	httpsSock->listen();
+    std::cout<<"https server running\n";
+    while(keepRunning){
+		Client *client = new Client;
+		client->server = this;
+		client->socket = httpsSock->accept();
+		if(client->socket == nullptr)
+			continue;
+        client->index = lastIndex++;
+#if defined(DEBUG)
+		std::cerr<<"client "<<client->index<<": connected (https)\n";
+#endif
+		pthread_create(&client->thread, nullptr, ::handleClient, client);
+		pthread_detach(client->thread);
+	}
+	std::cout<<"https server stopped\n";
 }
 
 void HttpServer::stop()
@@ -370,10 +422,14 @@ void HttpServer::stop()
     std::cerr<<"stopping server\n";
 #endif
     keepRunning = false;
-    TCPSocket *socket = new TCPSocket(AF_INET, SOCK_STREAM, 0);
-    socket->connect("localhost");
-    socket->disconnect();
-    delete socket;
+    TCPSocket *http = new TCPSocket(AF_INET, SOCK_STREAM, 0);
+    http->connect("localhost", 80);
+    http->disconnect();
+	delete http;
+	TLSSocket *https = new TLSSocket(AF_INET, SOCK_STREAM, 0);
+	https->connect("localhost", 443);
+    https->disconnect();
+    delete https;
 }
 
 void HttpServer::handleClient(Client *client){
@@ -439,6 +495,12 @@ void HttpServer::handleClient(Client *client){
 void HttpServer::showStats()
 {
 	std::cout<<clients<<" client(s) connected\n";
+	std::time_t tmp = startTime;
+	std::cout<<"running since "<<std::asctime(std::localtime(&tmp));
+	int secs = int(std::difftime(std::time(nullptr), startTime));
+	int mins = secs/60;
+	int hours = mins/60;
+	std::cout<<"running for "<<hours%60<<":"<<(mins%60 < 10 ? "0" : "")<<mins%60<<":"<<(secs%60 < 10 ? "0" : "")<<secs%60<<"\n";
 }
 
 bool HttpServer::isCorsEnabled()

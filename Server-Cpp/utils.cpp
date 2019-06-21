@@ -87,6 +87,27 @@ std::vector<std::string> getDirContent(std::string path)
     return  entrys;
 }
 
+namespace sys {
+	int getTotalMem(){
+		return 0;
+	}
+	
+	int getFreeMem(){
+		return 0;
+	}
+	
+	int getCurrentMem(){
+		return 0;
+	}
+	
+	float getTotalCpuUsage(){
+		return 0;
+	}
+	
+	float getCpuUsage(){
+		return 0;
+	}
+}
 
 File::File(std::string fileName){
     this->fileName = fileName;
