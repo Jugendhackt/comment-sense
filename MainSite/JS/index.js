@@ -450,6 +450,15 @@ document.addEventListener("DOMContentLoaded", function() {
       linkToSettingIcon.textContent = "Einstellungen Icon";
       linkDiv.appendChild(linkToSettingIcon);
 
+      var linkToUserIcon = document.createElement("a");
+      linkToUserIcon.id = "linkToUserIcon";
+      linkToUserIcon.classList.add("a");
+      linkToUserIcon.classList.add("modalA");
+      linkToUserIcon.classList.add("linkTo");
+      linkToUserIcon.href = "https://www.iconfinder.com/icons/172627/male_user_icon";
+      linkToUserIcon.textContent = "Benutzer Icon";
+      linkDiv.appendChild(linkToUserIcon);
+
       document.getElementById("nav").appendChild(modalSettings);
 
       window.onclick = function(event) {
