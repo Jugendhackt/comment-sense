@@ -1,0 +1,97 @@
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 10vh;
+  position: fixed;
+  top: 0;
+  transition: 0.2s;
+}
+
+.modalSettings {
+  display: flex;
+  flex-direction: column !important;
+  justify-content: center;
+}
+
+.modalSettings>* {
+  margin: 1vh;
+}
+
+.linkDiv {
+  position: absolute;
+  bottom: 0;
+  left: 0.5vh;
+  display: flex;
+  flex-direction: row;
+  height: 5vh;
+  width: 40vw;
+}
+
+.linkDiv>* {
+  margin: 1vw;
+}
+
+.githubIcon {
+  position: absolute;
+  top: 2vh;
+  left: 2vh;
+  width: 6.5vh;
+}
+
+.userIcon {
+  display: none;
+  position: absolute;
+  top: 2vh;
+  right: 10vh;
+  width: 6.5vh;
+}
+
+.topComments, .topWebsites {
+  display: flex;
+  align-items: center;
+}
+
+.commentDiv, .websiteDiv {
+  transition: 0.2s;
+  box-shadow: 0px 0px 7px 1px;
+  border-radius: 1vh;
+  width: 40vw;
+}
+
+.topComments>*, .topWebsites>* {
+  margin: 2vh;
+}
+
+.visitComment, .visitWebsite {
+  width: 40vw;
+  border-radius: 0 0 1vh 1vh;
+}
+
+@media only screen and (min-width: 1060px) {
+  .commentDiv:hover, .websiteDiv:hover, .nav:hover {
+    box-shadow: 0px 0px 10px 3px;
+  }
+}
+
+@media only screen and (max-width: 1060px) {
+  .topComments {
+    margin-bottom: 5vh;
+  }
+
+  .topWebsites {
+    margin-top: 5vh;
+  }
+
+  .modalSignIn {
+    position: relative;
+    top: 7vh;
+    margin-bottom: 3vh;
+  }
+
+  .modalSignUp {
+    position: relative;
+    top: 7vh;
+  }
+}

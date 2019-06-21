@@ -15,28 +15,6 @@ html {
   font-size: 1.5vw;
 }
 
-.nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 10vh;
-  position: fixed;
-  top: 0;
-  transition: 0.2s;
-}
-
-.footer {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  justify-content: center;
-  text-align: center;
-  flex-direction: row;
-  height: 5vh;
-  width: 100vw;
-}
-
 .row {
   margin-top: 15vh;
   display: flex;
@@ -63,16 +41,6 @@ html {
   height: 70vh;
   text-align: center;
   overflow: auto;
-}
-
-.modalSettings {
-  display: flex;
-  flex-direction: column !important;
-  justify-content: center;
-}
-
-.modalSettings>* {
-  margin: 1vh;
 }
 
 .modalHead {
@@ -107,20 +75,6 @@ html {
   cursor: pointer;
 }
 
-.linkDiv {
-  position: absolute;
-  bottom: 0;
-  left: 0.5vh;
-  display: flex;
-  flex-direction: row;
-  height: 5vh;
-  width: 40vw;
-}
-
-.linkDiv>* {
-  margin: 1vw;
-}
-
 .linkTo {
   font-size: 1vw;
 }
@@ -129,21 +83,6 @@ html {
   position: absolute;
   top: 2vh;
   right: 2vh;
-  width: 6.5vh;
-}
-
-.githubIcon {
-  position: absolute;
-  top: 2vh;
-  left: 2vh;
-  width: 6.5vh;
-}
-
-.userIcon {
-  display: none;
-  position: absolute;
-  top: 2vh;
-  right: 10vh;
   width: 6.5vh;
 }
 
@@ -202,27 +141,6 @@ html {
   text-align: center;
 }
 
-.topComments, .topWebsites {
-  display: flex;
-  align-items: center;
-}
-
-.commentDiv, .websiteDiv {
-  transition: 0.2s;
-  box-shadow: 0px 0px 7px 1px;
-  border-radius: 1vh;
-  width: 40vw;
-}
-
-.topComments>*, .topWebsites>* {
-  margin: 2vh;
-}
-
-.visitComment, .visitWebsite {
-  width: 40vw;
-  border-radius: 0 0 1vh 1vh;
-}
-
 .lneModal {
   position: relative;
   top: 3vh;
@@ -230,10 +148,6 @@ html {
 }
 
 @media only screen and (min-width: 1060px) {
-  .commentDiv:hover, .websiteDiv:hover, .nav:hover {
-    box-shadow: 0px 0px 10px 3px;
-  }
-
   .lne {
     display: none;
   }
@@ -254,24 +168,12 @@ html {
     align-items: center;
   }
 
-  .topComments {
-    margin-bottom: 5vh;
-  }
-
-  .topWebsites {
-    margin-top: 5vh;
-  }
-
   .lne {
     width: 90vw;
   }
 
   .closeSpan {
     font-size: 6vh;
-  }
-
-  .linkToGithub {
-    font-size: 2.5vw;
   }
 
   .linkTo {
@@ -290,16 +192,7 @@ html {
     overflow-y: auto;
   }
 
-  .modalSignIn {
-    position: relative;
-    top: 7vh;
-    margin-bottom: 3vh;
-  }
 
-  .modalSignUp {
-    position: relative;
-    top: 7vh;
-  }
 
   .drpDwn {
     width: 40vw;
