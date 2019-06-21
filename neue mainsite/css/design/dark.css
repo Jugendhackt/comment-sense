@@ -11,7 +11,7 @@ body, .settingIcon {
   box-shadow: 0px 0px 5px 1px;
 }
 
-.modal {
+.modal, .drpDwn {
   background-color: #333333;
   border: 0.5vh solid #31AF91;
 }

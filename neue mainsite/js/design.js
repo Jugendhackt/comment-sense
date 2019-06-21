@@ -7,17 +7,21 @@ document.addEventListener("DOMContentLoaded", function(){
       if (window.location.pathname.split("/").pop() == "index.html") {
         loadjscssfile("css/design/light.css", "css");
         loadjscssfile("assets/icons/settingLight512.png", "png", "settingIcon");
+        loadjscssfile("assets/icons/userLight512.png", "png", "userIcon");
       } else {
         loadjscssfile("../css/design/light.css", "css");
         loadjscssfile("../assets/icons/settingLight512.png", "png", "settingIcon");
+        loadjscssfile("../assets/icons/userLight512.png", "png", "userIcon");
       }
     } else if (design == "dark"){
       if (window.location.pathname.split("/").pop() == "index.html") {
         loadjscssfile("css/design/dark.css", "css");
         loadjscssfile("assets/icons/settingDark512.png", "png", "settingIcon");
+        loadjscssfile("assets/icons/userDark512.png", "png", "userIcon");
       } else {
         loadjscssfile("../css/design/dark.css", "css");
         loadjscssfile("../assets/icons/settingDark512.png", "png", "settingIcon");
+        loadjscssfile("../assets/icons/userDark512.png", "png", "userIcon");
       }
     }
   }
