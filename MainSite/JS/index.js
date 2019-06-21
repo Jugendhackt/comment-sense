@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function setTopComments() {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://" + ipAdress + "/comments/top/", true);
+    xhr.open("GET", "https://" + ipAdress + "/comments/top/", true);
     xhr.onload = function() {
       if (this.status === 200) {
         var data = JSON.parse(this.responseText);
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function setTopWebsites() {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://" + ipAdress + "/sites/top/", true);
+    xhr.open("GET", "https://" + ipAdress + "/sites/top/", true);
     xhr.onload = function() {
       if (this.status === 200) {
         var data = JSON.parse(this.responseText);
@@ -109,11 +109,7 @@ document.addEventListener("DOMContentLoaded", function() {
       modalTitle.textContent = "Anmelden/Registieren";
       modalHead.appendChild(modalTitle);
 
-      var closeSpan = document.createElement("span");
-      closeSpan.id = "closeSpan";
-      closeSpan.classList.add("closeSpan");
-      closeSpan.innerHTML = "&times";
-      modal.appendChild(closeSpan);
+      modal.appendChild(returnCloseSpan());
 
       var modalSignIn = document.createElement("div");
       modalSignIn.id = "modalSignIn";
@@ -245,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (username != "" && password != "") {
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://" + ipAdress + "/users/create/", true);
+      xhr.open("POST", "https://" + ipAdress + "/users/create/", true);
       xhr.onload = function() {
         if (this.status === 200) {
           console.log("hi");
@@ -282,7 +278,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (username != "" && password != "") {
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
+      xhr.open("POST", "https://" + ipAdress + "/users/login/", true);
       xhr.onload = function() {
         if (this.status === 200) {
           document.getElementById("userIcon").style.display = "block";
@@ -325,11 +321,7 @@ document.addEventListener("DOMContentLoaded", function() {
       modalTitle.textContent = username;
       modalHead.appendChild(modalTitle);
 
-      var closeSpan = document.createElement("span");
-      closeSpan.id = "closeSpan";
-      closeSpan.classList.add("closeSpan");
-      closeSpan.innerHTML = "&times";
-      modalUserDropMenu.appendChild(closeSpan);
+      modalUserDropMenu.appendChild(returnCloseSpan());
 
       var aManageAcc = document.createElement("a");
       aManageAcc.id = "aManageAcc";
@@ -377,11 +369,7 @@ document.addEventListener("DOMContentLoaded", function() {
       modalTitle.textContent = "Einstellungen";
       modalHead.appendChild(modalTitle);
 
-      var closeSpan = document.createElement("span");
-      closeSpan.id = "closeSpan";
-      closeSpan.classList.add("closeSpan");
-      closeSpan.innerHTML = "&times";
-      modalSettings.appendChild(closeSpan);
+      modalSettings.appendChild(returnCloseSpan());
 
       var labelDesign = document.createElement("lbl");
       labelDesign.classList.add("lbl");
@@ -470,6 +458,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
       modalSettings.style.display = "flex";
     }
+  }
+
+  function returnCloseSpan() {
+    var closeSpan = document.createElement("span");
+    closeSpan.innerHTML = "&times";
+    closeSpan.id = "closeSpan";
+    closeSpan.classList.add("closeSpan");
+    return closeSpan;
   }
 
   setTopComments();
