@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CommentSense</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://bootswatch.com/4/superhero/bootstrap.min.css" type="text/css">
+  <link rel="shortcut icon" href="../assets/icons/favicon.ico" type="image/ico">
+  <style>
+    input[readonly] {
+    background-color: #fff !important;
+  }
+  #hide {
+    display: none;
+  }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary mb-3">
+    <a class="navbar-brand mb-0 h1">CommentSense</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="../index.html">Home<span class="sr-only">(current)</span></a>
+        </li>
+        <li>
+          <a class="nav-link" href="https://www.github.com/Jugendhackt/comment-sense">CommentSense auf Github</a>
+        </li>
+        <li class="nav-item dropdown" id="dropdownAccount">
+          <a class="nav-link dropdown-toggle active" id="navbarDropdown" role="button" href="#" data-toggle="dropdown">Account Einstellungen</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" id="dropdownUsername" href="#">Test</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="html/manageAccount.html">Account bearbeiten</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Abmelden</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <form>
+      <div class="form-group">
+        <h4>Nickname:</h4>
+        <input class="form-control" type="text" id="inputUsername" placeholder="Dein Nickname" readonly>
+      </div>
+      <div class="form-group">
+        <h4>Passwort:</h4>
+        <input class="form-control" type="password" id="inputPassword" placeholder="Dein Passwort" readonly>
+      </div>
+      <div class="form-group" id="hide">
+        <h4>Passwort bestätigen:</h4>
+        <input class="form-control" type="password" id="inputPassword2" placeholder="Dein Passwort">
+      </div>
+      <div class="form-group">
+        <h4>Email:</h4>
+        <input class="form-control" type="email" id="inputEmail" placeholder="Deine Email" aria-describedby="emailHelp" readonly>
+        <small>Deine Email ist optional.</small>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary m-1" type="button" id="btnChangeData">Daten ändern</button>
+        <button class="btn btn-danger m-1" type="button" id="btnDeleteAccount">Account löschen</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="../js/bootbox.js" charset="utf-8" type="text/javascript"></script>
+  <script src="../js/manageAccount.js" charset="utf-8" type="text/javascript"></script>
+</body>
+
+</html>

@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("aSignUp").addEventListener("click", function() {
     showSignUpModal();
   });
+  document.getElementById("aLogoutDropdown").addEventListener("click", function() {
+    localStorage.setItem("username", null);
+    localStorage.setItem("password", null);
+  });
 
   function setTopWebsites() {
     var xhr = new XMLHttpRequest();
@@ -77,6 +81,8 @@ document.addEventListener("DOMContentLoaded", function() {
       xhr.onload = function() {
         if (this.status === 200) {
           bootbox.alert("Du hast dich erfolgreich angemeldet!");
+          localStorage.setItem("username", username);
+          localStorage.setItem("password", password);
           hideAfterLogin(username);
         } else if (this.status === 404 || this.status === 422) {
           bootbox.alert("Nickname oder Passwort ist falsch!", function() {
@@ -120,6 +126,8 @@ document.addEventListener("DOMContentLoaded", function() {
       xhr.onload = function() {
         if (this.status === 200) {
           bootbox.alert("Du hast dich erfolgreich registriert");
+          localStorage.setItem("username", username);
+          localStorage.setItem("password", password);
           hideAfterLogin(username);
         } else if (this.status === 409) {
           bootbox.alert("Der Account existiert schon!<br>Bitte suchen sie sich einen anderen Nicknamen.", function() {
@@ -145,6 +153,26 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("dropdownAccount").style.display = "block";
   }
 
+  function autoLogin() {
+    var username = localStorage.getItem("username");
+    var password = localStorage.getItem("password");
+    if (username != null && password != null) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
+      xhr.onload = function() {
+        if (this.status === 200) {
+          bootbox.alert("Du bist noch angemeldet");
+          hideAfterLogin(username)
+        }
+      }
+      xhr.send(JSON.stringify({
+        userName: username,
+        password: password
+      }));
+    }
+  }
+
   setTopComments();
   setTopWebsites();
+  autoLogin();
 });
