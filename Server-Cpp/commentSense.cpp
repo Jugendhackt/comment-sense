@@ -374,8 +374,57 @@ HttpResponse existsUser(PluginArg arg){
     }
 }
 
-HttpResponse manageUser(PluginArg arg){
-    return {HttpStatus_NotImplemented,"application/json","{\"error\":\"not implemented\"}"};
+HttpResponse changeUser(PluginArg arg){
+	Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
+    cJSON *root = cJSON_Parse(arg.payload.data());
+    if(!cJSON_HasObjectItem(root, "userName")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
+    }
+	if(!cJSON_HasObjectItem(root, "password")){
+        cJSON_Delete(root);
+        return {HttpStatus_BadRequest,"application/json","{\"error\":\"password missing in json\"}"};
+    }
+	char *userNameRaw = cJSON_GetObjectItem(root, "userName")->valuestring;
+    std::string userName = userNameRaw == nullptr ? "" : userNameRaw;
+	char *passwordRaw = cJSON_GetObjectItem(root, "password")->valuestring;
+    std::string password = passwordRaw == nullptr ? "" : passwordRaw;
+	
+	char *newPasswordRaw = cJSON_GetObjectItem(root, "password_n")->valuestring;
+	bool changePassword = newPasswordRaw != nullptr;
+	std::string newPassword = changePassword ? "" : passwordRaw;
+	char *newUserNameRaw = cJSON_GetObjectItem(root, "userName_n")->valuestring;
+	bool changeUserName = newUserNameRaw != nullptr;
+	std::string newUserName = changeUserName ? "" : userNameRaw;
+	char *newEmailRaw = cJSON_GetObjectItem(root, "email_n")->valuestring;
+	bool changeEmail = newEmailRaw != nullptr;
+	std::string newEmail = changeEmail ? "" : newEmailRaw;
+	
+	cJSON_Delete(root);
+	int userId = getUserId(userName, db);
+	if(isUserValid(userName, password, db)){
+		std::stringstream querry;
+		querry<<"UPDATE users SET ";
+		if(changeUserName)	
+			querry<<"name = \'"<<newUserName<<"\', ";
+		if(changePassword)	
+			querry<<"password = \'"<<newPassword<<"\', ";
+		if(changeEmail)		
+			querry<<"email = \'"<<newEmail<<"\', ";
+		querry<<"id = id WHERE id like"<<userId<<";";
+		dbResult *result = db->exec(querry.str());
+		if(result->changes == 1){
+			delete result;
+			return {HttpStatus_OK,"application/json","{\"status\":\"user succsessfully updated\"}"};
+		}
+		else{
+			delete result;
+			return {HttpStatus_InternalServerError,"application/json","{\"error\":\"couldn't update database\"}"};
+		}
+	}
+	else{
+        return {HttpStatus_UnprocessableEntity,"application/json","{\"error\":\"wrong password or username\"}"};
+    }
 }
 
 HttpResponse getUser(PluginArg arg)

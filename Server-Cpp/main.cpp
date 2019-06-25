@@ -20,7 +20,7 @@ int main()
     server->addPlugin(newPlugin("exists user     ", HttpServer::POST,  "/users/exists/", existsUser, db));
     server->addPlugin(newPlugin("check  user     ", HttpServer::POST,  "/users/check/",  checkUser, db));
     server->addPlugin(newPlugin("check  user     ", HttpServer::POST,  "/users/login/",  checkUser, db));
-    server->addPlugin(newPlugin("manage user     ", HttpServer::PATCH, "/users/manage/", manageUser, db));
+    server->addPlugin(newPlugin("change user prop", HttpServer::PATCH, "/users/change/", changeUser, db));
 	server->addPlugin(newPlugin("get    user     ", HttpServer::POST,  "/users/get/",    getUser, db));
 #if defined(DEBUG)
     server->setCorsEnabled(true);

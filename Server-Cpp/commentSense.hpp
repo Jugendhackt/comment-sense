@@ -14,7 +14,7 @@ HttpResponse voteComment(PluginArg arg);        // 50% done
 HttpResponse createUser(PluginArg arg);         //done, possibly memleak in sqlite_exec with insert
 HttpResponse checkUser (PluginArg arg);         //done
 HttpResponse existsUser(PluginArg arg);         //done
-HttpResponse manageUser(PluginArg arg);         //
+HttpResponse changeUser(PluginArg arg);         //
 HttpResponse getUser   (PluginArg arg);			//
 
 std::string commentsToJson(dbResult *comments, Sqlite3DB *db); //done
