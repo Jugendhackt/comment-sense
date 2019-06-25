@@ -404,7 +404,7 @@ HttpResponse getUser(PluginArg arg)
 			std::string id = result->data[0][0];
 			std::string email = result->data[0][3];
 			std::stringstream json;
-			json<<"{\"id\":"<<id<<"\",\"userName\":\""<<userName<<"\",\"password\":\""<<password<<"\",\"email\":\""<<email<<"\"}";
+			json<<"{\"id\":"<<id<<",\"userName\":\""<<userName<<"\",\"password\":\""<<password<<"\",\"email\":\""<<email<<"\"}";
 			delete result;
 			return {HttpStatus_OK,"application/json",json.str()};
 		}
