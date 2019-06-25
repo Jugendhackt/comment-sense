@@ -23,13 +23,5 @@
   },
   "homepage_url": "https://github.com/Jugendhackt/comment-sense",
   "minimum_chrome_version": "29",
-  "offline_enabled": false,
-  "content_scripts": [{
-    "matches": [
-      "*://*/*"
-    ],
-    "js": [
-      "JS/backend/backend.js"
-    ]
-  }]
+  "offline_enabled": false
 }
