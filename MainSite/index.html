@@ -10,12 +10,11 @@
 </head>
 
 <body>
-  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary">
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary mb-3">
     <a class="navbar-brand mb-0 h1">CommentSense</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
@@ -33,26 +32,129 @@
       </ul>
     </div>
   </nav>
-  <div class="container">
-    <form>
-      <div class="form-group">
-        <label for="">Nickname:</label>
-        <input type="text" placeholder="Login 1" class="form-control">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-5">
+        <div class="text-center">
+          <h3>Top Websites</h3>
+        </div>
+        <div class="list-group">
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-3" id="websiteHeading0">Website</h5>
+              <small class="text-muted" id="websiteCount0">Anzahl der Kommentare</small>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnVisitWebsite0">Link zur Website</button>
+          </a>
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-3" id="websiteHeading1">Website</h5>
+              <small class="text-muted" id="websiteCount1">Anzahl der Kommentare</small>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnVisitWebsite1">Link zur Website</button>
+          </a>
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-3" id="websiteHeading2">Website</h5>
+              <small class="text-muted" id="websiteCount2">Anzahl der Kommentare</small>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnVisitWebsite2">Link zur Website</button>
+          </a>
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-3" id="websiteHeading3">Website</h5>
+              <small class="text-muted" id="websiteCount3">Anzahl der Kommentare</small>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnVisitWebsite3">Link zur Website</button>
+          </a>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="">Password:</label>
-        <input type="text" name="" value="" class="form-control">
+      <div class="col">
+        <div class="text-center">
+          <h3>Top Kommentare</h3>
+        </div>
+        <div class="list-group">
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1" id="commentHeading0">Kommentar</h5>
+              <small class="text-muted" id="commentDate0">Veröffentlichkeitsdatum</small>
+            </div>
+            <p class="mb-1" id="commentContent0">Kommentar Inhalt</p>
+            <div class="d-flex w-100 justify-content-between">
+              <small class="text-muted" id="commentUsername0">Nutzer</small>
+              <div>
+                <img src="assets/icons/like.png" alt="">
+                <span id="commentLikes0">0</span>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1" id="commentHeading1">Kommentar</h5>
+              <small class="text-muted" id="commentDate1">Veröffentlichkeitsdatum</small>
+            </div>
+            <p class="mb-1" id="commentContent1">Kommentar Inhalt</p>
+            <div class="d-flex w-100 justify-content-between">
+              <small class="text-muted" id="commentUsername1">Nutzer</small>
+              <div>
+                <img src="assets/icons/like.png" alt="">
+                <span id="commentLikes1">0</span>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1" id="commentHeading2">Kommentar</h5>
+              <small class="text-muted" id="commentDate2">Veröffentlichkeitsdatum</small>
+            </div>
+            <p class="mb-1" id="commentContent2">Kommentar Inhalt</p>
+            <div class="d-flex w-100 justify-content-between">
+              <small class="text-muted" id="commentUsername2">Nutzer</small>
+              <div>
+                <img src="assets/icons/like.png" alt="">
+                <span id="commentLikes2">0</span>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1" id="commentHeading3">Kommentar</h5>
+              <small class="text-muted" id="commentDate3">Veröffentlichkeitsdatum</small>
+            </div>
+            <p class="mb-1" id="commentContent3">Kommentar Inhalt</p>
+            <div class="d-flex w-100 justify-content-between">
+              <small class="text-muted" id="commentUsername3">Nutzer</small>
+              <div>
+                <img src="assets/icons/like.png" alt="">
+                <span id="commentLikes3">0</span>
+              </div>
+            </div>
+          </a>
+          <a class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1" id="commentHeading4">Kommentar</h5>
+              <small class="text-muted" id="commentDate4">Veröffentlichkeitsdatum</small>
+            </div>
+            <p class="mb-1" id="commentContent4">Kommentar Inhalt</p>
+            <div class="d-flex w-100 justify-content-between">
+              <small class="text-muted" id="commentUsername3">Nutzer</small>
+              <div>
+                <img src="assets/icons/like.png" alt="">
+                <span id="commentLikes4">0</span>
+              </div>
+            </div>
+          </a>
+        </div>
       </div>
-    </form>
-  </div>
+    </div>
 
 
-
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="js/bootbox.js" charset="utf-8" type="text/javascript"></script>
-  <script src="js/index.js" charset="utf-8" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="js/bootbox.js" charset="utf-8" type="text/javascript"></script>
+    <script src="js/index.js" charset="utf-8" type="text/javascript"></script>
 </body>
 
 </html>
