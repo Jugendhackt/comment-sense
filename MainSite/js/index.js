@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   const ipAdress = "192.168.2.110";
+  document.getElementById("dropdownAccount").style.display = "none";
   document.getElementById("aLogin").addEventListener("click", function() {
     bootbox.dialog({
       title: "Anmelden",
@@ -18,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
               xhr.onload = function() {
                 if (this.status === 200) {
                   bootbox.alert("Du hast dich erfolgreich angemeldet");
-                  document.getElementById("dropdownUsername").textContent = username;
+                  hideAfterLogin(username);
                 } else if (this.status === 404 || this.status === 422) {
                   bootbox.alert("Nickname oder Passwort ist falsch");
                 }
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
   });
-  document.getElementById("aSignUp").addEventListener("click", function(){
+  document.getElementById("aSignUp").addEventListener("click", function() {
     bootbox.dialog({
       title: "Anmelden",
       size: "lg",
@@ -56,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
               xhr.onload = function() {
                 if (this.status === 200) {
                   bootbox.alert("Du hast dich erfolgreich registriert");
-                  document.getElementById("dropdownUsername").textContent = username;
+                  hideAfterLogin(username);
                 }
               }
               xhr.send(JSON.stringify({
@@ -114,6 +115,13 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
     xhr.send();
+  }
+
+  function hideAfterLogin(username) {
+    document.getElementById("aLogin").style.display = "none";
+    document.getElementById("aSignUp").style.display = "none";
+    document.getElementById("dropdownUsername").textContent = username;
+    document.getElementById("dropdownAccount").style.display = "block";
   }
   setTopComments();
   setTopWebsites();
