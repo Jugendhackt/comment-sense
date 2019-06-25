@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
               xhr.onload = function() {
                 if (this.status === 200) {
                   bootbox.alert("Du hast dich erfolgreich angemeldet");
+                  document.getElementById("dropdownUsername").textContent = username;
                 } else if (this.status === 404 || this.status === 422) {
                   bootbox.alert("Nickname oder Passwort ist falsch");
                 }
@@ -31,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         cancel: {
           label: "Schließen",
-          className: "btn-danger",
+          className: "btn-danger"
         }
       }
     });
@@ -69,9 +70,10 @@ document.addEventListener("DOMContentLoaded", function() {
       for (var i = 0; i < data.comments.length; i++) {
         document.getElementById("commentHeading" + i).textContent = data.comments[i].headline;
         document.getElementById("commentContent" + i).textContent = data.comments[i].content;
-        //document.getElementById("commentUsername" + i).textContent = data.comments[i].userName;
+        console.log(data.comments[i].userName);
+        document.getElementById("commentUsername" + i).textContent = data.comments[i].userName;
         document.getElementById("commentLikes" + i).textContent = data.comments[i].votes;
-        //document.getElementById("commentDate" + i).textContent = data.comments[i].date;
+        document.getElementById("commentDate" + i).textContent = data.comments[i].date;
       }
     }
     xhr.send();
