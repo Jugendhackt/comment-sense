@@ -16,10 +16,11 @@ HttpResponse checkUser(PluginArg arg);          //done
 HttpResponse existsUser(PluginArg arg);         //done
 HttpResponse manageUser(PluginArg arg);         //
 
-std::string commentsToJson(dbResult *comments); //done
+std::string commentsToJson(dbResult *comments, Sqlite3DB *db); //done
 std::string sitesToJson(dbResult *sites);       //done
 
 int getUserId(std::string userName, Sqlite3DB *db);
+std::string getUserName(int userId, Sqlite3DB *db);
 bool isUserValid(std::string userName, std::string password, Sqlite3DB *db);
 bool addCommentToSite(int64_t commentId, std::string url, Sqlite3DB *db);
 
