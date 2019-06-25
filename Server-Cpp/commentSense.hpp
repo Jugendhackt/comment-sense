@@ -8,13 +8,14 @@ HttpResponse getComments(PluginArg arg);        //done
 HttpResponse getTopComments(PluginArg arg);     //done
 HttpResponse getTopSites(PluginArg arg);        //done
 
-HttpResponse postComment(PluginArg arg);        //
-HttpResponse voteComment(PluginArg arg);        //
+HttpResponse postComment(PluginArg arg);        //done
+HttpResponse voteComment(PluginArg arg);        // 50% done
 
 HttpResponse createUser(PluginArg arg);         //done, possibly memleak in sqlite_exec with insert
-HttpResponse checkUser(PluginArg arg);          //done
+HttpResponse checkUser (PluginArg arg);         //done
 HttpResponse existsUser(PluginArg arg);         //done
 HttpResponse manageUser(PluginArg arg);         //
+HttpResponse getUser   (PluginArg arg);			//
 
 std::string commentsToJson(dbResult *comments, Sqlite3DB *db); //done
 std::string sitesToJson(dbResult *sites);       //done
