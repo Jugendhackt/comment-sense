@@ -402,7 +402,7 @@ HttpResponse getUser(PluginArg arg)
 		dbResult *result = db->exec(ss.str());
 		if(result->columns == 5 && result->data.size() == 1){
 			std::string id = result->data[0][0];
-			std::string email = result->data[3][0];
+			std::string email = result->data[0][3];
 			std::stringstream json;
 			json<<"{\"id\":"<<id<<"\",userName\":\""<<userName<<"\",\"password\":\""<<password<<"\",\"email\":\""<<email<<"\"}";
 			delete result;
