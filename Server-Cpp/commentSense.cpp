@@ -34,10 +34,10 @@ HttpResponse getComments(PluginArg arg){
 #endif
             std::string commentIDs = result->data[0][0];
             ss.str(std::string());
-            ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments WHERE id IN ("<<commentIDs<<");";
+            ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url,date FROM comments WHERE id IN ("<<commentIDs<<");";
             delete result;
             result = db->exec(ss.str());
-            std::string json = commentsToJson(result);
+            std::string json = commentsToJson(result, db);
             delete result;
             return {200,"application/json",json};
         }
@@ -72,19 +72,19 @@ HttpResponse getTopComments(PluginArg arg)
 #endif
             std::string commentIDs = result->data[0][0];
             ss.str(std::string());
-            ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments WHERE id IN ("<<commentIDs<<") order by count desc limit 5;";
+            ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url,date FROM comments WHERE id IN ("<<commentIDs<<") order by count desc limit 5;";
             delete result;
             result = db->exec(ss.str());
-            std::string json = commentsToJson(result);
+            std::string json = commentsToJson(result, db);
             delete result;
             return {200,"application/json",json};
         }
     }
     else{
         std::stringstream ss;
-        ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url FROM comments order by count desc limit 5;";
+        ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url,date FROM comments order by count desc limit 5;";
         dbResult *result = db->exec(ss.str());
-        std::string json = commentsToJson(result);
+        std::string json = commentsToJson(result, db);
         delete result;
         return {200,"application/json",json};
     }
@@ -378,10 +378,10 @@ HttpResponse manageUser(PluginArg arg){
     return {HttpStatus_NotImplemented,"application/json","{\"error\":\"not implemented\"}"};
 }
 
-std::string commentsToJson(dbResult *comments)
+std::string commentsToJson(dbResult *comments, Sqlite3DB *db)
 {
     int columns = comments->columns;
-    if(columns != 6)
+    if(columns != 7)
         return "{\"error\":\"no comments\"}";
     
     cJSON *root = cJSON_CreateObject();
@@ -394,14 +394,17 @@ std::string commentsToJson(dbResult *comments)
         std::string headline = row[3];
         std::string content = row[4];
         std::string url = row[5];
+		std::string date = row[6];
         
         cJSON *comment = cJSON_CreateObject();
         cJSON_AddNumberToObject(comment, "id", id);
         cJSON_AddNumberToObject(comment, "userId", userId);
         cJSON_AddNumberToObject(comment, "votes", count);
+		cJSON_AddStringToObject(comment, "userName", getUserName(userId, db).c_str());
         cJSON_AddStringToObject(comment, "headline", stringFromHex(headline).c_str());
         cJSON_AddStringToObject(comment, "content", stringFromHex(content).c_str());
         cJSON_AddStringToObject(comment, "url", url.c_str());
+		cJSON_AddStringToObject(comment, "date", date.c_str());
         
         cJSON_AddItemToArray(comments_json, comment);
     }
@@ -453,6 +456,22 @@ int getUserId(std::string userName, Sqlite3DB *db)
         int id = atoi(result->data[0][0].c_str());
         delete result;
         return id;
+    }
+}
+
+std::string getUserName(int userId, Sqlite3DB *db)
+{
+	std::stringstream querry;
+    querry<<"SELECT name FROM users WHERE id LIKE \'"<<userId<<"\';";
+    dbResult *result = db->exec(querry.str());
+    if(result->data.size() != 1 || result->columns != 1){
+        delete result;
+        return "";
+    }
+    else{
+		std::string name = result->data[0][0];
+        delete result;
+        return name;
     }
 }
 
