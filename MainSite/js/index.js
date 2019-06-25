@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
           callback: function() {
             var username = document.getElementById("inputUsername").value;
             var password = document.getElementById("inputPassword").value;
-            if (username != "" || password != "") {
+            if (username != "" && password != "") {
               var xhr = new XMLHttpRequest();
               xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
               xhr.onload = function() {
@@ -26,6 +26,43 @@ document.addEventListener("DOMContentLoaded", function() {
               xhr.send(JSON.stringify({
                 userName: username,
                 password: password
+              }));
+            }
+          }
+        },
+        cancel: {
+          label: "Schließen",
+          className: "btn-danger"
+        }
+      }
+    });
+  });
+  document.getElementById("aSignUp").addEventListener("click", function(){
+    bootbox.dialog({
+      title: "Anmelden",
+      size: "lg",
+      message: "<form><div class='form-group'><label>Nickname:</label><input class='form-control' id='inputUsername' placeholder='Dein Nickname'></div><div class='form-group'><label>Password:</label><input class='form-control' id='inputPassword' type='password' placeholder='Dein Passwort'></div><div class='form-group'><label>Email:</label><input class='form-control' type='email' id='inputEmail' placeholder='Deine Email (optional)'></div></form>",
+      buttons: {
+        confirm: {
+          label: "Registieren",
+          className: "btn-primary",
+          callback: function() {
+            var username = document.getElementById("inputUsername").value;
+            var password = document.getElementById("inputPassword").value;
+            var email = document.getElementById("inputEmail").value;
+            if (username != "" && password != "") {
+              var xhr = new XMLHttpRequest();
+              xhr.open("POST", "http://" + ipAdress + "/users/create/", true);
+              xhr.onload = function() {
+                if (this.status === 200) {
+                  bootbox.alert("Du hast dich erfolgreich registriert");
+                  document.getElementById("dropdownUsername").textContent = username;
+                }
+              }
+              xhr.send(JSON.stringify({
+                userName: username,
+                password: password,
+                email: email
               }));
             }
           }
