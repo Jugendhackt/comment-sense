@@ -21,6 +21,15 @@
     "default_popup": "popup.html",
     "default_title": "CommentSense"
   },
+  "content_scripts": [{
+    "matches": [
+      "*://*/*"
+    ],
+    "js": [
+      "js/popup.js",
+      "js/backend.js"
+    ]
+  }],
   "homepage_url": "https://github.com/Jugendhackt/comment-sense",
   "minimum_chrome_version": "29",
   "offline_enabled": false

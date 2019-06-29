@@ -4,19 +4,10 @@ html {
   margin: 0 !important;
 }
 
-.plugin-border {
-  border-left: 3px solid #DF691A;
-  border-right: 3px solid #DF691A;
-}
-
 .footer {
   width: 100%;
   height: 70px;
   z-index: 1;
-  position: fixed;
+  position: sticky;
   bottom: 0;
-}
-
-body {
-
 }
