@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "'", true);
       xhr.onload = function() {
-        if (this.status === 200) {
+        if (this.status === 200 || this.status === 404) {
           var data = JSON.parse(this.responseText);
           console.log(data);
           for (let i = 0; i < data.comments.length; i++) {
