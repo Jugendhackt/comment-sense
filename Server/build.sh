@@ -79,11 +79,11 @@ checkRequirement "build-essential";
 echo "starting build (target = $target)"
 buildCLib   "cJSON" $rebuild "$options $defines";
 buildCLib	"tlse" $rebuild "$options $defines";
-buildCppLib "tcpSocket" $rebuild "$options $defines";
+buildCppLib "tcpsocket" $rebuild "$options $defines";
 buildCppLib "tlsSocket" $rebuild "$options $defines";
 buildCLib   "sqlite3" $rebuild "$options $defines";
 buildCppLib "utils" $rebuild "$options $defines";
-buildCppLib "httpServer" $rebuild "$options $defines";
+buildCppLib "httpserver" $rebuild "$options $defines";
 buildCppLib "commentSense" $rebuild "$options $defines";
 
 echo "building server"
