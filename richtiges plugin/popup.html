@@ -12,20 +12,47 @@
 
 <body>
   <nav class="navbar sticky-top navbar-dark bg-primary mb-3">
-    <a class="navbar-brand" href="#">CommentSense</a>
+    <div class="w-100 d-flex justify-content-between">
+      <a class="navbar-brand" href="#">CommentSense</a>
+      <a href="options.html">
+        <img class="mt-1" src="assets/icons/userSetting32.png" height="32px" width="32px" id="userIcon">
+      </a>
+    </div>
   </nav>
   <main class="container-fluid">
     <div class="list-group" id="landingpage">
     </div>
   </main>
-  <footer class="footer navbar-dark bg-primary d-flex justify-content-center align-items-center">
-    <button class="btn btn-dark" type="button" id="btnCreateComment">Kommentar erstellen</button>
+  <form id="createComment" class="navbar-dark bg-dark p-2 collapse">
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+      <h2>Dein Kommentar</h2>
+      <small class="text-muted">Bitte fülle alle Felder aus</small>
+    </div>
+    <div class="container-fluid">
+      <div class="form-group">
+        <label for="inputHeadline">Titel</label>
+        <input type="text" id="inputHeadline" class="form-control" placeholder="Dein Titel">
+      </div>
+      <div class="form-group">
+        <label for="inputComment">Kommentar</label>
+        <div class="d-flex flex-column align-items-center">
+          <textarea rows="8" cols="30" placeholder="Dein Kommentar" class="form-control" id="inputComment"></textarea>
+        </div>
+      </div>
+      <div class="d-flex w-100 justify-content-center">
+        <button type="button" class="btn btn-primary" id="btnSendComment">Kommentar senden</button>
+      </div>
+    </div>
+  </form>
+  <footer class="footer navbar-dark bg-primary d-flex justify-content-center align-items-center" id="footer">
+    <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#createComment" id="btnCreateComment">Kommentar erstellen</button>
   </footer>
   <script src="js/jquery.js" charset="utf-8" type="text/javascript"></script>
   <script src="js/popper.js" charset="utf-8" type="text/javascript"></script>
   <script src="js/bootstrap.js" charset="utf-8" type="text/javascript"></script>
   <script src="js/bootbox.js" charset="utf-8" type="text/javascript"></script>
   <script src="js/backend.js" charset="utf-8" type="text/javascript"></script>
+  <script src="js/popup.js" charset="utf-8" type="text/javascript"></script>
 </body>
 
 </html>

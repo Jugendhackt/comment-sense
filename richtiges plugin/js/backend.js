@@ -1,5 +1,34 @@
 document.addEventListener("DOMContentLoaded", function() {
   const ipAdress = "192.168.2.110";
+  console.log(getUrl());
+  document.getElementById("btnSendComment").addEventListener("click", () => {
+    var title = document.getElementById("inputHeadline").value;
+    var comment = document.getElementById("inputComment").value;
+    chrome.storage.local.get(["username", "password"], (result) => {
+      bootbox.alert(result.password);
+      if (typeof result.username != "undefined" && typeof result.password != "undefined") {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://" + ipAdress + "/comments/", true);
+        xhr.onload = function() {
+          bootbox.alert(this.responseText);
+          if (this.status === 200) {
+            bootbox.alert("hi");
+          }
+        }
+        getUrl()
+          .then(function(url) {
+            console.log(url);
+            xhr.send(JSON.stringify({
+              userName: result.username,
+              password: result.password,
+              headline: title,
+              content: comment,
+              url: url
+            }));
+          });
+      }
+    });
+  });
 
   function reload() {
     chrome.tabs.query({
@@ -45,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
     div.appendChild(publicationDate);
     var p = document.createElement("p");
     p.classList.add("mb-1");
-    p.textContent = comment;
+    p.innerHTML = comment;
     a.appendChild(p);
     var div = document.createElement("div");
     div.classList.add("d-flex", "w-100", "justify-content-between");
@@ -64,5 +93,37 @@ document.addEventListener("DOMContentLoaded", function() {
     div.appendChild(bottomDiv);
     document.getElementById("landingpage").appendChild(a);
   }
+
+  function checkLogin() {
+    chrome.storage.local.get(["username", "password"], function(result) {
+      if (typeof result.username != "undefined" || typeof result.password != "undefined") {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://" + ipAdress + "/users/login/", true);
+        xhr.onload = function() {
+          if (this.status === 200) {
+            document.getElementById("userIcon").addEventListener("click", function() {
+              bootbox.alert(result.username);
+            });
+          }
+        }
+        xhr.send(JSON.stringify({
+          userName: result.username,
+          password: result.password
+        }));
+      }
+    });
+  }
+
+  function getUrl() {
+    return new Promise(function(resolve) {
+      chrome.tabs.query({
+        currentWindow: true,
+        active: true
+      }, (result) => {
+        resolve(result[0].url);
+      });
+    });
+  }
+  checkLogin();
   reload();
 });
