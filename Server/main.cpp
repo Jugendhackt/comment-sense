@@ -24,6 +24,7 @@ int main()
 	server->addPlugin(newPlugin("get    user     ", HttpServer::POST,  "/users/get/",    getUser, db));
 #if defined(DEBUG)
     server->setCorsEnabled(true);
+	server->setAcawEnabled(true);
 #endif
     server->start();
     delete server;

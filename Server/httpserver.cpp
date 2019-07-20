@@ -164,6 +164,8 @@ void getBigFile(File *file, TCPSocket *socket, HttpServer *server){
     ss<<"HTTP/1.1 "<<HttpStatus_string(HttpStatus_OK)<<"\n";
     if(server->isCorsEnabled())
         ss<<"Access-Control-Allow-Origin:*\n";
+	if(server->isAcawEnabled())
+        ss<<"Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS\n";
     ss<<"Content-Type:"<<"text/plain"<<"\n";
     ss<<"Content-Length:"<<size<<"\n\n";
     socket->send(ss.str());
@@ -276,6 +278,11 @@ void *console(void *data)
             bool cors = input.at(pos+5)-48;
             server->setCorsEnabled(cors);
             std::cout<<"cors set to "<<(cors ? "true" : "false")<<"\n";
+        }
+		else if((pos = input.find("acaw=")) < input.size()){
+            bool acaw = input.at(pos+5)-48;
+            server->setAcawEnabled(acaw);
+            std::cout<<"acaw set to "<<(acaw ? "true" : "false")<<"\n";
         }
 		else if(input.find("stat") == 0){
 			server->showStats();
@@ -512,4 +519,14 @@ bool HttpServer::isCorsEnabled()
 void HttpServer::setCorsEnabled(bool value)
 {
     corsEnabled = value;
+}
+
+bool HttpServer::isAcawEnabled()
+{
+	return acawEnabled;
+}
+
+void HttpServer::setAcawEnabled(bool value)
+{
+	acawEnabled = value;
 }

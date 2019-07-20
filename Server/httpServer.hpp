@@ -201,14 +201,19 @@ class HttpServer
         bool isCorsEnabled();
         void setCorsEnabled(bool value);
         
+		bool isAcawEnabled();
+		void setAcawEnabled(bool value);
+		
 protected:
-        
+		
 private:
-        TCPSocket *httpSock;
+		TCPSocket *httpSock;
 		TLSSocket *httpsSock;
         pthread_t stopThread;
 		std::vector<Plugin> plugins;
-        bool corsEnabled = false, keepRunning = true;
+        bool corsEnabled = false;	//Cross Origin Resource Sharing
+		bool acawEnabled = false;	//Access Control Allow Methods
+		bool keepRunning = true;
         int lastIndex = 0;
 		int clients = 0;
 		std::time_t startTime;
