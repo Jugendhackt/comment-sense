@@ -23,6 +23,11 @@ textarea {
   z-index: 1;
 }
 
+::selection {
+  color: white;
+  background-color: #DF691A;
+}
+
 
 /*Scrollbar*/
 ::-webkit-scrollbar {
