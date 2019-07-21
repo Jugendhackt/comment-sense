@@ -1,18 +1,16 @@
 document.addEventListener("DOMContentLoaded", function() {
   const ipAdress = "192.168.2.110";
-  console.log(getUrl());
   document.getElementById("btnSendComment").addEventListener("click", () => {
     var title = document.getElementById("inputHeadline").value;
     var comment = document.getElementById("inputComment").value;
-    chrome.storage.local.get(["username", "password"], (result) => {
-      bootbox.alert(result.password);
-      if (typeof result.username != "undefined" && typeof result.password != "undefined") {
+    getUserData()
+      .then(function(result) {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "http://" + ipAdress + "/comments/", true);
         xhr.onload = function() {
           bootbox.alert(this.responseText);
           if (this.status === 200) {
-            bootbox.alert("hi");
+            bootbox.alert("Kommentar erfolgreich erstellt");
           }
         }
         getUrl()
@@ -26,8 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
               url: url
             }));
           });
-      }
-    });
+      });
   });
 
   function reload() {
@@ -38,24 +35,29 @@ document.addEventListener("DOMContentLoaded", function() {
       var url = tabs[0].url;
       console.log(tabs[0]);
 
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "'", true);
-      xhr.onload = function() {
-        if (this.status === 200 || this.status === 404) {
-          var data = JSON.parse(this.responseText);
-          console.log(data);
-          for (let i = 0; i < data.comments.length; i++) {
-            let username = data.comments[i].userName;
-            let headline = data.comments[i].headline;
-            let comment = data.comments[i].content;
-            let votes = data.comments[i].votes;
-            let date = data.comments[i].date;
-            let id = data.comments[i].id;
-            showComment(username, headline, comment, votes, date, id);
+      getUserData()
+        .then(function(result) {
+          if (typeof result != "undefined") {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "',name='" + result.username + "'", true);
+            xhr.onload = function() {
+              if (this.status === 200 || this.status === 404) {
+                var data = JSON.parse(this.responseText);
+                console.log(data);
+                for (let i = 0; i < data.comments.length; i++) {
+                  let username = data.comments[i].userName;
+                  let headline = data.comments[i].headline;
+                  let comment = data.comments[i].content;
+                  let votes = data.comments[i].votes;
+                  let date = data.comments[i].date;
+                  let id = data.comments[i].id;
+                  showComment(username, headline, comment, votes, date, id);
+                }
+              }
+            }
+            xhr.send();
           }
-        }
-      }
-      xhr.send();
+        });
     });
   }
 
@@ -87,11 +89,13 @@ document.addEventListener("DOMContentLoaded", function() {
     var bottomDiv = document.createElement("div");
     var img = document.createElement("img");
     img.src = "assets/icons/like.png";
+    img.id = "img" + id;
     bottomDiv.appendChild(img);
     var span = document.createElement("span");
     span.textContent = votes;
+    span.id = "votes" + id;
     bottomDiv.appendChild(span);
-    bottomDiv.addEventListener("click", function(){
+    bottomDiv.addEventListener("click", function() {
       clickVote(id);
     });
     div.appendChild(bottomDiv);
@@ -99,26 +103,26 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function checkLogin() {
-    console.log("hi3");
-    chrome.storage.local.get(["username", "password"], function(result) {
-      if (typeof result.username != "undefined" && typeof result.password != "undefined") {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
-        xhr.onload = function() {
-          if (this.status !== 200) {
-            document.getElementById("footer").className = "";
-            document.getElementById("footer").style.display = "none";
+    getUserData()
+      .then(function(result) {
+        if (typeof result != "undefined") {
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
+          xhr.onload = function() {
+            if (this.status !== 200) {
+              document.getElementById("footer").className = "";
+              document.getElementById("footer").style.display = "none";
+            }
           }
+          xhr.send(JSON.stringify({
+            userName: result.username,
+            password: result.password
+          }));
+        } else {
+          document.getElementById("footer").className = "";
+          document.getElementById("footer").style.display = "none";
         }
-        xhr.send(JSON.stringify({
-          userName: result.username,
-          password: result.password
-        }));
-      } else {
-        document.getElementById("footer").className = "";
-        document.getElementById("footer").style.display = "none";
-      }
-    });
+      });
   }
 
   function getUrl() {
@@ -132,23 +136,42 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  function clickVote(id) {
-    chrome.storage.local.get(["username", "password"], (result) => {
-      if (typeof result.username != "undefined" && typeof result.password != "undefined") {
-        var xhr = new XMLHttpRequest();
-        xhr.open("PATCH", "http://" + ipAdress + "/comments/vote/", true);
-        xhr.onload = function() {
-          bootbox.alert(this.statusText.toString());
-        }
-        xhr.send(JSON.stringify({
-          userName: result.username,
-          password: result.password,
-          id: id,
-          vote: 1
-        }));
-      }
-    });
+  function getUserData() {
+    return new Promise(function(resolve) {
+      chrome.storage.local.get(["username", "password"], function(result) {
+        if (typeof result.username != "undefined" && typeof result.password != "undefined")
+          resolve(result);
+        else
+          resolve(undefined);
+      });
+    })
   }
+
+  function clickVote(id) {
+    console.log(id);
+    getUserData()
+      .then(function(result) {
+        if (typeof result != "undefined") {
+          var xhr = new XMLHttpRequest();
+          xhr.open("PATCH", "http://" + ipAdress + "/comments/vote/", true);
+          xhr.onload = function() {
+            if (this.status == 200) {
+              document.getElementById("img" + id).src = "assets/icons/unlike.png"
+              document.getElementById("votes" + id).textContent = parseInt(document.getElementById("votes" + id).textContent) + 1;
+            } else {
+              bootbox.alert("Es gab ein Fehler beim Posten des Kommentar");
+            }
+          }
+          xhr.send(JSON.stringify({
+            userName: result.username,
+            password: result.password,
+            id: id,
+            vote: 1
+          }));
+        }
+      });
+  }
+
   checkLogin();
   reload();
 });
