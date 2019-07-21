@@ -50,7 +50,8 @@ document.addEventListener("DOMContentLoaded", function() {
             let comment = data.comments[i].content;
             let votes = data.comments[i].votes;
             let date = data.comments[i].date;
-            showComment(username, headline, comment, votes, date);
+            let id = data.comments[i].id;
+            showComment(username, headline, comment, votes, date, id);
           }
         }
       }
@@ -58,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  function showComment(username, title, comment, votes, date) {
+  function showComment(username, title, comment, votes, date, id) {
     var a = document.createElement("a");
     a.classList.add("list-group-item", "list-group-item-action", "mb-4", "border", "border-primary");
     var div = document.createElement("div");
@@ -90,26 +91,32 @@ document.addEventListener("DOMContentLoaded", function() {
     var span = document.createElement("span");
     span.textContent = votes;
     bottomDiv.appendChild(span);
+    bottomDiv.addEventListener("click", function(){
+      clickVote(id);
+    });
     div.appendChild(bottomDiv);
     document.getElementById("landingpage").appendChild(a);
   }
 
   function checkLogin() {
+    console.log("hi3");
     chrome.storage.local.get(["username", "password"], function(result) {
-      if (typeof result.username != "undefined" || typeof result.password != "undefined") {
+      if (typeof result.username != "undefined" && typeof result.password != "undefined") {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://" + ipAdress + "/users/login/", true);
+        xhr.open("POST", "http://" + ipAdress + "/users/login/", true);
         xhr.onload = function() {
-          if (this.status === 200) {
-            document.getElementById("userIcon").addEventListener("click", function() {
-              bootbox.alert(result.username);
-            });
+          if (this.status !== 200) {
+            document.getElementById("footer").className = "";
+            document.getElementById("footer").style.display = "none";
           }
         }
         xhr.send(JSON.stringify({
           userName: result.username,
           password: result.password
         }));
+      } else {
+        document.getElementById("footer").className = "";
+        document.getElementById("footer").style.display = "none";
       }
     });
   }
@@ -122,6 +129,24 @@ document.addEventListener("DOMContentLoaded", function() {
       }, (result) => {
         resolve(result[0].url);
       });
+    });
+  }
+
+  function clickVote(id) {
+    chrome.storage.local.get(["username", "password"], (result) => {
+      if (typeof result.username != "undefined" && typeof result.password != "undefined") {
+        var xhr = new XMLHttpRequest();
+        xhr.open("PATCH", "http://" + ipAdress + "/comments/vote/", true);
+        xhr.onload = function() {
+          bootbox.alert(this.statusText.toString());
+        }
+        xhr.send(JSON.stringify({
+          userName: result.username,
+          password: result.password,
+          id: id,
+          vote: 1
+        }));
+      }
     });
   }
   checkLogin();
