@@ -55,6 +55,24 @@ document.addEventListener("DOMContentLoaded", function() {
                   }
                 }
               });
+          } else {
+            getXhr("http://" + ipAdress + "/comments/site='" + url + "'", true)
+              .then(function(result) {
+                if (result.status === 200 || result.status === 404) {
+                  var data = JSON.parse(result.responseText);
+                  console.log(data);
+                  for (let i = 0; i < data.comments.length; i++) {
+                    let username = data.comments[i].userName;
+                    let headline = data.comments[i].headline;
+                    let comment = data.comments[i].content;
+                    let votes = data.comments[i].votes;
+                    let voted = data.comments[i].voted;
+                    let date = data.comments[i].date;
+                    let id = data.comments[i].id;
+                    showComment(username, headline, comment, votes, voted, date, id);
+                  }
+                }
+              });
           }
         });
     });
