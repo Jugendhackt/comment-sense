@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const ipAdress = "192.168.2.110";
+  const ipAdress = "192.168.2.108";
   document.getElementById("dropdownAccount").style.display = "none";
   document.getElementById("aLogin").addEventListener("click", function() {
     showLoginModal();
