@@ -249,8 +249,6 @@ HttpResponse voteComment(PluginArg arg){
 						ss<<str<<",";
 					}
 					std::string votes = ss.str();
-					if(votes.size() > 0)
-						votes.pop_back();
                     querry.str("");
                     querry<<"UPDATE comments SET votes = \'"<<votes<<"\' WHERE id LIKE "<<id<<";";
                     delete result;
@@ -278,8 +276,6 @@ HttpResponse voteComment(PluginArg arg){
 						ss<<str<<",";
 					}
 					std::string votes = ss.str();
-					if(votes.size() > 0)
-						votes.pop_back();
                     querry.str("");
                     querry<<"UPDATE comments SET votes = \'"<<votes<<"\' WHERE id LIKE "<<id<<";";
                     delete result;
