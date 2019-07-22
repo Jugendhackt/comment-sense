@@ -11,7 +11,7 @@ static const char *noCommentsStr =  "{\"comments\":[{"
 
 HttpResponse getComments(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-	std::string url = decodeUrl(arg.url.data()+14);
+	std::string url = arg.url.data()+10;
 	std::vector<std::string> args = split(url, ',');
 	std::string site, name;
 	for(std::string str : args){
@@ -65,7 +65,7 @@ HttpResponse getComments(PluginArg arg){
 HttpResponse getTopComments(PluginArg arg)
 {
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    std::string url = decodeUrl(arg.url.data()+14);
+    std::string url = arg.url.data()+14;
 	std::vector<std::string> args = split(url, ',');
 	std::string site, name;
 	for(std::string str : args){

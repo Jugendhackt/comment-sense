@@ -481,7 +481,7 @@ void HttpServer::handleClient(Client *client){
 	}
 	else{
 		std::vector<std::string> request = split(header[0], ' ');
-		std::string url = request[1];
+		std::string url = decodeUrl(request[1]);
 		int type = getRequestType(request[0]);
 		std::string payload = "";
 		for(std::string line : header){
