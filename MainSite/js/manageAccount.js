@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const ipAdress = "192.168.2.110";
+  const ipAdress = "192.168.2.108";
 
   document.getElementById("hide").style.display = "none";
   document.getElementById("btnChangeData").addEventListener("click", function() {
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
       xhr.open("POST", "http://" + ipAdress + "/users/", true);
       xhr.onload = function() {
         if (this.status === 200) {
-          
+
         }
       }
       xhr.send();

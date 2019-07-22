@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const ipAdress = "192.168.2.110";
+  const ipAdress = "192.168.2.108";
   document.getElementById("btnCreateComment").addEventListener("click", () => {
     if (document.getElementById("btnCreateComment").textContent == "Zurück")
       document.getElementById("btnCreateComment").textContent = "Kommentar erstellen";

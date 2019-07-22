@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const ipAdress = "192.168.2.110";
+  const ipAdress = "192.168.2.108";
   document.getElementById("btnSendComment").addEventListener("click", () => {
     var title = document.getElementById("inputHeadline").value;
     var comment = document.getElementById("inputComment").value;
@@ -157,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
         currentWindow: true,
         active: true
       }, (result) => {
+        console.log(result);
         resolve(result[0].url);
       });
     });
