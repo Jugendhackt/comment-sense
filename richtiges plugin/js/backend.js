@@ -108,7 +108,6 @@ document.addEventListener("DOMContentLoaded", function() {
         var bottomDiv = document.createElement("div");
         var img = document.createElement("img");
         img.id = "img" + id;
-        console.log(result.username);
         if (voted == 1) {
           img.src = "assets/icons/unlike.png";
           img.title = "unlike.png";
