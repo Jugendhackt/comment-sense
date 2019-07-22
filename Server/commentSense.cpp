@@ -244,9 +244,13 @@ HttpResponse voteComment(PluginArg arg){
             if(vote == 1){
                 if(!alreadyVoted){
                     std::stringstream ss;
-                    ss<<votes<<","<<userId;
+					for(std::string str : voters){
+						ss<<str<<",";
+					}
+					std::string votes = ss.str();
+					votes.pop_back();
                     querry.str("");
-                    querry<<"UPDATE comments SET votes = \'"<<ss.str()<<"\' WHERE id LIKE "<<id<<";";
+                    querry<<"UPDATE comments SET votes = \'"<<votes<<"\' WHERE id LIKE "<<id<<";";
                     delete result;
                     result = db->exec(querry.str());
                     if(result->changes > 0){
@@ -265,8 +269,14 @@ HttpResponse voteComment(PluginArg arg){
             }
             else if(vote == -1){
                 if(alreadyVoted){
-                    std::string userIdStr = std::to_string(userId) + ",";
-                    votes.replace(votes.find(userIdStr), userIdStr.size(), "");
+                    std::string userIdStr = std::to_string(userId);
+					voters.erase(std::find(voters.begin(), voters.end(), userIdStr));
+					std::stringstream ss;
+					for(std::string str : voters){
+						ss<<str<<",";
+					}
+					std::string votes = ss.str();
+					votes.pop_back();
                     querry.str("");
                     querry<<"UPDATE comments SET votes = \'"<<votes<<"\' WHERE id LIKE "<<id<<";";
                     delete result;
