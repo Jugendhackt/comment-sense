@@ -30,6 +30,7 @@ struct PluginArg{
     HttpServer *server;
     Client *client;
     void *arg;
+	std::vector<std::string> header;
 };
 
 struct HttpResponse{

@@ -225,7 +225,25 @@ HttpResponse defaultPut(PluginArg arg){
 }
 
 HttpResponse defaultPost(PluginArg arg){
-	return {501,"text/plain","Error: Not Implemented"};
+	std::cout<<"\n";
+	std::string boundary;
+	for(std::string line : arg.header){
+		std::cout<<line<<"\n";
+		int x = line.rfind("boundary=");
+		if(x != line.npos){
+			boundary = &line[x+9];
+		}
+	}
+	int size = int(arg.payload.size());
+	if(size < 1024*1024){
+		arg.client->socket->send(arg.server->httpResponsetoString({100,"text/plain",""}));
+		std::string content = arg.client->socket->recv(size);
+		content.erase(content.begin() + int(unsigned(content.rfind(boundary)-2)), content.end());
+		std::cout<<arg.payload<<"\n\""<<content<<"\"\n";
+		return {200,"text/plain",""};
+	}
+	else
+		return {501,"text/plain","Error: Not Implemented"};
 }
 
 HttpResponse defaultPatch(PluginArg arg){
@@ -327,7 +345,7 @@ std::string decodeUrl(std::string url){
 		}
 		decoded[k] = char(c);
 	}
-	return decoded;
+	return decoded.data();
 }
 
 HttpServer::HttpServer(unsigned long adress, unsigned short port)
@@ -494,7 +512,7 @@ void HttpServer::handleClient(Client *client){
 #endif
 			}
 		}
-		PluginArg arg = {url, payload, this, client, nullptr};
+		PluginArg arg = {url, payload, this, client, nullptr, header};
 
 		for(Plugin p : plugins){
 			if(p.requestType != type)
