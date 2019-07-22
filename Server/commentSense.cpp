@@ -12,9 +12,20 @@ static const char *noCommentsStr =  "{\"comments\":[{"
 HttpResponse getComments(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
     std::string url = arg.url.data()+10;
-    if(url.rfind("site='") == 0){
-        std::string site = url.data()+6;
-        site.pop_back();
+	std::vector<std::string> args = split(url, ',');
+	std::string site, name;
+	for(std::string str : args){
+		if(str.find("site='") != str.npos){
+			site = str.data()+6;
+			site.pop_back();
+		}
+		else if(str.find("name='") != str.npos){
+			name = str.data()+6;
+			name.pop_back();
+		}
+	}
+	std::cout<<site<<", "<<name<<"\n";
+    if(site.size() > 0){
 #if defined(DEBUG)
         std::cerr<<"getting comments on:\""<<site<<"\n";
 #endif
@@ -34,10 +45,13 @@ HttpResponse getComments(PluginArg arg){
 #endif
             std::string commentIDs = result->data[0][0];
             ss.str(std::string());
-            ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url,date FROM comments WHERE id IN ("<<commentIDs<<");";
+            ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,votes,headline,content,url,date FROM comments WHERE id IN ("<<commentIDs<<");";
             delete result;
             result = db->exec(ss.str());
-            std::string json = commentsToJson(result, db);
+			int userId = -1;
+			if(name.size() > 0)
+				userId = getUserId(name, db);
+            std::string json = commentsToJson(result, db, userId);
             delete result;
             return {200,"application/json",json};
         }
@@ -49,10 +63,21 @@ HttpResponse getComments(PluginArg arg){
 HttpResponse getTopComments(PluginArg arg)
 {
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    std::string url = arg.url.data()+10;
-    if(url.rfind("site='") == 0){
-        std::string site = url.data()+6;
-        site.pop_back();
+    std::string url = arg.url.data()+14;
+	std::vector<std::string> args = split(url, ',');
+	std::string site, name;
+	for(std::string str : args){
+		if(str.find("site='")){
+			site = str.data()+6;
+			site.pop_back();
+		}
+		if(str.find("name='")){
+			name = str.data()+6;
+			name.pop_back();
+		}
+	}
+	std::cout<<site<<", "<<name<<"\n";
+    if(site.size() > 0){
 #if defined(DEBUG)
         std::cerr<<"getting comments on:\""<<site<<"\n";
 #endif
@@ -72,7 +97,7 @@ HttpResponse getTopComments(PluginArg arg)
 #endif
             std::string commentIDs = result->data[0][0];
             ss.str(std::string());
-            ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url,date FROM comments WHERE id IN ("<<commentIDs<<") order by count desc limit 5;";
+            ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,votes,headline,content,url,date FROM comments WHERE id IN ("<<commentIDs<<") order by count desc limit 5;";
             delete result;
             result = db->exec(ss.str());
             std::string json = commentsToJson(result, db);
@@ -82,7 +107,7 @@ HttpResponse getTopComments(PluginArg arg)
     }
     else{
         std::stringstream ss;
-        ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,headline,content,url,date FROM comments order by count desc limit 5;";
+        ss<<"SELECT id,userId,(length(votes)-length(replace(votes, \",\", \"\"))) as count,votes,headline,content,url,date FROM comments order by count desc limit 5;";
         dbResult *result = db->exec(ss.str());
         std::string json = commentsToJson(result, db);
         delete result;
@@ -467,28 +492,30 @@ HttpResponse getUser(PluginArg arg)
     }
 }
 
-std::string commentsToJson(dbResult *comments, Sqlite3DB *db)
+std::string commentsToJson(dbResult *comments, Sqlite3DB *db, int userId)
 {
     int columns = comments->columns;
-    if(columns != 7)
+    if(columns != 8)
         return "{\"error\":\"no comments\"}";
     
     cJSON *root = cJSON_CreateObject();
     cJSON *comments_json = cJSON_AddArrayToObject(root, "comments");
-    
+    std::string user = std::to_string(userId);
     for(std::string *row : comments->data){
         int id = atoi(row[0].c_str());
         int userId = atoi(row[1].c_str());
         int count = atoi(row[2].c_str());
-        std::string headline = row[3];
-        std::string content = row[4];
-        std::string url = row[5];
-		std::string date = row[6];
+		std::vector<std::string> votes = split(row[3], ',');
+        std::string headline = row[4];
+        std::string content = row[5];
+        std::string url = row[6];
+		std::string date = row[7];
         
         cJSON *comment = cJSON_CreateObject();
         cJSON_AddNumberToObject(comment, "id", id);
         cJSON_AddNumberToObject(comment, "userId", userId);
         cJSON_AddNumberToObject(comment, "votes", count);
+		cJSON_AddNumberToObject(comment, "voted", std::find(votes.begin(), votes.end(), user) != votes.end());
 		cJSON_AddStringToObject(comment, "userName", getUserName(userId, db).c_str());
         cJSON_AddStringToObject(comment, "headline", stringFromHex(headline).c_str());
         cJSON_AddStringToObject(comment, "content", stringFromHex(content).c_str());

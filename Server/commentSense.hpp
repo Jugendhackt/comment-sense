@@ -17,7 +17,7 @@ HttpResponse existsUser(PluginArg arg);         //done
 HttpResponse changeUser(PluginArg arg);         //
 HttpResponse getUser   (PluginArg arg);			//
 
-std::string commentsToJson(dbResult *comments, Sqlite3DB *db); //done
+std::string commentsToJson(dbResult *comments, Sqlite3DB *db, int userId = -1); //done
 std::string sitesToJson(dbResult *sites);       //done
 
 int getUserId(std::string userName, Sqlite3DB *db);
