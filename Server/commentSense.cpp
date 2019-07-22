@@ -265,8 +265,8 @@ HttpResponse voteComment(PluginArg arg){
             }
             else if(vote == -1){
                 if(alreadyVoted){
-                    std::string userIdStr = std::to_string(userId);
-                    votes.replace(votes.find(userIdStr), userIdStr.size()+1, "");
+                    std::string userIdStr = std::to_string(userId) + ",";
+                    votes.replace(votes.find(userIdStr), userIdStr.size(), "");
                     querry.str("");
                     querry<<"UPDATE comments SET votes = \'"<<votes<<"\' WHERE id LIKE "<<id<<";";
                     delete result;
