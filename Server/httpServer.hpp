@@ -166,6 +166,9 @@ HttpResponse defaultPost(PluginArg arg);
 HttpResponse defaultPatch(PluginArg arg);
 HttpResponse defaultDelete(PluginArg arg);
 
+std::string encodeUrl(std::string url);
+std::string decodeUrl(std::string url);
+
 class HttpServer
 {
     public:

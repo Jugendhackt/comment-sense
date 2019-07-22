@@ -11,7 +11,7 @@ static const char *noCommentsStr =  "{\"comments\":[{"
 
 HttpResponse getComments(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    std::string url = arg.url.data()+10;
+	std::string url = decodeUrl(arg.url.data()+14);
 	std::vector<std::string> args = split(url, ',');
 	std::string site, name;
 	for(std::string str : args){
@@ -24,7 +24,9 @@ HttpResponse getComments(PluginArg arg){
 			name.pop_back();
 		}
 	}
-	std::cout<<site<<", "<<name<<"\n";
+#if defined(DEBUG)
+	std::cerr<<site<<", "<<name<<"\n";
+#endif
     if(site.size() > 0){
 #if defined(DEBUG)
         std::cerr<<"getting comments on:\""<<site<<"\n";
@@ -63,7 +65,7 @@ HttpResponse getComments(PluginArg arg){
 HttpResponse getTopComments(PluginArg arg)
 {
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    std::string url = arg.url.data()+14;
+    std::string url = decodeUrl(arg.url.data()+14);
 	std::vector<std::string> args = split(url, ',');
 	std::string site, name;
 	for(std::string str : args){
@@ -76,7 +78,9 @@ HttpResponse getTopComments(PluginArg arg)
 			name.pop_back();
 		}
 	}
-	std::cout<<site<<", "<<name<<"\n";
+#if defined(DEBUG)
+	std::cerr<<site<<", "<<name<<"\n";
+#endif
     if(site.size() > 0){
 #if defined(DEBUG)
         std::cerr<<"getting comments on:\""<<site<<"\n";
@@ -158,7 +162,7 @@ HttpResponse postComment(PluginArg arg){
     std::string password = passwordRaw == nullptr ? "" : passwordRaw;
     std::string headline = headlineRaw == nullptr ? "" : headlineRaw;
     std::string content = contentRaw == nullptr ? "" : contentRaw;
-    std::string url = urlRaw == nullptr ? "" : urlRaw;
+    std::string url = decodeUrl(urlRaw == nullptr ? "" : urlRaw);
     
     cJSON_Delete(root);
     

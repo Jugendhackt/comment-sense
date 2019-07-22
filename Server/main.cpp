@@ -26,6 +26,7 @@ int main()
     server->setCorsEnabled(true);
 	server->setAcawEnabled(true);
 #endif
+	
     server->start();
     delete server;
     delete db;

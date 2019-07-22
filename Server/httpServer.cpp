@@ -308,6 +308,28 @@ void* httpsServer(void *data){
 	pthread_exit(nullptr);
 }
 
+std::string encodeUrl(std::string url){
+	return url;
+}
+
+std::string decodeUrl(std::string url){
+	unsigned int len = url.length();
+	std::string decoded(len, 0);
+	for(unsigned int i = 0, k = 0; i < len; i++, k++){
+		int c = url[i];
+		if(c == '%' && i < len - 2){
+			std::string byte = &url[i+1];
+			byte.resize(2);
+			std::stringstream ss;
+			ss<<std::hex<<byte;
+			ss>>c;
+			i += 2;
+		}
+		decoded[k] = char(c);
+	}
+	return decoded;
+}
+
 HttpServer::HttpServer(unsigned long adress, unsigned short port)
 {
     httpSock = new TCPSocket(AF_INET, SOCK_STREAM, 0);
