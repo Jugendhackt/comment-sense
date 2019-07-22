@@ -38,30 +38,29 @@ document.addEventListener("DOMContentLoaded", function() {
       getUserData()
         .then(function(result) {
           if (typeof result != "undefined") {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "http://" + ipAdress + "/comments/site='" + url + "',name='" + result.username + "'", true);
-            xhr.onload = function() {
-              if (this.status === 200 || this.status === 404) {
-                var data = JSON.parse(this.responseText);
-                console.log(data);
-                for (let i = 0; i < data.comments.length; i++) {
-                  let username = data.comments[i].userName;
-                  let headline = data.comments[i].headline;
-                  let comment = data.comments[i].content;
-                  let votes = data.comments[i].votes;
-                  let date = data.comments[i].date;
-                  let id = data.comments[i].id;
-                  showComment(username, headline, comment, votes, date, id);
+            getXhr("http://" + ipAdress + "/comments/site='" + url + "',name='" + result.username + "'", true)
+              .then(function(result) {
+                if (result.status === 200 || result.status === 404) {
+                  var data = JSON.parse(result.responseText);
+                  console.log(data);
+                  for (let i = 0; i < data.comments.length; i++) {
+                    let username = data.comments[i].userName;
+                    let headline = data.comments[i].headline;
+                    let comment = data.comments[i].content;
+                    let votes = data.comments[i].votes;
+                    let voted = data.comments[i].voted;
+                    let date = data.comments[i].date;
+                    let id = data.comments[i].id;
+                    showComment(username, headline, comment, votes, voted, date, id);
+                  }
                 }
-              }
-            }
-            xhr.send();
+              });
           }
         });
     });
   }
 
-  function showComment(username, title, comment, votes, date, id) {
+  function showComment(username, title, comment, votes, voted, date, id, ) {
     var a = document.createElement("a");
     a.classList.add("list-group-item", "list-group-item-action", "mb-4", "border", "border-primary");
     var div = document.createElement("div");
@@ -86,19 +85,29 @@ document.addEventListener("DOMContentLoaded", function() {
     small.textContent = username;
     div.appendChild(small);
     a.appendChild(div);
-    var bottomDiv = document.createElement("div");
-    var img = document.createElement("img");
-    img.src = "assets/icons/like.png";
-    img.id = "img" + id;
-    bottomDiv.appendChild(img);
-    var span = document.createElement("span");
-    span.textContent = votes;
-    span.id = "votes" + id;
-    bottomDiv.appendChild(span);
-    bottomDiv.addEventListener("click", function() {
-      clickVote(id);
-    });
-    div.appendChild(bottomDiv);
+    getUserData()
+      .then(function(result) {
+        var bottomDiv = document.createElement("div");
+        var img = document.createElement("img");
+        img.id = "img" + id;
+        console.log(result.username);
+        if (voted == 1) {
+          img.src = "assets/icons/unlike.png";
+          img.title = "unlike.png";
+        } else {
+          img.src = "assets/icons/like.png";
+          img.title = "like.png";
+        }
+        bottomDiv.appendChild(img);
+        var span = document.createElement("span");
+        span.textContent = votes;
+        span.id = "votes" + id;
+        bottomDiv.appendChild(span);
+        bottomDiv.addEventListener("click", function() {
+          clickVote(id);
+        });
+        div.appendChild(bottomDiv);
+      });
     document.getElementById("landingpage").appendChild(a);
   }
 
@@ -147,31 +156,57 @@ document.addEventListener("DOMContentLoaded", function() {
     })
   }
 
+  function getXhr(url, async) {
+    return new Promise(function(resolve) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", url, async);
+      xhr.onload = function() {
+        resolve(this);
+      }
+      xhr.send();
+    });
+  }
+
+
   function clickVote(id) {
-    console.log(id);
+    console.log("clickVote");
     getUserData()
       .then(function(result) {
         if (typeof result != "undefined") {
           var xhr = new XMLHttpRequest();
           xhr.open("PATCH", "http://" + ipAdress + "/comments/vote/", true);
-          xhr.onload = function() {
-            if (this.status == 200) {
-              document.getElementById("img" + id).src = "assets/icons/unlike.png"
-              document.getElementById("votes" + id).textContent = parseInt(document.getElementById("votes" + id).textContent) + 1;
-            } else {
-              bootbox.alert("Es gab ein Fehler beim Posten des Kommentar");
+          if (document.getElementById("img" + id).title == "like.png") {
+            xhr.onload = function() {
+              if (this.status === 200) {
+                document.getElementById("img" + id).src = "assets/icons/unlike.png";
+                document.getElementById("img" + id).title = "unlike.png";
+                document.getElementById("votes" + id).textContent = parseInt(document.getElementById("votes" + id).textContent) + 1;
+              }
             }
+            xhr.send(JSON.stringify({
+              userName: result.username,
+              password: result.password,
+              id: id,
+              vote: 1
+            }));
+          } else if (document.getElementById("img" + id).title == "unlike.png") {
+            xhr.onload = function() {
+              if (this.status === 200) {
+                document.getElementById("img" + id).src = "assets/icons/like.png";
+                document.getElementById("img" + id).title = "like.png";
+                document.getElementById("votes" + id).textContent = parseInt(document.getElementById("votes" + id).textContent) - 1;
+              }
+            }
+            xhr.send(JSON.stringify({
+              userName: result.username,
+              password: result.password,
+              id: id,
+              vote: -1
+            }));
           }
-          xhr.send(JSON.stringify({
-            userName: result.username,
-            password: result.password,
-            id: id,
-            vote: 1
-          }));
         }
       });
   }
-
   checkLogin();
   reload();
 });
