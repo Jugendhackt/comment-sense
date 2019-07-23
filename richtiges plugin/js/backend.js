@@ -1,29 +1,30 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const ipAdress = "192.168.2.108";
+  const ipAdress = "192.168.2.105";
   document.getElementById("btnSendComment").addEventListener("click", () => {
     var title = document.getElementById("inputHeadline").value;
     var comment = document.getElementById("inputComment").value;
     getUserData()
       .then(function(result) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://" + ipAdress + "/comments/", true);
-        xhr.onload = function() {
-          bootbox.alert(this.responseText);
-          if (this.status === 200) {
-            bootbox.alert("Kommentar erfolgreich erstellt");
+        if (typeof result != "undefined") {
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "http://" + ipAdress + "/comments/", true);
+          xhr.onload = function() {
+            if (this.status === 201)
+              bootbox.alert("Kommentar erfolgreich erstellt");
+            else
+              bootbox.alert("Es gab ein Fehler!");
           }
+          getUrl()
+            .then(function(url) {
+              xhr.send(JSON.stringify({
+                userName: result.username,
+                password: result.password,
+                headline: title,
+                content: comment,
+                url: url
+              }));
+            });
         }
-        getUrl()
-          .then(function(url) {
-            console.log(url);
-            xhr.send(JSON.stringify({
-              userName: result.username,
-              password: result.password,
-              headline: title,
-              content: comment,
-              url: url
-            }));
-          });
       });
   });
 
@@ -224,6 +225,10 @@ document.addEventListener("DOMContentLoaded", function() {
           }
         }
       });
+  }
+
+  function getFile(evt) {
+    var files
   }
   checkLogin();
   reload();

@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const ipAdress = "192.168.2.108";
+  const ipAdress = "192.168.2.105";
   document.getElementById("btnLogin").addEventListener("click", function() {
     if (this.textContent == "Anmelden") {
       if (document.getElementById("inputUsername").value == "" || document.getElementById("inputPassword").value == "")
