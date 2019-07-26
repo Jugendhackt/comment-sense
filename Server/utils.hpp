@@ -1,11 +1,14 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <stdio.h>
 #include <time.h>
-#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/sysinfo.h>
+#include <sys/times.h>
 #include <unistd.h>
 #include <dirent.h>
 
@@ -31,11 +34,19 @@ std::string getDate();
 std::vector<std::string> getDirContent(std::string path);
 
 namespace sys {
-	int getTotalMem();
-	int getFreeMem();
-	int getCurrentMem();
+	static unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys, lastTotalIdle;
+	static clock_t lastCPU, lastSysCPU, lastUserCPU;
+	static int numProcessors;
+
+	long long getTotalMem();
+	long long getUsedMem();
+	long long getFreeMem();
+	long long getCurrentMem();
 	float getTotalCpuUsage();
 	float getCpuUsage();
+
+	void init();
+	int parseLine(char *line);
 }
 
 class File{

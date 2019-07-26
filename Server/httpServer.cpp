@@ -549,6 +549,12 @@ void HttpServer::showStats()
 	int mins = secs/60;
 	int hours = mins/60;
 	std::cout<<"running for "<<hours%60<<":"<<(mins%60 < 10 ? "0" : "")<<mins%60<<":"<<(secs%60 < 10 ? "0" : "")<<secs%60<<"\n";
+    std::cout<<"total memory: "<<sys::getTotalMem()<<" bytes\n";
+    std::cout<<"free  memory: "<<sys::getFreeMem()<<" bytes\n";
+    std::cout<<"current used memory: "<<sys::getCurrentMem()<<" bytes\n";
+    //sys::getTotalCpuUsage();
+    std::cout<<"total cpu usage: "<<sys::getTotalCpuUsage()<<"%\n";
+    std::cout<<"current cpu usage: "<<sys::getCpuUsage()<<"%\n";
 }
 
 bool HttpServer::isCorsEnabled()

@@ -4,6 +4,7 @@
 
 int main()
 {
+    sys::init();
     HttpServer *server = new HttpServer();
     Sqlite3DB *db = new Sqlite3DB("./data/mainDataBase.db3");
     
