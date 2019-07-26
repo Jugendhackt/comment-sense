@@ -127,8 +127,8 @@ std::string TCPSocket::recv(int len){
 	int size = ::recv(sock, data, len, 0);
 	if(size < len)
 		data[size] = 0;
-	std::string str(len, '\0');
-    memcpy(&str[0], data, len);
+	std::string str(size, '\0');
+    memcpy(&str[0], data, size);
 	delete[] data;
 	return str;
 }

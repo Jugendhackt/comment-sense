@@ -4,6 +4,8 @@
 #include "httpServer.hpp"
 #include "utils.hpp"
 
+HttpResponse uploadImage(PluginArg arg);
+
 HttpResponse getComments(PluginArg arg);        //done
 HttpResponse getTopComments(PluginArg arg);     //done
 HttpResponse getTopSites(PluginArg arg);        //done

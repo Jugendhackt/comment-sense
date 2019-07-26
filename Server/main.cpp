@@ -23,6 +23,9 @@ int main()
     server->addPlugin(newPlugin("check  user     ", HttpServer::POST,  "/users/login/",  checkUser, db));
     server->addPlugin(newPlugin("change user prop", HttpServer::PATCH, "/users/change/", changeUser, db));
 	server->addPlugin(newPlugin("get    user     ", HttpServer::POST,  "/users/get/",    getUser, db));
+
+    server->addPlugin(newPlugin("upload image    ", HttpServer::POST,  "/upload/img/",   uploadImage, db));
+    
 #if defined(DEBUG)
     server->setCorsEnabled(true);
 	server->setAcawEnabled(true);

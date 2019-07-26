@@ -9,6 +9,73 @@ static const char *noCommentsStr =  "{\"comments\":[{"
                                         "\"userName\":\"CommentSense\""
                                     "}]}";
 
+
+HttpResponse uploadImage(PluginArg arg){
+    std::string boundary;
+    for(std::string line : arg.header){
+        int x = line.rfind("boundary=");
+        if(x != line.npos){
+            boundary = &line.c_str()[x+9];
+        }
+    }
+    int size = arg.payloadSize;
+    if(size < 1024*1024){
+        //arg.client->socket->send(arg.server->httpResponsetoString({100,"text/plain",""}));
+        std::vector<int> parts;
+        std::string content = arg.client->socket->recv(size);
+        while(content.size() < size){
+            arg.client->socket->send(arg.server->httpResponsetoString({100,"text/plain",""}));
+            content += arg.client->socket->recv(size);
+        }
+        std::cout<<size<<":"<<content.size()<<"\n";
+        //content = arg.payload + content;
+        int current = content.find(boundary, 0);
+        while(current != std::string::npos){
+            parts.push_back(current);
+            current = content.find(boundary, current+boundary.size());
+        }
+        int idx = 0;
+        std::string fileContent, userName, password;
+        for(int i : parts){
+            int bstart = i;
+            int bend = content.find("\r\n\r\n", bstart);
+            if(bend == std::string::npos)
+                break;
+            bend += 4;
+            std::string header(content.begin()+bstart, content.begin()+bend);
+            int typePos = header.find("name=\"")+6;
+            if(typePos == std::string::npos)
+                break;
+            int typeEnd = header.find("\"", typePos+1);
+            if(typeEnd == std::string::npos)
+                break;
+            std::string type(header.begin()+typePos, header.begin()+typeEnd);
+            if(idx < parts.size()-1){
+                std::string data(content.begin()+bend, content.begin()+parts[idx+1]-4);
+                if(type == "afile")
+                    fileContent += data;
+                else if(type == "userName")
+                    userName = data;
+                else if(type == "password")
+                    password = data;
+            }
+            else
+                break;
+            idx++;
+        }
+
+        std::cout<<userName<<":"<<password<<":"<<fileContent.size()<<"\n";
+
+        File f("test.jpg");
+        f.open("wb");
+        f.write(fileContent);
+        f.close();
+        return {200,"text/plain","image uploaded"};
+    }
+    else    
+        return {501,"text/plain","Error: Not Implemented (file too big)"};
+}
+
 HttpResponse getComments(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
 	std::string url = arg.url.data()+10;
@@ -131,7 +198,8 @@ HttpResponse getTopSites(PluginArg arg)
 
 HttpResponse postComment(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    cJSON *root = cJSON_Parse(arg.payload.data());
+    std::string payload = arg.client->socket->recv(arg.payloadSize);
+    cJSON *root = cJSON_Parse(payload.c_str());
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
@@ -200,7 +268,8 @@ HttpResponse postComment(PluginArg arg){
 
 HttpResponse voteComment(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    cJSON *root = cJSON_Parse(arg.payload.c_str());
+    std::string payload = arg.client->socket->recv(arg.payloadSize);
+    cJSON *root = cJSON_Parse(payload.c_str());
 
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
@@ -312,7 +381,8 @@ HttpResponse voteComment(PluginArg arg){
 
 HttpResponse createUser(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    cJSON *root = cJSON_Parse(arg.payload.data());
+    std::string payload = arg.client->socket->recv(arg.payloadSize);
+    cJSON *root = cJSON_Parse(payload.c_str());
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
@@ -354,7 +424,8 @@ HttpResponse createUser(PluginArg arg){
 
 HttpResponse checkUser(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    cJSON *root = cJSON_Parse(arg.payload.data());
+    std::string payload = arg.client->socket->recv(arg.payloadSize);
+    cJSON *root = cJSON_Parse(payload.c_str());
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
@@ -389,7 +460,8 @@ HttpResponse checkUser(PluginArg arg){
 
 HttpResponse existsUser(PluginArg arg){
     Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    cJSON *root = cJSON_Parse(arg.payload.data());
+    std::string payload = arg.client->socket->recv(arg.payloadSize);
+    cJSON *root = cJSON_Parse(payload.c_str());
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
@@ -414,7 +486,8 @@ HttpResponse existsUser(PluginArg arg){
 
 HttpResponse changeUser(PluginArg arg){
 	Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    cJSON *root = cJSON_Parse(arg.payload.data());
+    std::string payload = arg.client->socket->recv(arg.payloadSize);
+    cJSON *root = cJSON_Parse(payload.c_str());
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
@@ -468,7 +541,8 @@ HttpResponse changeUser(PluginArg arg){
 HttpResponse getUser(PluginArg arg)
 {
 	Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-    cJSON *root = cJSON_Parse(arg.payload.data());
+    std::string payload = arg.client->socket->recv(arg.payloadSize);
+    cJSON *root = cJSON_Parse(payload.c_str());
     if(!cJSON_HasObjectItem(root, "userName")){
         cJSON_Delete(root);
         return {HttpStatus_BadRequest,"application/json","{\"error\":\"userName missing in json\"}"};
