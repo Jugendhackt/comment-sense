@@ -88,6 +88,10 @@ std::vector<std::string> getDirContent(std::string path)
 }
 
 namespace sys {
+    static unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys, lastTotalIdle;
+    static clock_t lastCPU, lastSysCPU, lastUserCPU;
+    static int numProcessors;
+    
     long long getTotalMem(){
         struct sysinfo memInfo;
         sysinfo (&memInfo);
@@ -288,6 +292,10 @@ bool File::isDir()
     struct stat pathStat;
     stat(fileName.c_str(), &pathStat);
     return S_ISDIR(pathStat.st_mode);
+}
+
+bool File::isOpen(){
+    return m_isOpen;
 }
 
 Sqlite3DB::Sqlite3DB(std::string fileName)

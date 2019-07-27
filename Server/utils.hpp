@@ -34,10 +34,6 @@ std::string getDate();
 std::vector<std::string> getDirContent(std::string path);
 
 namespace sys {
-	static unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys, lastTotalIdle;
-	static clock_t lastCPU, lastSysCPU, lastUserCPU;
-	static int numProcessors;
-
 	long long getTotalMem();
 	long long getUsedMem();
 	long long getFreeMem();
@@ -62,6 +58,7 @@ public:
     unsigned long size();
     
     bool isDir();
+    bool isOpen();
 private:
 	std::string fileName;
 	FILE *file;
