@@ -12,7 +12,11 @@ static const char *noCommentsStr =  "{\"comments\":[{"
 
 HttpResponse uploadRessource(PluginArg arg){
 	Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
-	std::string boundary, url;
+	std::string boundary;
+
+	std::string url;
+	std::string userName, password;
+
 	for(std::string line : arg.header){
 		int x = line.find("boundary=");
 		if(x != line.npos){
@@ -24,7 +28,6 @@ HttpResponse uploadRessource(PluginArg arg){
 	size_t received = 0;
 	size_t x = 0;
 	File f("data/tmp.dat");
-	std::string userName, password;
 	while(received < size){
 		arg.client->socket->send(arg.server->httpResponsetoString({100,"text/plain",""}));
 		size_t missing = size - received;
@@ -108,6 +111,12 @@ HttpResponse uploadRessource(PluginArg arg){
 		}
 	}
 	f.close();
+	std::string hash = sha256::hashFile(url);
+	std::string fileSize = std::to_string(x);
+	std::string userId = std::to_string(getUserId(userName, db));
+	std::stringstream querry;
+	querry<<"INSERT INTO resources (url, hash, user, size) VALUES (\'"<<url<<"\', \'"<<hash<<"\', "<<userId<<", "<<fileSize<<");";
+	db->exec(querry.str());
 	return {200,"text/plain",std::string("{\"url\":\"") + url + std::string("\"}")};
 }
 
