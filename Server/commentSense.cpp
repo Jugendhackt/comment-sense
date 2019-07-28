@@ -10,7 +10,7 @@ static const char *noCommentsStr =  "{\"comments\":[{"
 									"}]}";
 
 
-HttpResponse uploadRessource(PluginArg arg){
+HttpResponse uploadResource(PluginArg arg){
 	Sqlite3DB *db = reinterpret_cast<Sqlite3DB*>(arg.arg);
 	std::string boundary;
 
@@ -97,7 +97,7 @@ HttpResponse uploadRessource(PluginArg arg){
 							int nameBegin = header.find("filename=\"") + 10;
 							int nameEnd = header.find("\"", nameBegin);
 							std::string fileName = std::string(header.begin() + nameBegin, header.begin() + nameEnd);
-							url = std::string("data/ressources/") + std::to_string(time(NULL)) + std::string("_") + fileName;
+							url = std::string("data/resources/") + std::to_string(time(NULL)) + std::string("_") + fileName;
 							f.open("wb", url);
 							f.write(data);
 							x += data.size();

@@ -4,7 +4,7 @@
 #include "httpServer.hpp"
 #include "utils.hpp"
 
-HttpResponse uploadRessource(PluginArg arg);
+HttpResponse uploadResource(PluginArg arg);
 
 HttpResponse getComments(PluginArg arg);        //done
 HttpResponse getTopComments(PluginArg arg);     //done
