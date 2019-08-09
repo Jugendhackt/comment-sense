@@ -10,3 +10,4 @@ clear.sql
 *.srl
 *.csr
 Backend
+plugin/node_modules/
