@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+		<title>xhr.send(FormData) Example</title>
+	</head>
+	<body>
+		<input type="file" name="afile" id="afile" accept="image/*"/>
+
+		<script>
+			document.querySelector('#afile').addEventListener('change', function(e) {
+			  var file = this.files[0];
+			  var fd = new FormData();
+			  fd.append("userName", "user 1");
+			  fd.append("password", "password 1");
+			  fd.append("afile", file);
+			  // These extra params aren't necessary but show that you can include other data.
+			  var xhr = new XMLHttpRequest();
+			  xhr.open('POST', 'http://localhost/upload/', true);
+
+			  xhr.onload = function() {
+				if (this.status == 200) {
+				  var resp = JSON.parse(this.response);
+				  console.log('Server got:', resp);
+				  var image = document.createElement('img');
+				  image.src = resp.url;
+				  document.body.appendChild(image);
+				};
+			  };
+			  xhr.send(fd);
+			}, false);
+		</script>
+		<!--[if IE]>
+		<script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+		<script>CFInstall.check({mode: 'overlay'});</script>
+		<![endif]-->
+	</body>
+</html>

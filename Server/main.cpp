@@ -4,6 +4,7 @@
 
 int main()
 {
+    sys::init();
     HttpServer *server = new HttpServer();
     Sqlite3DB *db = new Sqlite3DB("./data/mainDataBase.db3");
     
@@ -22,6 +23,9 @@ int main()
     server->addPlugin(newPlugin("check  user     ", HttpServer::POST,  "/users/login/",  checkUser, db));
     server->addPlugin(newPlugin("change user prop", HttpServer::PATCH, "/users/change/", changeUser, db));
 	server->addPlugin(newPlugin("get    user     ", HttpServer::POST,  "/users/get/",    getUser, db));
+
+    server->addPlugin(newPlugin("upload resource ", HttpServer::POST,  "/upload/",   uploadResource, db));
+    
 #if defined(DEBUG)
     server->setCorsEnabled(true);
 	server->setAcawEnabled(true);

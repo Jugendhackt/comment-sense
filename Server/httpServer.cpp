@@ -225,25 +225,7 @@ HttpResponse defaultPut(PluginArg arg){
 }
 
 HttpResponse defaultPost(PluginArg arg){
-	std::cout<<"\n";
-	std::string boundary;
-	for(std::string line : arg.header){
-		std::cout<<line<<"\n";
-		int x = line.rfind("boundary=");
-		if(x != line.npos){
-			boundary = &line[x+9];
-		}
-	}
-	int size = int(arg.payload.size());
-	if(size < 1024*1024){
-		arg.client->socket->send(arg.server->httpResponsetoString({100,"text/plain",""}));
-		std::string content = arg.client->socket->recv(size);
-		content.erase(content.begin() + int(unsigned(content.rfind(boundary)-2)), content.end());
-		std::cout<<arg.payload<<"\n\""<<content<<"\"\n";
-		return {200,"text/plain",""};
-	}
-	else
-		return {501,"text/plain","Error: Not Implemented"};
+	return {501,"text/plain","Error: Not Implemented"};
 }
 
 HttpResponse defaultPatch(PluginArg arg){
@@ -494,22 +476,20 @@ void HttpServer::handleClient(Client *client){
 	}
 #endif
 	HttpResponse response = {404,"text/plain","Error: Not found"};
+    while(header.size() == 0 || header[0].size() == 0)
+        header = socket->recvHeader();
 	if(header.size() == 0 || header[0].size() == 0){
 		response.status = HttpStatus_BadRequest;
+        header = socket->recvHeader();
 	}
 	else{
 		std::vector<std::string> request = split(header[0], ' ');
 		std::string url = decodeUrl(request[1]);
 		int type = getRequestType(request[0]);
-		std::string payload = "";
+		int payload = 0;
 		for(std::string line : header){
 			if(line.rfind("Content-Length:", 0) == 0){
-				int len = atoi(line.c_str()+15);
-				payload = socket->recv(len);
-#if defined(DEBUG)
-                if(payload.size() < 250)
-                    std::cerr<<"client "<<client->index<<": payload("<<payload.size()<<" bytes): "<<client->index<<":"<<payload<<"\n";
-#endif
+				payload = atoi(line.c_str()+15);
 			}
 		}
 		PluginArg arg = {url, payload, this, client, nullptr, header};
@@ -549,6 +529,12 @@ void HttpServer::showStats()
 	int mins = secs/60;
 	int hours = mins/60;
 	std::cout<<"running for "<<hours%60<<":"<<(mins%60 < 10 ? "0" : "")<<mins%60<<":"<<(secs%60 < 10 ? "0" : "")<<secs%60<<"\n";
+    std::cout<<"total memory: "<<sys::getTotalMem()<<" bytes\n";
+    std::cout<<"free  memory: "<<sys::getFreeMem()<<" bytes\n";
+    std::cout<<"current used memory: "<<sys::getCurrentMem()<<" bytes\n";
+    //sys::getTotalCpuUsage();
+    std::cout<<"total cpu usage: "<<sys::getTotalCpuUsage()<<"%\n";
+    std::cout<<"current cpu usage: "<<sys::getCpuUsage()<<"%\n";
 }
 
 bool HttpServer::isCorsEnabled()

@@ -4,12 +4,14 @@
 #include "httpServer.hpp"
 #include "utils.hpp"
 
+HttpResponse uploadResource(PluginArg arg);
+
 HttpResponse getComments(PluginArg arg);        //done
 HttpResponse getTopComments(PluginArg arg);     //done
 HttpResponse getTopSites(PluginArg arg);        //done
 
 HttpResponse postComment(PluginArg arg);        //done
-HttpResponse voteComment(PluginArg arg);        // 50% done
+HttpResponse voteComment(PluginArg arg);        //done
 
 HttpResponse createUser(PluginArg arg);         //done, possibly memleak in sqlite_exec with insert
 HttpResponse checkUser (PluginArg arg);         //done
