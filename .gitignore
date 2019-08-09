@@ -10,5 +10,5 @@ clear.sql
 *.srl
 *.csr
 Backend
-reactPlugin/node_modules/
+plugin/node_modules/
 
