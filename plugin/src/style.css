@@ -1,31 +1,29 @@
 html {
-  width: 300px !important;
+  width: 300px;
   max-height: 600px !important;
 }
 
 body {
-  width: 100%;
-  height: 100%;
-  border-left: 2px solid #DF691A;
   border-right: 2px solid #DF691A;
+  border-left: 2px solid #DF691A;
 }
 
 .footer {
   width: 100%;
   height: 70px;
-  z-index: 1;
-  position: sticky;
+}
+
+.footerContainer {
+  position: sticky !important;
   bottom: 0;
+  z-index: 1;
 }
 
 #createComment {
-  position: sticky;
-  bottom: 70px;
   border: 1px solid #DF691A;
-  z-index: 1;
 }
 
-::selection {
-  color: white;
-  background-color: #DF691A;
+textarea {
+  resize: none !important;
 }
+

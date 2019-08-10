@@ -11,20 +11,18 @@ function Footer(props) {
         if (isOpen && btnName === "Zurück") {
             setIsOpen(false);
             setBtnName("Kommentar erstellen");
-        } else if (isOpen === false && btnName === "Kommentar erstellen"){
+        } else if (isOpen === false && btnName === "Kommentar erstellen") {
             setIsOpen(true);
             setBtnName("Zurück");
         }
     }
 
     return (
-        <div>
+        <div className="footerContainer">
             <Collapse isOpen={isOpen}>
-                <div>
-                    <CreateComment />
-                </div>
+                <CreateComment/>
             </Collapse>
-            <footer className="footer navbar-dark bg-primary d-flex justify-content-center align-items-center" >
+            <footer className="footer bg-primary d-flex justify-content-center align-items-center">
                 <button className="btn btn-dark" onClick={() => handleCollapse()}>{btnName}</button>
             </footer>
         </div>

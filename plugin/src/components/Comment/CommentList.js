@@ -1,4 +1,6 @@
-import React, {useState, useEffect} from "react";
+/*global chrome*/
+
+import React, { useState, useEffect } from "react";
 import bootbox from "bootbox";
 
 import Comment from "./Comment";
@@ -6,25 +8,38 @@ import Comment from "./Comment";
 function Comments() {
     const [comments, setComments] = useState([]);
 
+    function getUrl() {
+        return new Promise((resolve) => {
+            chrome.tabs.query({
+                active: true,
+                currentWindow: true,
+            }, tabs => {
+                console.log(tabs[0]);
+                resolve(tabs[0]);
+            });
+        });
+    }
+
     useEffect(() => {
-        fetch("http://192.168.2.105/comments/site='https://www.google.de/'")
-            .then(res => res.json())
-            .then(res => {
-                setComments(res.comments);
-            })
-            .catch(() => bootbox.alert("Server ist down"))
+        getUrl().then(tab => {
+            fetch("http://192.168.2.105/comments/site='" + tab.url + "'")
+                .then(res => res.json())
+                .then(res => {
+                    setComments(res.comments);
+                })
+                .catch(() => bootbox.alert("Server ist down"))
+        });
     }, []);
 
     function createComments() {
-        console.log(comments);
         return comments.map(item => {
-            return (<Comment headline={item.headline} username={item.userName} votes={item.votes} date={item.date} content={item.content} key={item.id}/>)
+            return (<Comment headline={item.headline} username={item.userName} votes={item.votes} date={item.date} content={item.content} key={item.id} />)
         });
     }
 
     return (
         <>
-        {createComments()}
+            {createComments()}
         </>
     )
 
