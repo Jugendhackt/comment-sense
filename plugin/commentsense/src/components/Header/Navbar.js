@@ -7,7 +7,7 @@ function Navbar(props) {
     return (
         <nav className="navbar sticky-top navbar-dark bg-primary mb-3">
             <div className="w-100 d-flex justify-content-between align-items-center">
-                <Link to="/">
+                <Link to="/index.html">
                     <span className="navbar-brand" >{props.lang.navbarBrand}</span>
                 </Link>
                 <Link to="/user/">

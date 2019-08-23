@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import Header from "./components/Header/HeaderMain";
 import Main from "./components/Main/Main";
+import Footer from "./components/Footer/FooterMain";
 
 import ipAdress from "./ipAdress";
 
@@ -23,12 +24,14 @@ function App() {
     }
   }
 
+  console.log(window.location.pathname);
 
   return (
     <>
       <Router>
         <Header lang={getLanguage()} ipAdress={ipAdress}/>
         <Main lang={getLanguage()} ipAdress={ipAdress}/>
+        <Footer lang={getLanguage()} ipAdress={ipAdress} />
       </Router>
     </>
   );
