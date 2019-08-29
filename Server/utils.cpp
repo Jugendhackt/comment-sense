@@ -136,8 +136,7 @@ namespace sys {
 		unsigned long long totalUser, totalUserLow, totalSys, totalIdle, total;
 
 		file = fopen("/proc/stat", "r");
-		fscanf(file, "cpu %llu %llu %llu %llu", &totalUser, &totalUserLow,
-			&totalSys, &totalIdle);
+		int r = fscanf(file, "cpu %llu %llu %llu %llu", &totalUser, &totalUserLow, &totalSys, &totalIdle);
 		fclose(file);
 
 		if (totalUser < lastTotalUser || totalUserLow < lastTotalUserLow ||
@@ -188,8 +187,7 @@ namespace sys {
 
 	void init(){
 		FILE* file = fopen("/proc/stat", "r");
-		fscanf(file, "cpu %llu %llu %llu %llu", &lastTotalUser, &lastTotalUserLow,
-			&lastTotalSys, &lastTotalIdle);
+		int r = fscanf(file, "cpu %llu %llu %llu %llu", &lastTotalUser, &lastTotalUserLow, &lastTotalSys, &lastTotalIdle);
 		fclose(file);
 		////
 		struct tms timeSample;
@@ -253,6 +251,14 @@ std::string File::readAll(){
 	return content;
 }
 
+std::string File::readAll(std::string fileName){
+	File f(fileName);
+	f.open("rb");
+	std::string data = f.readAll();
+	f.close();
+	return data;
+}
+
 std::string File::read(unsigned long len){
 	if(m_isOpen){
 		std::string content(len, '\0');
@@ -311,10 +317,13 @@ Sqlite3DB::~Sqlite3DB()
 dbResult* Sqlite3DB::exec(std::string querry)
 {
 	dbResult *result = new dbResult;
+	if(db == nullptr)
+		return result;
 	char *error = nullptr;
 	sqlite3_exec(db, querry.data(), sqlite3db_callback, result, &error);
 	if(error){
 		std::cout<<"[SQL ERROR] : \'"<<error<<"\'\n"<<querry<<"\n";
+		sqlite3_free(db);
 	}
 	result->changes = sqlite3_changes(db);
 	result->rowId = sqlite3_last_insert_rowid(db);
@@ -482,4 +491,43 @@ std::string sha256::hashFile(std::string fileName){
 	}
 	f.close();
 	return hash.final();
+}
+
+dll::dll(std::string name){
+	open(name);
+}
+
+void dll::open(std::string name){
+	this->name = name;
+	if(name.length() > 0){
+		handle = dlopen(name.c_str(), RTLD_NOW | RTLD_GLOBAL);
+		if (!handle){    
+			std::cerr<<dlerror()<<std::endl;
+		}
+		else{
+			m_open = true;
+		}
+	}
+	else{
+		std::cerr<<"error: filename empty\n";
+	}
+}
+
+std::string dll::getName(){
+	return name;
+}
+
+bool dll::isOpen(){
+	return m_open;
+}
+
+void dll::close(){
+	if(handle){
+		dlclose(handle);
+		m_open = false;
+	}
+}
+
+void init(){
+	sqlite3_initialize();
 }

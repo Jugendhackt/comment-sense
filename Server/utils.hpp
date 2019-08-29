@@ -11,11 +11,13 @@
 #include <sys/times.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <dlfcn.h>
 
 #include <vector>
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <functional>
 #include <sstream>
 
 #include "sqlite3.h"
@@ -62,6 +64,7 @@ public:
 	void setFileName(std::string file);
 	bool open(std::string mode, std::string fileName = "");
 	std::string readAll();
+	static std::string readAll(std::string fileName);
 	std::string read(unsigned long len);
 	void write(std::string data);
 	void close();
@@ -93,7 +96,7 @@ public:
 	~Sqlite3DB();
 	dbResult *exec(std::string querry);
 private:
-	sqlite3 *db;
+	sqlite3 *db = nullptr;
 };
 
 const uint k[64] = {
@@ -122,5 +125,36 @@ private:
 	uint bitlen[2];
 	uint state[8];
 };
+
+typedef void(*fptr)(std::string);
+
+class dll{
+public:
+	dll(std::string name = "");
+	void open(std::string name);
+	template <class T>
+	T get(std::string function){
+		if(handle){
+			T func = reinterpret_cast<T>(dlsym(handle, function.c_str()));
+			if(!func){
+				std::cerr<<dlerror()<<std::endl;
+			}
+			return func;
+		}
+		return nullptr;
+	}
+	std::string getName();
+	bool isOpen();
+	void close();
+private:
+	void *handle = nullptr;
+	std::string name;
+	bool m_open = false;
+};
+
+
+
+
+void init() __attribute__((constructor));
 
 #endif //UTILS_H

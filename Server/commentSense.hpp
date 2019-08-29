@@ -4,6 +4,10 @@
 #include "httpServer.hpp"
 #include "utils.hpp"
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
 HttpResponse uploadResource(PluginArg arg);
 
 HttpResponse getComments(PluginArg arg);        //done
@@ -26,5 +30,9 @@ int getUserId(std::string userName, Sqlite3DB *db);
 std::string getUserName(int userId, Sqlite3DB *db);
 bool isUserValid(std::string userName, std::string password, Sqlite3DB *db);
 bool addCommentToSite(int64_t commentId, std::string url, Sqlite3DB *db);
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif // COMMENTSENSE_H
