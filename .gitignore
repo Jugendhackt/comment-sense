@@ -10,5 +10,6 @@ clear.sql
 *.srl
 *.csr
 Backend
-plugin/node_modules/
+plugin/comment-sense/node_modules/
+plugin/comment-sense/build/
 
