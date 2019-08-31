@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "CommentSenseReact",
+  "version": "0.1",
+  "description": "CSR",
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "content_security_policy": "script-src 'self' 'sha256-kRZV6prH8ow8EQqtCJ7s4VElhAjJ+Petv3eK51QAUt0='; object-src 'self'",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ]
+}

@@ -227,9 +227,6 @@ document.addEventListener("DOMContentLoaded", function() {
       });
   }
 
-  function getFile(evt) {
-    var files
-  }
   checkLogin();
   reload();
 });
