@@ -7,6 +7,14 @@ const langde = {
     //Main
     like: "Like",
     unlike: "Dislike",
+    username: "Nickname",
+    password: "Passwort",
+    save: "Speichern",
+    saveSuccess: "Speichern erfolgreich!",
+    emptyInput: "Nicht alle Felder ausgefüllt!",
+    serverNotReachable: "Server ist nicht erreichbar!",
+    alreadyLoggedIn: "Du bist bereits eingeloggt.",
+    logout: "Ausloggen",
 
     //Footer
     createComment: "Kommentar erstellen",

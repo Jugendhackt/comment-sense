@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import settings from "../../assets/icons/userSetting32.png";
 
-function Navbar(props) {
+function Header(props) {
     return (
         <nav className="navbar sticky-top navbar-dark bg-primary mb-3">
             <div className="w-100 d-flex justify-content-between align-items-center">
@@ -18,4 +18,4 @@ function Navbar(props) {
     );
 }
 
-export default Navbar;
+export default Header;

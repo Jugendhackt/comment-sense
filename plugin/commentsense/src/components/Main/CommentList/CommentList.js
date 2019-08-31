@@ -19,7 +19,7 @@ function CommentList(props) {
 
     useEffect(() => {
         getUrl().then(url => {
-            fetch(`http://${props.ipAdress}/comments/site='${url}'`)
+            fetch(`${props.ipAdress}/comments/site='${url}'`)
                 .then(res => res.json())
                 .then(res => {
                     console.log(res);
