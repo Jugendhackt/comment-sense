@@ -3,8 +3,10 @@ data
 *.layout
 *.pro
 *.user
+*.sublime*
 server
 *.o
+*.so
 *.txt
 *.crt
 *.key
