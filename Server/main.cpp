@@ -1,10 +1,6 @@
 #include "commentSense.hpp"
 #include "httpServer.hpp"
 #include "utils.hpp"
-#include "test.hpp"
-
-#include <dlfcn.h>
-
 
 int main()
 {
@@ -17,7 +13,7 @@ int main()
 	server->setCorsEnabled(true);
 	server->setAcawEnabled(true);
 #endif
-	
+
 	server->start();
 	delete server;
 	delete db;
