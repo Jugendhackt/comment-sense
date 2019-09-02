@@ -17,6 +17,11 @@ body {
     z-index: 1;
 }
 
+::selection {
+    background-color: #DF691A;
+    color: white;
+}
+
 footer {
     padding: 15px;
 }

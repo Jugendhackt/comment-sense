@@ -61,7 +61,7 @@ function ShowUser(props) {
                         changePassword={(evt) => setPassword(evt.target.value)} save={saveData} />
                 </>
             );
-        } else {
+        } else if (loggedIn === true){
             return (
                 <>
                     <LoggedIn lang={props.lang} logout={logout}/>
