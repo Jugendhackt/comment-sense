@@ -8,7 +8,6 @@ import LoggedIn from "./LoggedIn";
 function ShowUser(props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
@@ -28,51 +27,32 @@ function ShowUser(props) {
                     .then(res => {
                         console.log(res);
                         if (res.status === "login data valid") {
-                            setLoading(false);
                             setLoggedIn(true);
                         } else {
-                            setLoading(false);
+                            bootbox.alert(props.lang.loginDataNotFound);
                         }
                     })
                     .catch(e => {
-                        setLoading(false);
                         bootbox.alert(props.lang.serverNotReachable);
                     });
             }
         });
     }, []);
 
-    function saveData() {
-        console.log("hi3", username, password);
-        if (typeof username != "undefined" && typeof password != "undefined") {
-            chrome.storage.local.set({ "username": username, "password": password });
-            bootbox.alert(props.lang.saveSuccess);
-        } else {
-            bootbox.alert(props.lang.emptyInput);
-        }
-    }
-
     function showLogin() {
-        if (loading === false && loggedIn === false) {
+        if (loggedIn === false) {
             return (
                 <>
-                    <Login lang={props.lang} username={username}
-                        changeUsername={(evt) => setUsername(evt.target.value)} password={password}
-                        changePassword={(evt) => setPassword(evt.target.value)} save={saveData} />
+                    <Login lang={props.lang}/>
                 </>
             );
-        } else if (loggedIn === true){
+        } else if (loggedIn === true) {
             return (
                 <>
-                    <LoggedIn lang={props.lang} logout={logout}/>
+                    <LoggedIn lang={props.lang}/>
                 </>
             );
         }
-    }
-
-    function logout() {
-        console.log("Jio");
-        chrome.storage.local.remove(["username", "password"]);
     }
 
     return (

@@ -9,12 +9,15 @@ const langde = {
     unlike: "Dislike",
     username: "Nickname",
     password: "Passwort",
-    save: "Speichern",
-    saveSuccess: "Speichern erfolgreich!",
+    login: "Login",
+    loginSuccess: "Erfolgreich angemeldet!",
     emptyInput: "Nicht alle Felder ausgefüllt!",
     serverNotReachable: "Server ist nicht erreichbar!",
-    alreadyLoggedIn: "Du bist bereits eingeloggt.",
+    alreadyLoggedIn: "Du bist bereits eingeloggt als: ",
     logout: "Ausloggen",
+    confirmLogout: "Willst du dich wirklich ausloggen?",
+    logoutSuccess: "Erfolgreich ausgeloggt!",
+    loginDataNotFound: "Nickname oder Passwort ist falsch!",
 
     //Footer
     createComment: "Kommentar erstellen",
