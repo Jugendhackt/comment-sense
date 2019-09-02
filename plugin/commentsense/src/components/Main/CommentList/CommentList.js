@@ -1,5 +1,6 @@
 /*global chrome */
 import React, { useState, useEffect } from "react";
+import bootbox from "bootbox";
 
 import Comment from "./Comment";
 
@@ -24,19 +25,18 @@ function CommentList(props) {
                 .then(res => {
                     console.log(res);
                     setComments(res.comments);
+                })
+                .catch(e => {
+                    bootbox.alert(props.lang.serverNotReachable);
                 });
         });
     }, []);
 
     function showComments() {
-        let items = comments.map(item => {
+        return comments.map(item => {
             return <Comment title={item.headline} date={item.date} content={item.content} username={item.userName} votes={item.votes} />
         });
-        console.log(items);
-        return items;
     }
-
-    console.log("gu");
 
     return (
         <>
