@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "CommentSenseReact",
+  "version": "0.1",
+  "description": "CSR",
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "24": "icon24.png",
+    "32": "icon32.png",
+    "64": "icon64.png",
+    "128": "icon128.png",
+    "256": "icon256.png",
+    "512": "icon512.png"
+  },
+  "content_security_policy": "script-src 'self' 'sha256-kRZV6prH8ow8EQqtCJ7s4VElhAjJ+Petv3eK51QAUt0='; object-src 'self'",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ]
+}
