@@ -8,7 +8,9 @@ const langde = {
     like: "Like",
     unlike: "Dislike",
     username: "Nickname",
+    yourUsername: "Dein Nickname",
     password: "Passwort",
+    yourPassword: "Dein Passwort",
     login: "Login",
     loginSuccess: "Erfolgreich angemeldet!",
     emptyInput: "Nicht alle Felder ausgefüllt!",
@@ -21,6 +23,7 @@ const langde = {
 
     //Footer
     createComment: "Kommentar erstellen",
+    sendComment: "Kommentar senden",
     back: "Zurück",
     yourComment: "Dein Kommentar",
     fillAllFields: "Bitte fülle alle Felder aus",

@@ -15,7 +15,7 @@ function Comment(props) {
                 {props.content}
             </p>
             <div className={"d-flex w-100 justify-content-between"}>
-                <small className={"text.muted"}>{props.username}</small>
+                <small className={"text-muted"}>{props.username}</small>
                 <div>
                     <img src={like}/>
                     <span>{props.votes}</span>

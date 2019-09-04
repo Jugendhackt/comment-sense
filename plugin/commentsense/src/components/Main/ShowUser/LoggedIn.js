@@ -17,7 +17,7 @@ function LoggedIn(props) {
         bootbox.confirm(props.lang.confirmLogout, result => {
             if (result) {
                 chrome.storage.local.remove(["username", "password"]);
-                bootbox.alert(props.lang.logoutSuccess);
+                chrome.runtime.reload();
             }
         });
     }
