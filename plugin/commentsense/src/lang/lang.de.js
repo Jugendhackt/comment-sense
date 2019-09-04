@@ -20,6 +20,8 @@ const langde = {
     confirmLogout: "Willst du dich wirklich ausloggen?",
     logoutSuccess: "Erfolgreich ausgeloggt!",
     loginDataNotFound: "Nickname oder Passwort ist falsch!",
+    createCommentSuccess: "Kommentar erfolgreich erstellt!",
+    createCommentFail: "Kommentar erstellen fehlgeschlagen!",
 
     //Footer
     createComment: "Kommentar erstellen",

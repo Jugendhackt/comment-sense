@@ -1,5 +1,6 @@
 /*global chrome */
 import React, { useState, useEffect } from "react";
+import bootbox from "bootbox";
 
 import ipAdress from "../../ipAdress";
 
@@ -34,7 +35,15 @@ function CreateComment(props) {
                     content: content
                 })
             })
-            .then(res => console.log(res));
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === "comment successfully posted") {
+                    bootbox.alert(props.lang.createCommentSuccess);
+                }
+            })
+            .catch(e => {
+                bootbox.alert(props.lang.createCommentFail);
+            })
         });
     }
 

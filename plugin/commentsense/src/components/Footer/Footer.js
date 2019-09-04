@@ -7,7 +7,7 @@ import bootbox from "bootbox";
 import CreateComment from "./CreateComment";
 import ipAdress from "../../ipAdress";
 
-function FooterMain(props) {
+function Footer(props) {
     const [isOpenComment, setIsOpenComment] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
 
@@ -48,4 +48,4 @@ function FooterMain(props) {
     );
 }
 
-export default withRouter(FooterMain);
+export default withRouter(Footer);
