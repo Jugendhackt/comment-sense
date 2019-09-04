@@ -14,8 +14,7 @@ function ShowUser(props) {
         chrome.storage.local.get(["username", "password"], result => {
             setUsername(result.username);
             setPassword(result.password);
-            console.log(result.username, result.password);
-            if (typeof result.username !== "undefined" && typeof result.password !== "undefined") {
+            if (typeof result.username != "undefined" && typeof result.password != "undefined") {
                 fetch(`${props.ipAdress}/users/login/`, {
                     method: "POST",
                     body: JSON.stringify({
@@ -42,15 +41,11 @@ function ShowUser(props) {
     function showLogin() {
         if (loggedIn === false) {
             return (
-                <>
-                    <Login lang={props.lang}/>
-                </>
+                <Login lang={props.lang} username={username} password={password}/>
             );
-        } else if (loggedIn === true) {
+        } else if (loggedIn) {
             return (
-                <>
-                    <LoggedIn lang={props.lang}/>
-                </>
+                <LoggedIn lang={props.lang} username={username}/>
             );
         }
     }
