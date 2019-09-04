@@ -1,3 +1,3 @@
-const ipAdress = "http://192.168.2.105";
+const ipAdress = "http://localhost";
 
 export default ipAdress;
