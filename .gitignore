@@ -11,6 +11,5 @@ clear.sql
 *.csr
 Backend
 plugin/commentsense/node_modules/
-plugin/commentsense/build/
 plugin/commentsense/package-lock.json
 plugin/commentsense/src/style/theme.css
