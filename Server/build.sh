@@ -33,7 +33,7 @@ buildCppLib () {
 buildPlugin () {
 	if [ "build/$1.o" -nt "build/$1.so" ] || [ "$2" == "1" ]; then
 		echo "building plugin '$1'"
-		if ! g++ build/$1.o -shared -fPIC -o build/$1.so $3; then
+		if ! g++ build/$1.o -shared -fPIC -o build/$1.so $3 -Wl,-soname=$1.so -static-libstdc++ -static-libgcc -Wl,-static; then
 			exit -1;
 		fi
 	fi
@@ -107,8 +107,9 @@ buildCppLib "commentSense" $rebuild "$options $defines";
 buildPlugin "commentSense" $rebuild "$options $defines";
 
 echo "building server"
-g++ main.cpp $link -o server $libs $options -Wall $defines $args
-g++ build/cJSON.o build/tlse.o build/tcpSocket.o build/tlsSocket.o build/sqlite3.o build/utils.o build/httpServer.o -std=c++11 -shared -fPIC -o build/default.so -lpthread -ldl
+g++ main.cpp $link -o server $libs $options -Wall $defines $args -static-libstdc++ -static-libgcc
+g++ build/cJSON.o build/tlse.o build/tcpSocket.o build/tlsSocket.o build/sqlite3.o build/utils.o build/httpServer.o \
+		-std=c++11 -shared -fPIC -o build/default.so -lpthread -ldl  -Wl,-soname=default.so -static-libstdc++ -static-libgcc -Wl,-static
 
 echo "copying data folder"
 loadData ;
