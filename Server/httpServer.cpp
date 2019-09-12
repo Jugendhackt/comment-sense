@@ -267,65 +267,65 @@ void* handleClient(void *data){
 
 void *console(void *data)
 {
-		HttpServer *server = reinterpret_cast<HttpServer*>(data);
-		std::string input;
-		std::cout<<">";
-		while(true){
-			std::getline(std::cin, input);
-			unsigned pos;
-			if(input.find("stop") == 0)
-				break;
-			else if(input.find("cors=") == 0){
-				bool cors = input.at(5)-48;
-				server->setCorsEnabled(cors);
-				std::cout<<"cors set to "<<(cors ? "true" : "false")<<"\n";
-			}
-			else if(input.find("acaw=") == 0){
-				bool acaw = input.at(5)-48;
-				server->setAcawEnabled(acaw);
-				std::cout<<"acaw set to "<<(acaw ? "true" : "false")<<"\n";
-			}
-			else if(input.find("stat") == 0){
-				server->showStats();
-			}
-			else if(input.find("enable") == 0){	// >enable "pluginName"
-				int start = input.find("\"") + 1;
-				int end = input.find("\"", start);
-				if(start != input.npos && end != input.npos){
-					std::string p(input.begin() + start, input.begin() + end);
-					server->enablePlugin(p);
-				}
-			}
-			else if(input.find("disable") == 0){	// >disable "pluginName"
-				int start = input.find("\"") + 1;
-				int end = input.find("\"", start);
-				if(start != input.npos && end != input.npos){
-					std::string p(input.begin() + start, input.begin() + end);
-					server->disablePlugin(p);
-				}
-			}
-			else if(input.find("load") == 0){	// >disable "pluginName"
-				int start = input.find("\"") + 1;
-				int end = input.find("\"", start);
-				if(start != input.npos && end != input.npos){
-					std::string l(input.begin() + start, input.begin() + end);
-					server->reloadDll(l);
-				}
-			}
-			else if(input.find("unload") == 0){	// >disable "pluginName"
-				int start = input.find("\"") + 1;
-				int end = input.find("\"", start);
-				if(start != input.npos && end != input.npos){
-					std::string l(input.begin() + start, input.begin() + end);
-					server->unloadDll(l);
-				}
-			}
-			else
-				std::cout<<"unknown command \'"<<input<<"\'\n";
-			std::cout<<">";
+	HttpServer *server = reinterpret_cast<HttpServer*>(data);
+	std::string input;
+	std::cout<<">";
+	while(true){
+		std::getline(std::cin, input);
+		unsigned pos;
+		if(input.find("stop") == 0)
+			break;
+		else if(input.find("cors=") == 0){
+			bool cors = input.at(5)-48;
+			server->setCorsEnabled(cors);
+			std::cout<<"cors set to "<<(cors ? "true" : "false")<<"\n";
 		}
-		server->stop();
-	pthread_exit(nullptr);
+		else if(input.find("acaw=") == 0){
+			bool acaw = input.at(5)-48;
+			server->setAcawEnabled(acaw);
+			std::cout<<"acaw set to "<<(acaw ? "true" : "false")<<"\n";
+		}
+		else if(input.find("stat") == 0){
+			server->showStats();
+		}
+		else if(input.find("enable") == 0){	// >enable "pluginName"
+			int start = input.find("\"") + 1;
+			int end = input.find("\"", start);
+			if(start != input.npos && end != input.npos){
+				std::string p(input.begin() + start, input.begin() + end);
+				server->enablePlugin(p);
+			}
+		}
+		else if(input.find("disable") == 0){	// >disable "pluginName"
+			int start = input.find("\"") + 1;
+			int end = input.find("\"", start);
+			if(start != input.npos && end != input.npos){
+				std::string p(input.begin() + start, input.begin() + end);
+				server->disablePlugin(p);
+			}
+		}
+		else if(input.find("load") == 0){	// >disable "pluginName"
+			int start = input.find("\"") + 1;
+			int end = input.find("\"", start);
+			if(start != input.npos && end != input.npos){
+				std::string l(input.begin() + start, input.begin() + end);
+				server->reloadDll(l);
+			}
+		}
+		else if(input.find("unload") == 0){	// >disable "pluginName"
+			int start = input.find("\"") + 1;
+			int end = input.find("\"", start);
+			if(start != input.npos && end != input.npos){
+				std::string l(input.begin() + start, input.begin() + end);
+				server->unloadDll(l);
+			}
+		}
+		else
+			std::cout<<"unknown command \'"<<input<<"\'\n";
+		std::cout<<">";
+	}
+	server->stop();
+	return nullptr;
 }
 
 
@@ -544,9 +544,9 @@ void HttpServer::start(){
 	std::sort(plugins.begin(), plugins.end(), comparePlugin);
 	std::cout<<"loaded Plugins: \n";
 	for(Plugin p : plugins){
-				std::cout<<"\t"<<p.name<<"\t :  \""<<p.subUrl<<"\"\n";
-		}
-		//start server
+		std::cout<<"\t"<<p.name<<"\t :  \""<<p.subUrl<<"\"\n";
+	}
+	//start server
 	startTime = std::time(nullptr);
 	pthread_t http, https;
 	pthread_create(&http, nullptr, ::httpServer, this);
@@ -580,14 +580,14 @@ void HttpServer::httpServer()
 void HttpServer::httpsServer()
 {
 	httpsSock->listen();
-		std::cout<<"https server running\n";
-		while(keepRunning){
+	std::cout<<"https server running\n";
+	while(keepRunning){
 		Client *client = new Client;
 		client->server = this;
 		client->socket = httpsSock->accept();
 		if(client->socket == nullptr)
 			continue;
-				client->index = lastIndex++;
+		client->index = lastIndex++;
 #if defined(DEBUG)
 		std::cerr<<"client "<<client->index<<": connected (https)\n";
 #endif
@@ -600,17 +600,17 @@ void HttpServer::httpsServer()
 void HttpServer::stop()
 {
 #if defined(DEBUG)
-		std::cerr<<"stopping server\n";
+	std::cerr<<"stopping server\n";
 #endif
-		keepRunning = false;
-		TCPSocket *http = new TCPSocket(AF_INET, SOCK_STREAM, 0);
-		http->connect("localhost", 80);
-		http->disconnect();
+	keepRunning = false;
+	TCPSocket *http = new TCPSocket(AF_INET, SOCK_STREAM, 0);
+	http->connect("localhost", 80);
+	http->disconnect();
 	delete http;
 	TLSSocket *https = new TLSSocket(AF_INET, SOCK_STREAM, 0);
 	https->connect("localhost", 443);
-		https->disconnect();
-		delete https;
+	https->disconnect();
+	delete https;
 }
 
 void HttpServer::handleClient(Client *client){
@@ -618,20 +618,17 @@ void HttpServer::handleClient(Client *client){
 #if defined(DEBUG)
 	std::cerr<<"client "<<client->index<<": gets handled\n";
 #endif
-		TCPSocket *socket = client->socket;
+	TCPSocket *socket = client->socket;
 	std::vector<std::string> header = socket->recvHeader();
 #if defined(DEBUG)
-		std::cerr<<"client "<<client->index<<": header:\n";
+	std::cerr<<"client "<<client->index<<": header:\n";
 	for(std::string line : header){
 		std::cerr<<"client "<<client->index<<":\t"<<line<<"\n";
 	}
 #endif
 	HttpResponse response = {404,"text/plain","Error: Not found"};
-		while(header.size() == 0 || header[0].size() == 0)
-				header = socket->recvHeader();
 	if(header.size() == 0 || header[0].size() == 0){
 		response.status = HttpStatus_BadRequest;
-				header = socket->recvHeader();
 	}
 	else{
 		std::vector<std::string> request = split(header[0], ' ');
@@ -652,18 +649,18 @@ void HttpServer::handleClient(Client *client){
 #if defined(DEBUG)
 				std::cerr<<"client "<<client->index<<": calling plugin \'"<<p.name<<"\'\n";
 #endif
-								arg.arg = p.arg;
+				arg.arg = p.arg;
 				response = p.callback(arg);
 				break;
 			}
 		}
 	}
 #if defined(DEBUG)
-		std::string headerStr = split(httpResponsetoString(response), "\n\n")[0];
-		header = split(headerStr, '\n');
+	std::string headerStr = split(httpResponsetoString(response), "\n\n")[0];
+	header = split(headerStr, '\n');
 	std::cerr<<"client "<<client->index<<": sending response\n";
-		std::cerr<<"client "<<client->index<<": header:\n";
-		for(std::string line : header){
+	std::cerr<<"client "<<client->index<<": header:\n";
+	for(std::string line : header){
 		std::cerr<<"client "<<client->index<<":\t"<<line<<"\n";
 	}
 #endif
