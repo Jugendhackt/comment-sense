@@ -5,17 +5,8 @@ import bootbox from "bootbox";
 import ipAdress from "../../../ipAdress";
 
 function Login(props) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-
-    useEffect(() => {
-        chrome.storage.local.get(["username", "password"], result => {
-            if (typeof username != "undefined" && typeof password != "undefined") {
-                setUsername(result.username);
-                setPassword(result.password);
-            }
-        });
-    }, []);
+    const [username, setUsername] = useState(props.username);
+    const [password, setPassword] = useState(props.password);
 
     function saveData() {
         if (username !== "" && password !== "") {

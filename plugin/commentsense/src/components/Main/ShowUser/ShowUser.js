@@ -1,51 +1,21 @@
 /*global chrome*/
-import React, { useState, useEffect } from "react";
-import bootbox from "bootbox";
+import React from "react";
 
 import Login from "./Login";
 import LoggedIn from "./LoggedIn";
 
 function ShowUser(props) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [loggedIn, setLoggedIn] = useState(false);
 
-    useEffect(() => {
-        chrome.storage.local.get(["username", "password"], result => {
-            setUsername(result.username);
-            setPassword(result.password);
-            if (typeof result.username != "undefined" && typeof result.password != "undefined") {
-                fetch(`${props.ipAdress}/users/login/`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        userName: result.username,
-                        password: result.password,
-                    })
-                })
-                    .then(res => res.json())
-                    .then(res => {
-                        console.log(res);
-                        if (res.status === "login data valid") {
-                            setLoggedIn(true);
-                        } else {
-                            bootbox.alert(props.lang.loginDataNotFound);
-                        }
-                    })
-                    .catch(e => {
-                        bootbox.alert(props.lang.serverNotReachable);
-                    });
-            }
-        });
-    }, []);
+    console.log(props.loggedIn);
 
     function showLogin() {
-        if (loggedIn === false) {
+        if (props.loggedIn === false) {
             return (
-                <Login lang={props.lang} username={username} password={password}/>
+                <Login lang={props.lang} username={props.username} password={props.password}/>
             );
-        } else if (loggedIn) {
+        } else if (props.loggedIn) {
             return (
-                <LoggedIn lang={props.lang} username={username}/>
+                <LoggedIn lang={props.lang} username={props.username}/>
             );
         }
     }

@@ -22,6 +22,7 @@ const langde = {
     loginDataNotFound: "Nickname oder Passwort ist falsch!",
     createCommentSuccess: "Kommentar erfolgreich erstellt!",
     createCommentFail: "Kommentar erstellen fehlgeschlagen!",
+    error: "Fehler",
 
     //Footer
     createComment: "Kommentar erstellen",

@@ -1,7 +1,8 @@
 /*global chrome */
 import React, { useState, useEffect } from "react";
-import bootbox from "bootbox";
+import {withRouter} from "react-router-dom";
 
+import ipAdress from "../../../ipAdress";
 import Comment from "./Comment";
 
 function CommentList(props) {
@@ -20,14 +21,14 @@ function CommentList(props) {
 
     useEffect(() => {
         getUrl().then(url => {
-            fetch(`${props.ipAdress}/comments/site='${url}'`)
+            fetch(`${ipAdress}/comments/site='${url}'`)
                 .then(res => res.json())
                 .then(res => {
                     console.log(res);
                     setComments(res.comments);
                 })
                 .catch(e => {
-                    bootbox.alert(props.lang.serverNotReachable);
+                    props.history.push("/error/");
                 });
         });
     }, []);
