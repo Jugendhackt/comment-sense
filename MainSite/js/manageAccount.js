@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const ipAdress = "192.168.2.108";
+  const ipAdress = "commentsense.de";
 
   document.getElementById("hide").style.display = "none";
   document.getElementById("btnChangeData").addEventListener("click", function() {
