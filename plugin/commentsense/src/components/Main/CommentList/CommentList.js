@@ -21,10 +21,15 @@ function CommentList(props) {
 
     useEffect(() => {
         getUrl().then(url => {
-            fetch(`${ipAdress}/comments/site='${url}'`)
+            let str;
+            if (props.loggedIn) {
+                str = `${ipAdress}/comments/site='${url}',name='${props.username}'`;
+            } else {
+                str = `${ipAdress}/comments/site='${url}'`;
+            }
+            fetch(str)
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res);
                     setComments(res.comments);
                 })
                 .catch(e => {
@@ -35,7 +40,7 @@ function CommentList(props) {
 
     function showComments() {
         return comments.map(item => {
-            return <Comment title={item.headline} date={item.date} content={item.content} username={item.userName} votes={item.votes} />
+            return <Comment title={item.headline} date={item.date} content={item.content} creator={item.userName} username={props.username} password={props.password} votes={item.votes} voted={item.voted} id={item.id}/>
         });
     }
 

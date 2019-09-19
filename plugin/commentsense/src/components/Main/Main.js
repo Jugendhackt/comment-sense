@@ -9,7 +9,7 @@ function Main(props) {
     return (
         <main className="container">
             <Switch>
-                <Route exact path="/index.html" render={(para) => <CommentList lang={props.lang} {...para} />}></Route>
+                <Route exact path="/index.html" render={(para) => <CommentList lang={props.lang} {...para} loggedIn={props.loggedIn} username={props.username} password={props.password}/>}></Route>
                 <Route path="/user/" render={(para) => <ShowUser lang={props.lang} loggedIn={props.loggedIn} username={props.username} password={props.password} {...para} />} ></Route>
                 <Route path="/error/" render={(para) => <ErrorPage lang={props.lang} {...para} />} ></Route>
             </Switch>
