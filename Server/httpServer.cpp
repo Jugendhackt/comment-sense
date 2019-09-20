@@ -237,6 +237,10 @@ HttpResponse defaultDelete(PluginArg arg){
 	return {501,"text/plain","Error: Not Implemented"};
 }
 
+HttpResponse defaultOptions(PluginArg arg){
+	return {200,"text/plain","0 options available"};
+}
+
 Plugin newPlugin(std::string name, int requestType, std::string subUrl, std::function<HttpResponse(PluginArg)> callback, std::vector<dll*> requirements, void *arg){
 	Plugin p;
 	p.name = name;
@@ -377,6 +381,7 @@ HttpServer::HttpServer(unsigned long adress, unsigned short port)
 	addPlugin(newPlugin("default post\t", POST, "/", defaultPost, {}));
 	addPlugin(newPlugin("default patch\t", PATCH, "/", defaultPatch, {}));
 	addPlugin(newPlugin("default delete\t", DELETE, "/", defaultDelete, {}));
+	addPlugin(newPlugin("default options\t", OPTIONS, "/", defaultOptions, {}));
 
 	std::cout<<"server initialized\n";
 }
@@ -399,6 +404,8 @@ int HttpServer::getRequestType(std::string str){
 		return PATCH;
 	else if(str == "DELETE")
 		return DELETE;
+	else if(str == "OPTIONS")
+		return OPTIONS;
 	else
 		return NONE;
 }

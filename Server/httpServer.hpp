@@ -172,6 +172,7 @@ HttpResponse defaultPut(PluginArg arg);
 HttpResponse defaultPost(PluginArg arg);
 HttpResponse defaultPatch(PluginArg arg);
 HttpResponse defaultDelete(PluginArg arg);
+HttpResponse defaultOptions(PluginArg arg);
 
 std::string encodeUrl(std::string url);
 std::string decodeUrl(std::string url);
@@ -185,7 +186,8 @@ class HttpServer
 			PUT = 2,
 			POST = 4,
 			PATCH = 8,
-			DELETE = 16
+			DELETE = 16,
+			OPTIONS = 32
 		};
 		
 		enum Protocols{
