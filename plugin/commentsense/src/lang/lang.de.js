@@ -2,6 +2,7 @@
 const langde = {
     //Header
     navbarBrand: "CommentSense",
+    settings: "Einstellungen",
 
 
     //Main
@@ -14,6 +15,7 @@ const langde = {
     login: "Login",
     loginSuccess: "Erfolgreich angemeldet!",
     emptyInput: "Nicht alle Felder ausgefüllt!",
+
     serverNotReachable: "Server ist nicht erreichbar!",
     alreadyLoggedIn: "Du bist bereits eingeloggt als: ",
     logout: "Ausloggen",

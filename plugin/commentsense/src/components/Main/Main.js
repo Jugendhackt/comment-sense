@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 
 import ShowUser from "./ShowUser/ShowUser";
 import CommentList from "./CommentList/CommentList";
@@ -9,9 +9,13 @@ function Main(props) {
     return (
         <main className="container">
             <Switch>
-                <Route exact path="/index.html" render={(para) => <CommentList lang={props.lang} {...para} />}></Route>
-                <Route path="/user/" render={(para) => <ShowUser lang={props.lang} loggedIn={props.loggedIn} username={props.username} password={props.password} {...para} />} ></Route>
-                <Route path="/error/" render={(para) => <ErrorPage lang={props.lang} {...para} />} ></Route>
+                <Route exact path="/index.html"
+                       render={(para) => <CommentList lang={props.lang} {...para} loggedIn={props.loggedIn}
+                                                      username={props.username} password={props.password}/>}/>
+                <Route path="/user/"
+                       render={(para) => <ShowUser lang={props.lang} loggedIn={props.loggedIn} username={props.username}
+                                                   password={props.password} {...para} />}/>
+                <Route path="/error/" render={(para) => <ErrorPage lang={props.lang} {...para} />}/>
             </Switch>
         </main>
     );
