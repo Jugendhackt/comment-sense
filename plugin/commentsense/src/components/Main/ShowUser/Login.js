@@ -35,6 +35,12 @@ function Login(props) {
         }
     }
 
+    function linkToWebsite() {
+        chrome.tabs.create({
+            url: "http://commentsense.de"
+        });
+    }
+
     return (
         <>
             <small className="text-muted">{props.lang.fillAllFields}</small>
@@ -48,8 +54,9 @@ function Login(props) {
                 <input className="form-control" value={password} onChange={evt => setPassword(evt.target.value)}
                        type="password" placeholder={props.lang.yourPassword}/>
             </div>
-            <div className="w-100 d-flex justify-content-center">
+            <div className="w-100 d-flex justify-content-center align-items-center">
                 <button className="btn btn-primary m-2" onClick={saveData}>{props.lang.login}</button>
+                <button className="btn btn-primary m-2" onClick={linkToWebsite}>{props.lang.createAccount}</button>
             </div>
         </>
     );

@@ -42,7 +42,7 @@ function CommentList(props) {
         return comments.map(item => {
             return <Comment title={item.headline} date={item.date} content={item.content} creator={item.userName}
                             username={props.username} password={props.password} votes={item.votes} voted={item.voted}
-                            id={item.id} lang={props.lang}/>
+                            id={item.id} lang={props.lang} loggedIn={props.loggedIn}/>
         });
     }
 
