@@ -1,5 +1,5 @@
 
-const langde = {
+const langDe = {
     //Header
     navbarBrand: "CommentSense",
     settings: "Einstellungen",
@@ -25,6 +25,7 @@ const langde = {
     createCommentSuccess: "Kommentar erfolgreich erstellt!",
     createCommentFail: "Kommentar erstellen fehlgeschlagen!",
     error: "Fehler",
+    loading: "Laden...",
 
     //Footer
     createComment: "Kommentar erstellen",
@@ -38,4 +39,4 @@ const langde = {
     contentOfComment: "Dein Kommentar"
 }
 
-export default langde;
+export default langDe;
