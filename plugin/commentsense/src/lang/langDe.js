@@ -26,6 +26,7 @@ const langDe = {
     createCommentFail: "Kommentar erstellen fehlgeschlagen!",
     error: "Fehler",
     loading: "Laden...",
+    createAccount: "Account erstellen",
 
     //Footer
     createComment: "Kommentar erstellen",
