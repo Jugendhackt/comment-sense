@@ -152,32 +152,33 @@ std::string getDir(std::string dir)
 }
 
 void getBigFile(File *file, TCPSocket *socket, HttpServer *server){
-		unsigned long chunk = 1024*1024;
-		unsigned long size = file->size();
-		unsigned long chunks = size/chunk;
-		unsigned long rest = size%chunk;
+	unsigned long chunk = 1024*1024;
+	unsigned long size = file->size();
+	unsigned long chunks = size/chunk;
+	unsigned long rest = size%chunk;
 #if defined(DEBUG)
-		std::cout<<"getting big file: "<<size<<" bytes\n";
-		std::cout<<"sending "<<chunks<<" chunks of size "<<chunk<<"bytes and "<<rest<<" bytes\n";
+	std::cout<<"getting big file: "<<size<<" bytes\n";
+	std::cout<<"sending "<<chunks<<" chunks of size "<<chunk<<"bytes and "<<rest<<" bytes\n";
 #endif
-		std::stringstream ss;
-		ss<<"HTTP/1.1 "<<HttpStatus_string(HttpStatus_OK)<<"\n";
-		if(server->isCorsEnabled())
-				ss<<"Access-Control-Allow-Origin:*\n";
+	std::stringstream ss;
+	ss<<"HTTP/1.1 "<<HttpStatus_string(HttpStatus_OK)<<"\n";
+	if(server->isCorsEnabled())
+		ss<<"Access-Control-Allow-Origin:*\n"
 	if(server->isAcawEnabled())
-				ss<<"Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS\n";
-		ss<<"Content-Type:"<<"text/plain"<<"\n";
-		ss<<"Content-Length:"<<size<<"\n\n";
-		socket->send(ss.str());
-		
-		for(unsigned long i = 0; i < chunks; i++){
-				std::string data = file->read(chunk);
-				if(!socket->send(data)){
-						return;
-				}
+		ss<<"Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS\n"
+		<<"Access-Control-Allow-Headers: *\n";
+	ss<<"Content-Type:"<<"text/plain"<<"\n";
+	ss<<"Content-Length:"<<size<<"\n\n";
+	socket->send(ss.str());
+	
+	for(unsigned long i = 0; i < chunks; i++){
+		std::string data = file->read(chunk);
+		if(!socket->send(data)){
+			return;
 		}
-		std::string data = file->read(rest);
-		socket->send(data);
+	}
+	std::string data = file->read(rest);
+	socket->send(data);
 }
 
 HttpResponse defaultGet(PluginArg arg){
