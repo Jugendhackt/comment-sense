@@ -404,18 +404,21 @@ int HttpServer::getRequestType(std::string str){
 }
 
 std::string HttpServer::httpResponsetoString(HttpResponse response){
-		if(response.status >= 0){
-				std::stringstream ss;
-				ss<<"HTTP/1.1 "<<HttpStatus_string(response.status)<<"\n";
-				if(isCorsEnabled())
-						ss<<"Access-Control-Allow-Origin:*\n";
-				ss<<"Content-Type:"<<response.contentType<<"\n";
-				ss<<"Content-Length:"<<response.data.size()<<"\n\n";
+	if(response.status >= 0){
+		std::stringstream ss;
+		ss<<"HTTP/1.1 "<<HttpStatus_string(response.status)<<"\n";
+		if(isCorsEnabled())
+			ss<<"Access-Control-Allow-Origin:*\n";
+		if(server->isAcawEnabled())
+			ss<<"Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS\n"
+			<<"Access-Control-Allow-Headers: *\n";
+		ss<<"Content-Type:"<<response.contentType<<"\n";
+		ss<<"Content-Length:"<<response.data.size()<<"\n\n";
 		//std::cout<<response.data.size()<<"\n"<<ss.str()<<"\n";
-				ss<<response.data;
-				return ss.str();
-		}
-		return "";
+		ss<<response.data;
+		return ss.str();
+	}
+	return "";
 }
 
 void HttpServer::addPlugin(Plugin plugin){
@@ -677,23 +680,24 @@ void HttpServer::showStats()
 	int secs = int(std::difftime(std::time(nullptr), startTime));
 	int mins = secs/60;
 	int hours = mins/60;
+
 	std::cout<<"running for "<<hours%60<<":"<<(mins%60 < 10 ? "0" : "")<<mins%60<<":"<<(secs%60 < 10 ? "0" : "")<<secs%60<<"\n";
-		std::cout<<"total memory: "<<sys::getTotalMem()<<" bytes\n";
-		std::cout<<"free  memory: "<<sys::getFreeMem()<<" bytes\n";
-		std::cout<<"current used memory: "<<sys::getCurrentMem()<<" bytes\n";
-		//sys::getTotalCpuUsage();
-		std::cout<<"total cpu usage: "<<sys::getTotalCpuUsage()<<"%\n";
-		std::cout<<"current cpu usage: "<<sys::getCpuUsage()<<"%\n";
+	std::cout<<"total memory: "<<sys::getTotalMem()<<" bytes\n";
+	std::cout<<"free  memory: "<<sys::getFreeMem()<<" bytes\n";
+	std::cout<<"current used memory: "<<sys::getCurrentMem()<<" bytes\n";
+	//sys::getTotalCpuUsage();
+	std::cout<<"total cpu usage: "<<sys::getTotalCpuUsage()<<"%\n";
+	std::cout<<"current cpu usage: "<<sys::getCpuUsage()<<"%\n";
 }
 
 bool HttpServer::isCorsEnabled()
 {
-		return corsEnabled;
+	return corsEnabled;
 }
 
 void HttpServer::setCorsEnabled(bool value)
 {
-		corsEnabled = value;
+	corsEnabled = value;
 }
 
 bool HttpServer::isAcawEnabled()
