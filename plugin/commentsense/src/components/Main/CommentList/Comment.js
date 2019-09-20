@@ -13,39 +13,41 @@ function Comment(props) {
     const spanId = uuid.v4();
 
     function handleOnClick() {
-        let body;
-        if (vote === 0) {
-            body = 1;
-        } else {
-            body = -1;
-        }
-        fetch(`${ipAddress}/comments/vote/`, {
-            method: "PATCH",
-            body: JSON.stringify({
-                userName: props.username,
-                password: props.password,
-                id: props.id,
-                vote: body
+        if (props.loggedIn) {
+            let body;
+            if (vote === 0) {
+                body = 1;
+            } else {
+                body = -1;
+            }
+            fetch(`${ipAddress}/comments/vote/`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    userName: props.username,
+                    password: props.password,
+                    id: props.id,
+                    vote: body
+                })
             })
-        })
-            .then(res => res.json())
-            .then(res => {
-                let i = parseInt(document.getElementById(spanId).textContent);
-                if (body === 1 && res.status === "successfully voted") {
-                    document.getElementById(imgId).src = unlike;
-                    document.getElementById(spanId).textContent = i + 1;
-                    setVote(1);
-                } else if (body === -1 && res.status === "successfully unvoted") {
-                    document.getElementById(imgId).src = like;
-                    document.getElementById(spanId).textContent = i - 1;
-                    setVote(0);
-                } else {
+                .then(res => res.json())
+                .then(res => {
+                    let i = parseInt(document.getElementById(spanId).textContent);
+                    if (body === 1 && res.status === "successfully voted") {
+                        document.getElementById(imgId).src = unlike;
+                        document.getElementById(spanId).textContent = i + 1;
+                        setVote(1);
+                    } else if (body === -1 && res.status === "successfully unvoted") {
+                        document.getElementById(imgId).src = like;
+                        document.getElementById(spanId).textContent = i - 1;
+                        setVote(0);
+                    } else {
+                        props.history.push("/error/");
+                    }
+                })
+                .catch(e => {
                     props.history.push("/error/");
-                }
-            })
-            .catch(e => {
-                props.history.push("/error/");
-            });
+                });
+        }
     }
 
     return (
