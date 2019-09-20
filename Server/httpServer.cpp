@@ -163,7 +163,7 @@ void getBigFile(File *file, TCPSocket *socket, HttpServer *server){
 	std::stringstream ss;
 	ss<<"HTTP/1.1 "<<HttpStatus_string(HttpStatus_OK)<<"\n";
 	if(server->isCorsEnabled())
-		ss<<"Access-Control-Allow-Origin:*\n"
+		ss<<"Access-Control-Allow-Origin:*\n";
 	if(server->isAcawEnabled())
 		ss<<"Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS\n"
 		<<"Access-Control-Allow-Headers: *\n";
