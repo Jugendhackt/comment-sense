@@ -409,7 +409,7 @@ std::string HttpServer::httpResponsetoString(HttpResponse response){
 		ss<<"HTTP/1.1 "<<HttpStatus_string(response.status)<<"\n";
 		if(isCorsEnabled())
 			ss<<"Access-Control-Allow-Origin:*\n";
-		if(server->isAcawEnabled())
+		if(isAcawEnabled())
 			ss<<"Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS\n"
 			<<"Access-Control-Allow-Headers: *\n";
 		ss<<"Content-Type:"<<response.contentType<<"\n";
