@@ -3,8 +3,8 @@ import {withRouter} from "react-router-dom";
 import uuid from "uuid";
 
 import ipAddress from "../../../ipAddress";
-import like from "../../../assets/icons/like.png";
-import unlike from "../../../assets/icons/unlike.png";
+import like from "../../../assets/icons/likeArrow.png";
+import unlike from "../../../assets/icons/unlikeArrow.png";
 
 function Comment(props) {
 
@@ -13,36 +13,39 @@ function Comment(props) {
     const spanId = uuid.v4();
 
     function handleOnClick() {
-        if (props.loggedIn) {
-            let body;
-            fetch(`${ipAddress}/comments/vote/`, {
-                method: "PATCH",
-                body: JSON.stringify({
-                    userName: props.username,
-                    password: props.password,
-                    id: props.id,
-                    vote: body
-                })
-            })
-                .then(res => res.json())
-                .then(res => {
-                    let i = parseInt(document.getElementById(spanId).textContent);
-                    if (body === 1 && res.status === "successfully voted") {
-                        document.getElementById(imgId).src = unlike;
-                        document.getElementById(spanId).textContent = i + 1;
-                        setVote(1);
-                    } else if (body === -1 && res.status === "successfully unvoted") {
-                        document.getElementById(imgId).src = like;
-                        document.getElementById(spanId).textContent = i - 1;
-                        setVote(0);
-                    } else {
-                        props.history.push("/error/");
-                    }
-                })
-                .catch(e => {
-                    props.history.push("/error/");
-                });
+        let body;
+        if (vote === 0) {
+            body = 1;
+        } else {
+            body = -1;
         }
+        fetch(`${ipAddress}/comments/vote/`, {
+            method: "PATCH",
+            body: JSON.stringify({
+                userName: props.username,
+                password: props.password,
+                id: props.id,
+                vote: body
+            })
+        })
+            .then(res => res.json())
+            .then(res => {
+                let i = parseInt(document.getElementById(spanId).textContent);
+                if (body === 1 && res.status === "successfully voted") {
+                    document.getElementById(imgId).src = unlike;
+                    document.getElementById(spanId).textContent = i + 1;
+                    setVote(1);
+                } else if (body === -1 && res.status === "successfully unvoted") {
+                    document.getElementById(imgId).src = like;
+                    document.getElementById(spanId).textContent = i - 1;
+                    setVote(0);
+                } else {
+                    props.history.push("/error/");
+                }
+            })
+            .catch(e => {
+                props.history.push("/error/");
+            });
     }
 
     return (
@@ -55,9 +58,9 @@ function Comment(props) {
             <div className={"d-flex w-100 justify-content-between"}>
                 <small className={"text-muted"}>{props.creator}</small>
                 <div>
+                    <span id={spanId}>{props.votes}</span>
                     <img src={(props.voted) ? unlike : like} onClick={handleOnClick} id={imgId}
                          alt={(props.voted) ? props.lang.unlike : props.lang.like}/>
-                    <span id={spanId}>{props.votes}</span>
                 </div>
             </div>
         </div>
