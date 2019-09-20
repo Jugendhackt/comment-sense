@@ -376,12 +376,12 @@ HttpServer::HttpServer(unsigned long adress, unsigned short port)
 	httpsSock = new TLSSocket(AF_INET, SOCK_STREAM, 0);
 		httpsSock->bind(adress, 443);
 
-	addPlugin(newPlugin("default get\t", GET, "/", defaultGet, {}));
-	addPlugin(newPlugin("default put\t", PUT, "/", defaultPut, {}));
-	addPlugin(newPlugin("default post\t", POST, "/", defaultPost, {}));
-	addPlugin(newPlugin("default patch\t", PATCH, "/", defaultPatch, {}));
-	addPlugin(newPlugin("default delete\t", DELETE, "/", defaultDelete, {}));
-	addPlugin(newPlugin("default options\t", OPTIONS, "/", defaultOptions, {}));
+	addPlugin(newPlugin("default get", GET, "/", defaultGet, {}));
+	addPlugin(newPlugin("default put", PUT, "/", defaultPut, {}));
+	addPlugin(newPlugin("default post", POST, "/", defaultPost, {}));
+	addPlugin(newPlugin("default patch", PATCH, "/", defaultPatch, {}));
+	addPlugin(newPlugin("default delete", DELETE, "/", defaultDelete, {}));
+	addPlugin(newPlugin("default options", OPTIONS, "/", defaultOptions, {}));
 
 	std::cout<<"server initialized\n";
 }

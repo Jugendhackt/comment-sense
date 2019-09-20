@@ -3,7 +3,7 @@
 static const char *noCommentsStr =  "{\"comments\":[{"
 										"\"id\":-1,"
 										"\"headline\":\"Keine Kommentare\","
-										"\"content\":\"F&uumlr diese Webseite wurden bis jetzt noch keine Kommentare erstellt. Du kannst gern damit anfangen.\","
+										"\"content\":\"Für diese Webseite wurden bis jetzt noch keine Kommentare erstellt. Du kannst gern damit anfangen.\","
 										"\"votes\":0,"
 										"\"userID\":-1,"
 										"\"userName\":\"CommentSense\""
