@@ -13,3 +13,4 @@ Backend
 plugin/commentsense/node_modules/
 plugin/commentsense/package-lock.json
 plugin/commentsense/.idea/
+plugin/commentsense/.idea/workspace.xml

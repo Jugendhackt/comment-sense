@@ -1,8 +1,11 @@
 {
   "manifest_version": 2,
-  "name": "CommentSenseReact",
-  "version": "0.1",
-  "description": "CSR",
+  "name": "CommentSense",
+  "version": "1.0.0",
+  "description": "CommentSense",
+  "default_locale": "de",
+  "offline_enabled": "false",
+  "minimum_chrome_version": "32",
   "browser_action": {
     "default_popup": "index.html"
   },
