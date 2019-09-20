@@ -7,7 +7,7 @@ import Main from "./components/Main/Main";
 import Footer from "./components/Footer/Footer";
 
 import ipAddress from "./ipAddress";
-import langDe from "./lang/lang.de";
+import langDe from "./lang/langDe";
 
 function App(props) {
     const [username, setUsername] = useState(undefined);
@@ -63,8 +63,10 @@ function App(props) {
 
     if (loading) {
         return (
-            <div className="spinner-border" role="status">
-                <span className="sr-only">loading</span>
+            <div className="w-100 h-100 d-flex justify-content-center align-items-center" style={{height: "150px"}}>
+                <div className="spinner-border m-3" style={{width: "7.5em", height: "7.5em"}} role="status">
+                    <span className="sr-only"/>
+                </div>
             </div>
         );
     } else {
