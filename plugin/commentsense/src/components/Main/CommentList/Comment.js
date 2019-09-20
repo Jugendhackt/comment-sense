@@ -57,7 +57,7 @@ function Comment(props) {
             <p className={"mb-1"}>{props.content}</p>
             <div className={"d-flex w-100 justify-content-between"}>
                 <small className={"text-muted"}>{props.creator}</small>
-                <div>
+                <div style={(props.title === "Keine Kommentare") ? {display: "none"} : null}>
                     <span id={spanId}>{props.votes}</span>
                     <img src={(props.voted) ? unlike : like} onClick={handleOnClick} id={imgId}
                          alt={(props.voted) ? props.lang.unlike : props.lang.like}/>

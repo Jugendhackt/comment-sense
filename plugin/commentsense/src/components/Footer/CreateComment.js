@@ -28,7 +28,9 @@ function CreateComment(props) {
                 .then(res => res.json())
                 .then(res => {
                     if (res.status === "comment successfully posted") {
-                        bootbox.alert(props.lang.createCommentSuccess);
+                        bootbox.alert(props.lang.createCommentSuccess, () => {
+                            window.location.reload();
+                        });
                     }
                 })
                 .catch(e => {
