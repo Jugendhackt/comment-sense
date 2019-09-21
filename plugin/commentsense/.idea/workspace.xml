@@ -16,6 +16,13 @@
   <component name="FavoritesManager">
     <favorites_list name="commentsense" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
@@ -53,7 +60,10 @@
       <updated>1568919139915</updated>
       <workItem from="1568919141020" duration="964000" />
       <workItem from="1569000275308" duration="4642000" />
-      <workItem from="1569011764132" duration="922000" />
+      <workItem from="1569011764132" duration="1711000" />
+      <workItem from="1569013576285" duration="288000" />
+      <workItem from="1569085054281" duration="236000" />
+      <workItem from="1569108364233" duration="96000" />
     </task>
     <servers />
   </component>
