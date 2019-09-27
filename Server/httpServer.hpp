@@ -57,6 +57,8 @@ struct Plugin{
 
 Plugin newPlugin(std::string name, int requestType, std::string subUrl, std::function<HttpResponse(PluginArg)> callback, std::vector<dll*> requirement, void *arg = nullptr);
 
+typedef void (*v_v_func_t)(void);
+
 enum HttpStatus_Code
 {
 	/*####### 1xx - Informational #######*/
@@ -148,12 +150,6 @@ enum HttpStatus_Code
 	HttpStatus_xxx_max = 1023
 };
 
-char HttpStatus_isInformational(int code);
-char HttpStatus_isSuccessful(int code);
-char HttpStatus_isRedirection(int code);
-char HttpStatus_isClientError(int code);
-char HttpStatus_isServerError(int code);
-char HttpStatus_isError(int code);
 const char* HttpStatus_reasonPhrase(int code);
 std::string HttpStatus_string(int code);
 const char* HttpContentType(std::string ending);
@@ -179,70 +175,72 @@ std::string decodeUrl(std::string url);
 
 class HttpServer
 {
-	public:
-		enum httpRequestType{
-			NONE = 0,
-			GET = 1,
-			PUT = 2,
-			POST = 4,
-			PATCH = 8,
-			DELETE = 16,
-			OPTIONS = 32
-		};
-		
-		enum Protocols{
-			Http = 0,
-			Https = 1
-		};
+public:
+	enum httpRequestType{
+		NONE = 0,
+		GET = 1,
+		PUT = 2,
+		POST = 4,
+		PATCH = 8,
+		DELETE = 16,
+		OPTIONS = 32
+	};
+	
+	enum Protocols{
+		Http = 0,
+		Https = 1
+	};
 
-		HttpServer(unsigned long adress = TCPSocket::Adress::Any, unsigned short port = 80);
-		~HttpServer();
+	HttpServer(unsigned long adress = TCPSocket::Adress::Any, unsigned short port = 80);
+	~HttpServer();
 
-		int getRequestType(std::string);
-		std::string httpResponsetoString(HttpResponse response);
+	int getRequestType(std::string);
+	std::string httpResponsetoString(HttpResponse response);
 
-		void addPlugin(Plugin plugin);
+	void addPlugin(Plugin plugin);
 
-		//load plugins described in json file
-		void loadPlugins(std::string fileName, void *arg);
+	//load plugins described in json file
+	void loadPlugins(std::string fileName, void *arg);
 
-		void enablePlugin(std::string name);
-		void disablePlugin(std::string name);
+	void enablePlugin(std::string name);
+	void disablePlugin(std::string name);
 
-		//loads a dll if not already loaded and returns pointer to it.
-		//if already loded returns pointer to loaded dll.
-		//loded == in this->dlls;
-		dll* loadDll(std::string name, int pluginIdx);
-		void reloadDll(std::string name);
-		void unloadDll(std::string name);
+	//loads a dll if not already loaded and returns pointer to it.
+	//if already loded returns pointer to loaded dll.
+	//loded == in this->dlls;
+	dll* loadDll(std::string name, int pluginIdx);
+	void reloadDll(std::string name);
+	void unloadDll(std::string name);
 
-		void start();
-		void httpServer();
-		void httpsServer();
-		void stop();
-		void handleClient(Client *client);
-		void showStats();
-		
-		bool isCorsEnabled();
-		void setCorsEnabled(bool value);
-		
-		bool isAcawEnabled();
-		void setAcawEnabled(bool value);
-		
-protected:
-		
+	void start();
+	void httpServer();
+	void httpsServer();
+	void stop();
+	void handleClient(Client *client);
+	void showStats();
+	
+	bool isCorsEnabled();
+	void setCorsEnabled(bool value);
+	
+	bool isAcawEnabled();
+	void setAcawEnabled(bool value);
+
+	logfile& getLog();
+	
 private:
-		TCPSocket *httpSock;
-		TLSSocket *httpsSock;
-		pthread_t stopThread;
-		std::vector<Plugin> plugins;
-		std::vector<std::pair<dll*, std::vector<int>>> libs;
-		bool corsEnabled = false;	//Cross Origin Resource Sharing
-		bool acawEnabled = false;	//Access Control Allow Methods
-		bool keepRunning = true;
-		int lastIndex = 0;
-		int clients = 0;
-		std::time_t startTime;
+	TCPSocket *httpSock;
+	TLSSocket *httpsSock;
+	pthread_t stopThread;
+	std::vector<Plugin> plugins;
+	std::vector<std::pair<dll*, std::vector<int>>> libs;
+	bool corsEnabled = false;	//Cross Origin Resource Sharing
+	bool acawEnabled = false;	//Access Control Allow Methods
+	bool keepRunning = true;
+	int lastIndex = 0;
+	int clients = 0;
+	std::time_t startTime;
+
+	logfile serverlog;
 };
 
 #endif // HTTPSERVER_H

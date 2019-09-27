@@ -15,10 +15,12 @@
 
 #include <vector>
 #include <string>
+#include <ctime>
 #include <iostream>
 #include <algorithm>
 #include <functional>
 #include <sstream>
+#include <fstream>
 
 #include "sqlite3.h"
 #include "cJSON.h"
@@ -40,7 +42,7 @@
 std::vector<std::string> split(const std::string& s, char delimiter);
 std::vector<std::string> split(const std::string& str, std::string delimiter);
 std::string removeAll(std::string str, std::string chars);
-std::string stringToHex(std::string str);
+std::string stringToHex(std::string str, bool space = false);
 std::string stringFromHex(std::string hex);
 
 std::string getDate();
@@ -56,6 +58,8 @@ namespace sys {
 
 	void init();
 	int parseLine(char *line);
+
+	std::string getTimeStr();
 }
 
 class File{
@@ -153,7 +157,32 @@ private:
 };
 
 
+class logfile{
+public:
+	logfile(std::string fileName, std::string name);
+	~logfile();
+	logfile& operator<<(std::string str);
+private:
+	std::ofstream f;
+	std::string name;
+};
 
+template<typename T>
+T adder(T v){
+	return v;
+}
+
+template<typename T, typename... Args>
+std::string adder(T first, Args... args){
+	std::stringstream ss;
+	ss<<first<<adder(args...);
+	return ss.str();
+}
+
+template<typename... Args>
+void log(logfile& log, Args... args){
+	log<<adder(args...);
+}
 
 void init() __attribute__((constructor));
 

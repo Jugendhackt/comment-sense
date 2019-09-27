@@ -1,93 +1,84 @@
 #include "httpServer.hpp"
- 
-char HttpStatus_isInformational(int code) { return (code >= 100 && code < 200); } /*!< \returns \c true if the given \p code is an informational code. */
-char HttpStatus_isSuccessful(int code)    { return (code >= 200 && code < 300); } /*!< \returns \c true if the given \p code is a successful code. */
-char HttpStatus_isRedirection(int code)   { return (code >= 300 && code < 400); } /*!< \returns \c true if the given \p code is a redirectional code. */
-char HttpStatus_isClientError(int code)   { return (code >= 400 && code < 500); } /*!< \returns \c true if the given \p code is a client error code. */
-char HttpStatus_isServerError(int code)   { return (code >= 500 && code < 600); } /*!< \returns \c true if the given \p code is a server error code. */
-char HttpStatus_isError(int code)         { return (code >= 400); }               /*!< \returns \c true if the given \p code is any type of error code. */
 
 /*! Returns the standard HTTP reason phrase for a HTTP status code.
  * \param code An HTTP status code.
  * \return The standard HTTP reason phrase for the given \p code or \c NULL if no standard
  * phrase for the given \p code is known.
  */
-const char* HttpStatus_reasonPhrase(int code)
-{
-		switch (code)
-		{
-				/*####### 1xx - Informational #######*/
-				case 100: return "Continue";
-				case 101: return "Switching Protocols";
-				case 102: return "Processing";
-				case 103: return "Early Hints";
+const char* HttpStatus_reasonPhrase(int code){
+	switch (code){
+		/*####### 1xx - Informational #######*/
+		case 100: return "Continue";
+		case 101: return "Switching Protocols";
+		case 102: return "Processing";
+		case 103: return "Early Hints";
 
-				/*####### 2xx - Successful #######*/
-				case 200: return "OK";
-				case 201: return "Created";
-				case 202: return "Accepted";
-				case 203: return "Non-Authoritative Information";
-				case 204: return "No Content";
-				case 205: return "Reset Content";
-				case 206: return "Partial Content";
-				case 207: return "Multi-Status";
-				case 208: return "Already Reported";
-				case 226: return "IM Used";
+		/*####### 2xx - Successful #######*/
+		case 200: return "OK";
+		case 201: return "Created";
+		case 202: return "Accepted";
+		case 203: return "Non-Authoritative Information";
+		case 204: return "No Content";
+		case 205: return "Reset Content";
+		case 206: return "Partial Content";
+		case 207: return "Multi-Status";
+		case 208: return "Already Reported";
+		case 226: return "IM Used";
 
-				/*####### 3xx - Redirection #######*/
-				case 300: return "Multiple Choices";
-				case 301: return "Moved Permanently";
-				case 302: return "Found";
-				case 303: return "See Other";
-				case 304: return "Not Modified";
-				case 305: return "Use Proxy";
-				case 307: return "Temporary Redirect";
-				case 308: return "Permanent Redirect";
+		/*####### 3xx - Redirection #######*/
+		case 300: return "Multiple Choices";
+		case 301: return "Moved Permanently";
+		case 302: return "Found";
+		case 303: return "See Other";
+		case 304: return "Not Modified";
+		case 305: return "Use Proxy";
+		case 307: return "Temporary Redirect";
+		case 308: return "Permanent Redirect";
 
-				/*####### 4xx - Client Error #######*/
-				case 400: return "Bad Request";
-				case 401: return "Unauthorized";
-				case 402: return "Payment Required";
-				case 403: return "Forbidden";
-				case 404: return "Not Found";
-				case 405: return "Method Not Allowed";
-				case 406: return "Not Acceptable";
-				case 407: return "Proxy Authentication Required";
-				case 408: return "Request Timeout";
-				case 409: return "Conflict";
-				case 410: return "Gone";
-				case 411: return "Length Required";
-				case 412: return "Precondition Failed";
-				case 413: return "Payload Too Large";
-				case 414: return "URI Too Long";
-				case 415: return "Unsupported Media Type";
-				case 416: return "Range Not Satisfiable";
-				case 417: return "Expectation Failed";
-				case 418: return "I'm a teapot";
-				case 422: return "Unprocessable Entity";
-				case 423: return "Locked";
-				case 424: return "Failed Dependency";
-				case 426: return "Upgrade Required";
-				case 428: return "Precondition Required";
-				case 429: return "Too Many Requests";
-				case 431: return "Request Header Fields Too Large";
-				case 451: return "Unavailable For Legal Reasons";
+		/*####### 4xx - Client Error #######*/
+		case 400: return "Bad Request";
+		case 401: return "Unauthorized";
+		case 402: return "Payment Required";
+		case 403: return "Forbidden";
+		case 404: return "Not Found";
+		case 405: return "Method Not Allowed";
+		case 406: return "Not Acceptable";
+		case 407: return "Proxy Authentication Required";
+		case 408: return "Request Timeout";
+		case 409: return "Conflict";
+		case 410: return "Gone";
+		case 411: return "Length Required";
+		case 412: return "Precondition Failed";
+		case 413: return "Payload Too Large";
+		case 414: return "URI Too Long";
+		case 415: return "Unsupported Media Type";
+		case 416: return "Range Not Satisfiable";
+		case 417: return "Expectation Failed";
+		case 418: return "I'm a teapot";
+		case 422: return "Unprocessable Entity";
+		case 423: return "Locked";
+		case 424: return "Failed Dependency";
+		case 426: return "Upgrade Required";
+		case 428: return "Precondition Required";
+		case 429: return "Too Many Requests";
+		case 431: return "Request Header Fields Too Large";
+		case 451: return "Unavailable For Legal Reasons";
 
-				/*####### 5xx - Server Error #######*/
-				case 500: return "Internal Server Error";
-				case 501: return "Not Implemented";
-				case 502: return "Bad Gateway";
-				case 503: return "Service Unavailable";
-				case 504: return "Gateway Time-out";
-				case 505: return "HTTP Version Not Supported";
-				case 506: return "Variant Also Negotiates";
-				case 507: return "Insufficient Storage";
-				case 508: return "Loop Detected";
-				case 510: return "Not Extended";
-				case 511: return "Network Authentication Required";
+		/*####### 5xx - Server Error #######*/
+		case 500: return "Internal Server Error";
+		case 501: return "Not Implemented";
+		case 502: return "Bad Gateway";
+		case 503: return "Service Unavailable";
+		case 504: return "Gateway Time-out";
+		case 505: return "HTTP Version Not Supported";
+		case 506: return "Variant Also Negotiates";
+		case 507: return "Insufficient Storage";
+		case 508: return "Loop Detected";
+		case 510: return "Not Extended";
+		case 511: return "Network Authentication Required";
 
-				default: return "";
-		}
+		default: return "";
+	}
 }
 
 HttpResponse defaultCallback(PluginArg arg){
@@ -132,23 +123,22 @@ const char* HttpContentType(std::string ending){
 		return "text/plain";
 }
 
-std::string getDir(std::string dir)
-{
-		std::vector<std::string> entrys = getDirContent(dir);
-		std::stringstream html;
-		for(std::string entry : entrys){
-				if(entry == ".")
-						html<<"<a href=\""<<"/"<<dir<<"\">"<<entry<<"</a><br>";
-				else if(entry == ".."){
-						std::string parent = dir;
-						while(parent.back() != '/' && parent.size())
-								parent.pop_back();
-						html<<"<a href=\""<<"/"<<parent<<"\">"<<entry<<"</a><br>";
-				}
-				else
-						html<<"<a href=\""<<"/"<<dir<<"/"<<entry<<"\">"<<entry<<"</a><br>";
+std::string getDir(std::string dir){
+	std::vector<std::string> entrys = getDirContent(dir);
+	std::stringstream html;
+	for(std::string entry : entrys){
+		if(entry == ".")
+			html<<"<a href=\""<<"/"<<dir<<"\">"<<entry<<"</a><br>";
+		else if(entry == ".."){
+			std::string parent = dir;
+			while(parent.back() != '/' && parent.size())
+				parent.pop_back();
+			html<<"<a href=\""<<"/"<<parent<<"\">"<<entry<<"</a><br>";
 		}
-		return html.str();
+		else
+			html<<"<a href=\""<<"/"<<dir<<"/"<<entry<<"\">"<<entry<<"</a><br>";
+	}
+	return html.str();
 }
 
 void getBigFile(File *file, TCPSocket *socket, HttpServer *server){
@@ -187,36 +177,36 @@ HttpResponse defaultGet(PluginArg arg){
 	if(url.size() == 0)
 		url = "index.html";
 		if(url.rfind("data") > 0)
-				url.insert(0, "data/");
+			url.insert(0, "data/");
 		if(url.back() == '/')
-				url.pop_back();
+			url.pop_back();
 	File file(url);
 	std::string content, type;
 	int status;
 		if(file.isDir()){
-				content = getDir(url);
-				type = "text/html";
-				status = HttpStatus_OK;
+			content = getDir(url);
+			type = "text/html";
+			status = HttpStatus_OK;
 		}
 		else{
-				if(file.open("rb")){
-						if(file.size() > 1024*1024){
-								getBigFile(&file, arg.client->socket, arg.server);
-								content = "";
-								status = -1;
-						}
-						else{
-								content = file.readAll();
-								status = HttpStatus_OK;
-						}
-						type = HttpContentType(split(url, '.').back());
-						file.close();
+			if(file.open("rb")){
+				if(file.size() > 1024*1024){
+					getBigFile(&file, arg.client->socket, arg.server);
+					content = "";
+					status = -1;
 				}
 				else{
-						content = "Error: File not found";
-						type = "text/plain";
-						status = HttpStatus_NotFound;
+					content = file.readAll();
+					status = HttpStatus_OK;
 				}
+				type = HttpContentType(split(url, '.').back());
+				file.close();
+			}
+			else{
+				content = "Error: File not found";
+				type = "text/plain";
+				status = HttpStatus_NotFound;
+			}
 		}
 	return {status, type, content};
 }
@@ -263,15 +253,14 @@ void* handleClient(void *data){
 	client->server->handleClient(client);
 	client->socket->disconnect();
 #if defined(DEBUG)
-		std::cerr<<"client "<<client->index<<": disconnected"<<"\n";
+	log(client->server->getLog(), "client ", client->index, ": disconnected");
 #endif
 	delete client->socket;
 	delete client;
-		pthread_exit(nullptr);
+	pthread_exit(nullptr);
 }
 
-void *console(void *data)
-{
+void *console(void *data){
 	HttpServer *server = reinterpret_cast<HttpServer*>(data);
 	std::string input;
 	std::cout<<">";
@@ -333,7 +322,6 @@ void *console(void *data)
 	return nullptr;
 }
 
-
 void* httpServer(void *data){
 	HttpServer *server = reinterpret_cast<HttpServer*>(data);
 	server->httpServer();
@@ -368,13 +356,14 @@ std::string decodeUrl(std::string url){
 	return decoded.data();
 }
 
-HttpServer::HttpServer(unsigned long adress, unsigned short port)
+HttpServer::HttpServer(unsigned long adress, unsigned short port) :
+	serverlog("./serverlog.txt", "server")
 {
-		httpSock = new TCPSocket(AF_INET, SOCK_STREAM, 0);
-		httpSock->bind(adress, port);
+	httpSock = new TCPSocket(AF_INET, SOCK_STREAM, 0);
+	httpSock->bind(adress, port);
 	
 	httpsSock = new TLSSocket(AF_INET, SOCK_STREAM, 0);
-		httpsSock->bind(adress, 443);
+	httpsSock->bind(adress, 443);
 
 	addPlugin(newPlugin("default get", GET, "/", defaultGet, {}));
 	addPlugin(newPlugin("default put", PUT, "/", defaultPut, {}));
@@ -386,8 +375,7 @@ HttpServer::HttpServer(unsigned long adress, unsigned short port)
 	std::cout<<"server initialized\n";
 }
 
-HttpServer::~HttpServer()
-{
+HttpServer::~HttpServer(){
 	delete httpSock;
 	delete httpsSock;
 	std::cout<<"server stopped\n";
@@ -443,19 +431,6 @@ inline std::string getValueString(cJSON *object, const char *name){
 	return std::string("");
 }
 
-inline int stringToMethod(std::string method){
-	if(method == "GET")
-		return HttpServer::GET;
-	if(method == "PUT")
-		return HttpServer::PUT;
-	if(method == "POST")
-		return HttpServer::POST;
-	if(method == "PATCH")
-		return HttpServer::PATCH;
-	if(method == "DELETE")
-		return HttpServer::DELETE;
-}
-
 void HttpServer::loadPlugins(std::string fileName, void *arg){
 	std::string data = File::readAll(fileName);
 	cJSON *json = cJSON_Parse(data.c_str());
@@ -477,11 +452,9 @@ void HttpServer::loadPlugins(std::string fileName, void *arg){
 		dll *lib = loadDll(libname, plugins.size());
 		req.push_back(lib);
 		std::function<HttpResponse(PluginArg)> f = lib->get<pfunc_t>(func);
-		addPlugin(newPlugin(name, stringToMethod(method), suburl, f, req, arg));
+		addPlugin(newPlugin(name, getRequestType(method), suburl, f, req, arg));
 	}
 }
-
-typedef void (*v_v_func_t)(void);
 
 dll* HttpServer::loadDll(std::string name, int pluginIdx){
 	for(std::pair<dll*, std::vector<int>> &e : libs){
@@ -555,7 +528,7 @@ void HttpServer::start(){
 	std::sort(plugins.begin(), plugins.end(), comparePlugin);
 	std::cout<<"loaded Plugins: \n";
 	for(Plugin p : plugins){
-		std::cout<<"\t"<<p.name<<"\t :  \""<<p.subUrl<<"\"\n";
+		std::cout<<"    "<<p.name<<"    :  \""<<p.subUrl<<"\"\n";
 	}
 	//start server
 	startTime = std::time(nullptr);
@@ -570,17 +543,16 @@ void HttpServer::start(){
 	pthread_join(stopThread, nullptr);
 }
 
-void HttpServer::httpServer()
-{
+void HttpServer::httpServer(){
 	httpSock->listen();
-		std::cout<<"http server running\n";
-		while(keepRunning){
+	std::cout<<"http server running\n";
+	while(keepRunning){
 		Client *client = new Client;
 		client->server = this;
 		client->socket = httpSock->accept();
-				client->index = lastIndex++;
+		client->index = lastIndex++;
 #if defined(DEBUG)
-		std::cerr<<"client "<<client->index<<": connected (http)\n";
+		log(serverlog, "client ", client->index, ": connected (http)");
 #endif
 		pthread_create(&client->thread, nullptr, ::handleClient, client);
 		pthread_detach(client->thread);
@@ -588,8 +560,7 @@ void HttpServer::httpServer()
 	std::cout<<"http server stopped\n";
 }
 
-void HttpServer::httpsServer()
-{
+void HttpServer::httpsServer(){
 	httpsSock->listen();
 	std::cout<<"https server running\n";
 	while(keepRunning){
@@ -600,7 +571,7 @@ void HttpServer::httpsServer()
 			continue;
 		client->index = lastIndex++;
 #if defined(DEBUG)
-		std::cerr<<"client "<<client->index<<": connected (https)\n";
+		log(serverlog, "client ", client->index, ": connected (https)");
 #endif
 		pthread_create(&client->thread, nullptr, ::handleClient, client);
 		pthread_detach(client->thread);
@@ -608,10 +579,9 @@ void HttpServer::httpsServer()
 	std::cout<<"https server stopped\n";
 }
 
-void HttpServer::stop()
-{
+void HttpServer::stop(){
 #if defined(DEBUG)
-	std::cerr<<"stopping server\n";
+	log(serverlog, "stopping server");
 #endif
 	keepRunning = false;
 	TCPSocket *http = new TCPSocket(AF_INET, SOCK_STREAM, 0);
@@ -627,14 +597,14 @@ void HttpServer::stop()
 void HttpServer::handleClient(Client *client){
 	clients += 1;
 #if defined(DEBUG)
-	std::cerr<<"client "<<client->index<<": gets handled\n";
+	log(serverlog, "client ", client->index, ": gets handled");
 #endif
 	TCPSocket *socket = client->socket;
 	std::vector<std::string> header = socket->recvHeader();
 #if defined(DEBUG)
-	std::cerr<<"client "<<client->index<<": header:\n";
+	log(serverlog, "client ", client->index, ": header:");
 	for(std::string line : header){
-		std::cerr<<"client "<<client->index<<":\t"<<line<<"\n";
+		log(serverlog, "client ", client->index, ":     ", line);
 	}
 #endif
 	HttpResponse response = {404,"text/plain","Error: Not found"};
@@ -658,7 +628,7 @@ void HttpServer::handleClient(Client *client){
 				continue;
 			if(url.rfind(p.subUrl, 0) == 0){
 #if defined(DEBUG)
-				std::cerr<<"client "<<client->index<<": calling plugin \'"<<p.name<<"\'\n";
+				log(serverlog, "client ", client->index, ": calling plugin \'", p.name, "\'");
 #endif
 				arg.arg = p.arg;
 				response = p.callback(arg);
@@ -669,18 +639,17 @@ void HttpServer::handleClient(Client *client){
 #if defined(DEBUG)
 	std::string headerStr = split(httpResponsetoString(response), "\n\n")[0];
 	header = split(headerStr, '\n');
-	std::cerr<<"client "<<client->index<<": sending response\n";
-	std::cerr<<"client "<<client->index<<": header:\n";
+	log(serverlog, "client ", client->index, ": sending response");
+	log(serverlog, "client ", client->index, ": header:");
 	for(std::string line : header){
-		std::cerr<<"client "<<client->index<<":\t"<<line<<"\n";
+		log(serverlog, "client ", client->index, ":    ", line);
 	}
 #endif
 	socket->send(httpResponsetoString(response));
 	clients -= 1;
 }
 
-void HttpServer::showStats()
-{
+void HttpServer::showStats(){
 	std::cout<<clients<<" client(s) connected\n";
 	std::time_t tmp = startTime;
 	std::cout<<"running since "<<std::asctime(std::localtime(&tmp));
@@ -697,22 +666,22 @@ void HttpServer::showStats()
 	std::cout<<"current cpu usage: "<<sys::getCpuUsage()<<"%\n";
 }
 
-bool HttpServer::isCorsEnabled()
-{
+bool HttpServer::isCorsEnabled(){
 	return corsEnabled;
 }
 
-void HttpServer::setCorsEnabled(bool value)
-{
+void HttpServer::setCorsEnabled(bool value){
 	corsEnabled = value;
 }
 
-bool HttpServer::isAcawEnabled()
-{
+bool HttpServer::isAcawEnabled(){
 	return acawEnabled;
 }
 
-void HttpServer::setAcawEnabled(bool value)
-{
+void HttpServer::setAcawEnabled(bool value){
 	acawEnabled = value;
+}
+
+logfile& HttpServer::getLog(){
+	return serverlog;
 }

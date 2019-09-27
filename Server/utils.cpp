@@ -35,8 +35,8 @@ std::string removeAll(std::string str, std::string chars){
 	return result;
 }
 
-std::string stringToHex(std::string str){
-	std::string hex(str.size()*2, '\0');
+std::string stringToHex(std::string str, bool space){
+	std::string hex(str.size()*(2+space)-space, ' ');
 	for(unsigned int i = 0; i < str.size(); i++){
 		unsigned char c = static_cast<unsigned char>(str[i]);
 		unsigned char higher = c>>4;
@@ -44,8 +44,8 @@ std::string stringToHex(std::string str){
 		lower >>= 4;
 		higher += higher > 9 ? 7 : 0;
 		lower += lower > 9 ? 7 : 0;
-		hex[i*2] = char(higher+48);
-		hex[i*2+1] = char(lower+48);
+		hex[i*(2+space)] = char(higher+48);
+		hex[i*(2+space)+1] = char(lower+48);
 	}
 	return hex;
 }
@@ -213,6 +213,17 @@ namespace sys {
 		line[i-3] = '\0';
 		i = atoi(p);
 		return i;
+	}
+	
+	std::string getTimeStr(){
+		time_t rawtime;
+		std::string result(128, '\0');
+
+		time(&rawtime);
+		struct tm *timeinfo = localtime(&rawtime);
+
+		strftime(&result[0], result.length(), "%d.%m.%Y %H:%M:%S\0", timeinfo);
+		return result.c_str();
 	}
 }
 
@@ -526,6 +537,18 @@ void dll::close(){
 		dlclose(handle);
 		m_open = false;
 	}
+}
+
+logfile::logfile(std::string fileName, std::string name): f(fileName){
+	this->name = name;
+}
+logfile::~logfile(){
+	f.close();
+}
+logfile& logfile::operator<<(std::string str){
+	f<<"["<<sys::getTimeStr()<<"]["<<name<<"]\t\""<<str<<"\" || \""<<stringToHex(str, true)<<"\"\n";
+	f.flush();
+	return *this;
 }
 
 void init(){
