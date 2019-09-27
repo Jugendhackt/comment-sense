@@ -40,15 +40,11 @@ buildPlugin () {
 }
 
 loadData () {
-	if [ -d data ]; then
-		rm data -r
+	echo "copying data folder"
+	if ! [ -d data ]; then
+		mkdir data
+		cp ../MainSite/* data/ -r
 	fi
-	mkdir data
-	cp ../MainSite/* data/ -r
-
-	ipAdress=($(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'))
-	echo "private ip adress is '$ipAdress'"
-	sed -i -- "s/const ipAdress = here;/const ipAdress = \"$ipAdress\"/g" ./data/JS/*.js
 }
 
 rebuild=0, start=0
@@ -111,7 +107,6 @@ g++ main.cpp $link -o server $libs $options -Wall $defines $args -static-libstdc
 g++ build/cJSON.o build/tlse.o build/tcpSocket.o build/tlsSocket.o build/sqlite3.o build/utils.o build/httpServer.o \
 		-std=c++11 -shared -fPIC -o build/default.so -lpthread -ldl  -Wl,-soname=default.so -static-libstdc++ -static-libgcc -Wl,-static
 
-echo "copying data folder"
 loadData ;
 
 echo "done"
