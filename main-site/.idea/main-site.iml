@@ -4,7 +4,6 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="MainSite" />
-    <orderEntry type="module" module-name="EssensManager" />
+    <orderEntry type="module" module-name="commentsense" />
   </component>
 </module>

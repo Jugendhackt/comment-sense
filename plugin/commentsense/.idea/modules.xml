@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../../EssensManager/.idea/EssensManager.iml" filepath="$PROJECT_DIR$/../../../EssensManager/.idea/EssensManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../MainSite/.idea/MainSite.iml" filepath="$PROJECT_DIR$/../../MainSite/.idea/MainSite.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/commentsense.iml" filepath="$PROJECT_DIR$/.idea/commentsense.iml" />
     </modules>
   </component>

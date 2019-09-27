@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4db61257-f4c2-4575-8bf5-29838f2c765b" name="Default Changelist" comment="" />
+    <list default="true" id="6d0d2928-a915-4346-8912-49cb6749d526" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,28 +13,46 @@
       <executable />
     </execution>
   </component>
-  <component name="FavoritesManager">
-    <favorites_list name="commentsense" />
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="CSS File" />
         <option value="JavaScript File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../EssensManager" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1R4GpmThMP2sNfXxqxEDC1HeCk1" />
+  <component name="ProjectId" id="1RASe3MxrBXrqg1RUeB6wxwJN35" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../EssensManager" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../plugin/commentsense" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\John Cena\Documents\Github\comment-sense\main-site\src\style" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -53,18 +71,13 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="4db61257-f4c2-4575-8bf5-29838f2c765b" name="Default Changelist" comment="" />
-      <created>1568919139915</created>
+      <changelist id="6d0d2928-a915-4346-8912-49cb6749d526" name="Default Changelist" comment="" />
+      <created>1569108498945</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1568919139915</updated>
-      <workItem from="1568919141020" duration="964000" />
-      <workItem from="1569000275308" duration="4642000" />
-      <workItem from="1569011764132" duration="1711000" />
-      <workItem from="1569013576285" duration="288000" />
-      <workItem from="1569085054281" duration="236000" />
-      <workItem from="1569108364233" duration="135000" />
-      <workItem from="1569108719667" duration="1111000" />
+      <updated>1569108498945</updated>
+      <workItem from="1569108500015" duration="1312000" />
+      <workItem from="1569251375891" duration="1919000" />
     </task>
     <servers />
   </component>
@@ -85,8 +98,9 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="LIMIT_HISTORY" value="false" />
     <ignored-roots>
-      <path value="$PROJECT_DIR$/../.." />
+      <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
   </component>
 </project>
