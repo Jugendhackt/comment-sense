@@ -12,30 +12,34 @@ checkRequirement () {
 	fi
 }
 
-buildCLib () {
-	if [ "$1.c" -nt "build/$1.o" ] || [ "$1.h" -nt "build/$1.o" ] || [ "$2" == "1" ]; then
-		echo "building lib    '$1'"
-		if ! gcc -c $1.c $3 -fPIC -o build/$1.o; then
-			exit -1;
+compileLib () {
+	echo "compiling '$1'"
+	if [ -f "$1.c" ]; then
+		if [ "$1.c" -nt "build/$1.o" ] || [ "$1.h" -nt "build/$1.o" ] || [ "$2" == "1" ]; then
+			if ! gcc -c $1.c $3 -fPIC -o build/$1.o -Wall; then
+				exit -1;
+			fi
+		fi
+	else
+		if [ "$1.cpp" -nt "build/$1.o" ] || [ "$1.hpp" -nt "build/$1.o" ] || [ "$2" == "1" ]; then
+			if ! g++ -c $1.cpp $3 -fPIC -o build/$1.o -Wall -std=c++11; then
+				exit -1;
+			fi
 		fi
 	fi
 }
 
-buildCppLib () {
-	if [ "$1.cpp" -nt "build/$1.o" ] || [ "$1.hpp" -nt "build/$1.o" ] || [ "$2" == "1" ]; then
-		echo "building lib    '$1'"
-		if ! g++ -c $1.cpp $3 -std=c++11 -fPIC -o build/$1.o; then
-			exit -1;
-		fi
-	fi
+linkLibs() {
+	echo "linking   '$1' to '$2'"
+	if ! ld -relocatable $1 -o build/$2; then
+		exit -1;
+	fi	
 }
-
-buildPlugin () {
-	if [ "build/$1.o" -nt "build/$1.so" ] || [ "$2" == "1" ]; then
-		echo "building plugin '$1'"
-		if ! g++ build/$1.o -shared -fPIC -o build/$1.so $3 -Wl,-soname=$1.so -static-libstdc++ -static-libgcc -Wl,-static; then
-			exit -1;
-		fi
+ 
+linkDll () {
+	echo "linking   '$1'"
+	if ! g++ -shared build/$1.o -o build/$1.so $2 -Wl,-soname=./$1.so -Wl,-static -static-libstdc++ -static-libgcc; then
+		exit -1;
 	fi
 }
 
@@ -53,7 +57,6 @@ defines="-D TLS_AMALGAMATION"
 options=""
 libs='-lpthread -ldl'
 staticLibs='-static-libstdc++ -static-libgcc -static'
-link='build/cJSON.o build/tlse.o build/tcpSocket.o build/tlsSocket.o build/sqlite3.o build/utils.o build/httpServer.o'
 args='-std=c++11 -Wall'
 
 for i in "$@"
@@ -85,27 +88,36 @@ mkdir build;
 mkdir resources;
 
 echo "starting build (target = $target)"
-buildCLib   "cJSON" $rebuild "$options $defines";
-buildPlugin "cJSON" $rebuild "$options $defines";
-buildCLib	"tlse" $rebuild "$options $defines";
-buildPlugin "tlse" $rebuild "$options $defines";
-buildCppLib "tcpSocket" $rebuild "$options $defines";
-buildPlugin "tcpSocket" $rebuild "$options $defines";
-buildCppLib "tlsSocket" $rebuild "$options $defines";
-buildPlugin "tlsSocket" $rebuild "$options $defines";
-buildCLib   "sqlite3" $rebuild "$options $defines";
-buildPlugin "sqlite3" $rebuild "$options $defines";
-buildCppLib "utils" $rebuild "$options $defines";
-buildPlugin "utils" $rebuild "$options $defines";
-buildCppLib "httpServer" $rebuild "$options $defines";
-buildPlugin "httpServer" $rebuild "$options $defines";
-buildCppLib "commentSense" $rebuild "$options $defines";
-buildPlugin "commentSense" $rebuild "$options $defines";
+
+compileLib "tlse" $rebuild "$options $defines";
+compileLib "cJSON" $rebuild "$options $defines";
+compileLib "sqlite3" $rebuild "$options $defines";
+
+compileLib "utils" $rebuild "$options $defines";
+compileLib "tcpSocket" $rebuild "$options $defines";
+compileLib "tlsSocket" $rebuild "$options $defines";
+compileLib "httpServer" $rebuild "$options $defines";
+compileLib "commentSense" $rebuild "$options $defines";
+
+#linkDll "tlse" "$options $defines";
+#linkDll "cJSON" "$options $defines";
+#linkDll "sqlite3" "$options $defines";
+
+#linkDll "utils" "$options $defines";
+#linkDll "tcpSocket" "$options $defines";
+#linkDll "tlsSocket" "$options $defines";
+#linkDll "httpServer" "$options $defines";
+
+linkLibs "build/cJSON.o build/tlse.o build/tcpSocket.o build/tlsSocket.o build/sqlite3.o build/utils.o build/httpServer.o" "default.o"
+
+linkDll "default" "$options $defines";
+linkDll "commentSense" "$options $defines build/default.so";
+
+cp build/default.so ./default.so
+cp build/commentSense.so ./commentSense.so
 
 echo "building server"
-g++ main.cpp $link -o server $libs $options -Wall $defines $args -static-libstdc++ -static-libgcc
-g++ build/cJSON.o build/tlse.o build/tcpSocket.o build/tlsSocket.o build/sqlite3.o build/utils.o build/httpServer.o \
-		-std=c++11 -shared -fPIC -o build/default.so -lpthread -ldl  -Wl,-soname=default.so -static-libstdc++ -static-libgcc -Wl,-static
+g++ main.cpp build/default.so -o server $libs $options -Wall $defines $args -static-libstdc++ -static-libgcc
 
 loadData ;
 

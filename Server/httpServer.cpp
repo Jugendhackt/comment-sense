@@ -151,12 +151,13 @@ void getBigFile(File *file, TCPSocket *socket, HttpServer *server){
 	std::cout<<"sending "<<chunks<<" chunks of size "<<chunk<<"bytes and "<<rest<<" bytes\n";
 #endif
 	std::stringstream ss;
+	
 	ss<<"HTTP/1.1 "<<HttpStatus_string(HttpStatus_OK)<<"\n";
 	if(server->isCorsEnabled())
 		ss<<"Access-Control-Allow-Origin:*\n";
 	if(server->isAcawEnabled())
 		ss<<"Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS\n"
-		<<"Access-Control-Allow-Headers: *\n";
+			"Access-Control-Allow-Headers: *\n";
 	ss<<"Content-Type:"<<"text/plain"<<"\n";
 	ss<<"Content-Length:"<<size<<"\n\n";
 	socket->send(ss.str());
@@ -176,10 +177,10 @@ HttpResponse defaultGet(PluginArg arg){
 		url.erase(0,1);
 	if(url.size() == 0)
 		url = "index.html";
-		if(url.rfind("data") > 0)
-			url.insert(0, "data/");
-		if(url.back() == '/')
-			url.pop_back();
+	if(url.rfind("data") > 0)
+		url.insert(0, "data/");
+	if(url.back() == '/')
+		url.pop_back();
 	File file(url);
 	std::string content, type;
 	int status;
