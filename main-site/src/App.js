@@ -1,31 +1,24 @@
 import React from 'react';
-import {BrowserRouter as Router} from "react-router-dom";
-import Header from "./components/Header/Header";
+import { BrowserRouter as Router } from "react-router-dom";
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from "../src/ui/theme/index";
 
-import langDe from "./lang/langDe";
-import Main from "./components/Main/Main";
+import { Header } from "./components/Header/index";
+import { Pages } from "./pages/Routes";
 
-const lang = navigator.language;
-
-function getLanguage() {
-    switch (lang) {
-        case "de-DE":
-        case "DE-de":
-        case "de":
-            return langDe;
-
-        default:
-            return langDe;
-    }
-}
 
 function App() {
-    return (
+
+  return (
+    <div>
+      <ThemeProvider theme={theme}>
         <Router>
-            <Header lang={getLanguage()}/>
-            <Main lang={getLanguage()}/>
+          <Header />
+          <Pages />
         </Router>
-    );
+      </ThemeProvider>
+    </div>
+  );
 }
 
 export default App;
