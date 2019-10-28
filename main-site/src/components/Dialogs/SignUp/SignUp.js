@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button, Typography } from "@material-ui/core";
+import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
-import { langDe, ipAddress } from "../../constants";
+import { langDe, ipAddress } from "../../../constants";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -31,20 +31,28 @@ function SignUp(props) {
 
     const sendData = () => {
         /*body muss noch gemacht werden */
-
-        fetch(`${ipAddress}/users/create/`, {
-            method: "POST"
-        })
-            .then(res => {
-                if (res.ok)
-                    return res.json()
+        if (username && password) {
+            fetch(`${ipAddress}/users/create/`, {
+                method: "POST",
+                body: JSON.stringify({
+                    userName: username,
+                    password: password,
+                    email: (email) ? email : null
+                })
             })
-            .then(res => {
-                console.log(res);
-            })
-
+                .then(res => {
+                    if (res.ok)
+                        return res.json()
+                })
+                .then(res => {
+                    console.log(res);
+                    if (res.status === "user created") {
+                        console.log("success");
+                    }
+                })
+        }
     };
-
+    
     return (
         <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}>
             <DialogTitle>{langDe.signUp}</DialogTitle>

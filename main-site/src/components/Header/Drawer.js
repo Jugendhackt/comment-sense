@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { SwipeableDrawer, makeStyles, ListItem, Typography, List, Divider, Link, ListItemText, ListItemIcon, Button } from "@material-ui/core";
+import { SwipeableDrawer, makeStyles, ListItem, Typography, List, Divider, Link, ListItemText, ListItemIcon } from "@material-ui/core";
 import { langDe } from "../../constants";
 import { Home, Person, PersonAdd } from "@material-ui/icons";
 
-import { SignUp } from "../SignUp/index";
-import { SignIn } from "../SignIn/index";
+import { SignUp } from "../Dialogs/SignUp/index";
+import { SignIn } from "../Dialogs/SignIn/index";
 
 const useStyles = makeStyles(theme => ({
     list: {

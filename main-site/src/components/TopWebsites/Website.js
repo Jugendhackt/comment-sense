@@ -1,5 +1,5 @@
 import React from "react";
-import { ListItem, ListItemText, Typography, Link, Button, makeStyles, Paper, ListItemIcon, Box } from "@material-ui/core";
+import { ListItem, ListItemText, Typography, Link, Button, makeStyles, Paper, Box } from "@material-ui/core";
 import { langDe } from "../../constants";
 import { ThumbUp } from "@material-ui/icons";
 
@@ -16,12 +16,7 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1),
         padding: "5%"
     },
-    box: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignContent: "center"
-    },
-    text:{
+    text: {
         marginLeft: theme.spacing(1)
     }
 }));
@@ -44,15 +39,13 @@ function Website(props) {
                 <Paper className={classes.paper}>
                     <Typography variant="h5">{showTitle()}</Typography>
                     <br />
-                    <Box className={classes.box}>
-                        <ListItemIcon>
-                            <ThumbUp color="secondary"/>
-                            <ListItemText primary={props.count} className={classes.text} />
-                        </ListItemIcon>
-                        <Link color="inherit" href={props.url}>
-                            <Button color="primary" variant="contained">{langDe.toWebsite}</Button>
-                        </Link>
+                    <Box display="flex">
+                        <ThumbUp color="secondary" />
+                        <ListItemText primary={props.count} className={classes.text} />
                     </Box>
+                    <Link color="inherit" href={props.url}>
+                        <Button color="primary" variant="contained">{langDe.toWebsite}</Button>
+                    </Link>
                 </Paper>
             </ListItem>
         </>

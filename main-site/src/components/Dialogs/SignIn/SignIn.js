@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
-import { langDe, ipAddress } from "../../constants";
+import { langDe, ipAddress } from "../../../constants";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -31,15 +31,22 @@ function SignIn(props) {
 
 
     const sendData = () => {
-        fetch(`${ipAddress}/users/login`, {
-            method: "POST"
+        fetch(`${ipAddress}/users/login/`, {
+            method: "POST",
+            body: JSON.stringify({
+                userName: username,
+                password: password
+            })
         })
             .then(res => {
                 if (res.ok)
                     return res.json();
             })
             .then(res => {
-               console.log(res); 
+                console.log(res);
+                if (res.status === "login data valid") {
+                  console.log("success");  
+                }
             })
     };
 

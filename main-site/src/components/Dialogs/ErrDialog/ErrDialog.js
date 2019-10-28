@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
-import { langDe } from "../../constants";
+import { langDe } from "../../../constants";
 
 function ErrDialog(props) {
     const [open, setOpen] = useState(true);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { List, makeStyles, CircularProgress, Box } from "@material-ui/core";
+import uuid from "uuid";
 import { ipAddress } from "../../constants";
-
 import { Website } from "./Website";
 
 const useStyles = makeStyles(theme => ({
@@ -35,7 +35,7 @@ function TopWebsites(props) {
     function showWebsites() {
         if (Array.isArray(websites) && websites.length) {
             return Array.from(websites).map(item => {
-                return <Website url={item.url} count={item.count} />
+                return <Website url={item.url} count={item.count} key={uuid.v4()} />
             });
         } else {
             return (

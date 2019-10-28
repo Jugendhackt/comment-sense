@@ -1,5 +1,5 @@
 import React from "react";
-import { ListItem, Paper, makeStyles, Typography, ListItemText, Box, ListItemIcon } from "@material-ui/core";
+import { ListItem, Paper, makeStyles, Typography, ListItemText, Box } from "@material-ui/core";
 import { ThumbUp } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
@@ -40,10 +40,10 @@ function Comment(props) {
                 <ListItemText primary={props.content} className={classes.mb} />
                 <Box className={classes.box}>
                     <Typography variant="caption">{props.author}</Typography>
-                    <ListItemIcon>
+                    <Box display="flex">
                         <ThumbUp color="secondary" />
                         <ListItemText primary={props.votes} className={classes.text} />
-                    </ListItemIcon>
+                    </Box>
                 </Box>
             </Paper>
         </ListItem>
