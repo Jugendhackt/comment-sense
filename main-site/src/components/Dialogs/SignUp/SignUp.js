@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
+import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button, Link } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import { langDe, ipAddress } from "../../../constants";
-import { AlertDialog } from "../AlertDialog/";
+
+
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -22,14 +23,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function SignUp(props) {
-    const [open, setOpen] = useState(false);
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openErr, setOpenErr] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
 
     const classes = useStyles();
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
 
     const sendData = () => {
         if (username && password) {
@@ -42,14 +46,14 @@ function SignUp(props) {
                 })
             })
                 .then(res => {
-                    if (res.ok)
-                        return res.json()
-                })
-                .then(res => {
-                    console.log(res);
-                    if (res.status === "user created") {
-
+                    if (res.status === 200) {
+                        setOpenSuccess(true);
+                    } else {
+                        setOpenErr(true);
                     }
+                })
+                .catch(e => {
+                    setOpenErr(true);
                 })
         }
     };
@@ -73,7 +77,47 @@ function SignUp(props) {
                     </DialogActions>
                 </DialogContent>
             </Dialog>
+            <SignUpSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
+            <SignUpErr open={openErr} onClose={() => setOpenErr(false)} />
         </>
+    );
+};
+
+function SignUpSuccess(props) {
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const reload = () => {
+        window.location.reload();
+    };
+
+    return (
+        <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}>
+            <DialogTitle>{langDe.signUpSuccessTitle}</DialogTitle>
+            <DialogContent>
+                <DialogContentText>{langDe.signUpSuccessText}</DialogContentText>
+                <DialogActions>
+                    <Button variant="contained" color="primary" onClick={reload}>{langDe.ok}</Button>
+                </DialogActions>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+function SignUpErr(props) {
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+    return (
+        <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}>
+            <DialogTitle>{langDe.signUpErrTitle}</DialogTitle>
+            <DialogContent>
+                <DialogContentText>{langDe.signUpErrText}</DialogContentText>
+                <DialogActions>
+                    <Button variant="contained" color="secondary" onClick={props.onClose}>{langDe.ok}</Button>
+                </DialogActions>
+            </DialogContent>
+        </Dialog>
     );
 };
 
