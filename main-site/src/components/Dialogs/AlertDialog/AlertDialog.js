@@ -3,7 +3,7 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, B
 import { useTheme } from "@material-ui/styles";
 import { langDe } from "../../../constants";
 
-function ErrDialog(props) {
+function AlertDialog(props) {
     const [open, setOpen] = useState(true);
 
     const theme = useTheme();
@@ -22,4 +22,4 @@ function ErrDialog(props) {
     )
 };
 
-export { ErrDialog };
+export { AlertDialog };

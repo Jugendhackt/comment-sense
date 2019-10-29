@@ -5,6 +5,7 @@ import theme from "../src/ui/theme/index";
 
 import { Header } from "./components/Header/index";
 import { Pages } from "./pages/Routes";
+import { CssBaseline } from '@material-ui/core';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <div>
       <ThemeProvider theme={theme}>
         <Router>
+          <CssBaseline />
           <Header />
           <Pages />
         </Router>

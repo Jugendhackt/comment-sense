@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import { langDe, ipAddress } from "../../../constants";
+import { AlertDialog } from "../AlertDialog/";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function SignUp(props) {
+    const [open, setOpen] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
@@ -30,7 +32,6 @@ function SignUp(props) {
     const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
     const sendData = () => {
-        /*body muss noch gemacht werden */
         if (username && password) {
             fetch(`${ipAddress}/users/create/`, {
                 method: "POST",
@@ -47,30 +48,32 @@ function SignUp(props) {
                 .then(res => {
                     console.log(res);
                     if (res.status === "user created") {
-                        console.log("success");
+
                     }
                 })
         }
     };
-    
+
     return (
-        <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}>
-            <DialogTitle>{langDe.signUp}</DialogTitle>
-            <DialogContent dividers>
-                <DialogContentText>{langDe.signUpText}</DialogContentText>
-                <DialogActions>
-                    <Box className={classes.box} >
-                        <TextField label={langDe.username} value={username} fullWidth required className={classes.mb} onChange={evt => setUsername(evt.target.value)} />
-                        <TextField label={langDe.password} value={password} fullWidth required className={classes.mb} onChange={evt => setPassword(evt.target.value)} type="password" />
-                        <TextField label={langDe.email} value={email} fullWidth className={classes.mb} onChange={evt => setEmail(evt.target.value)} />
-                        <Box className={classes.margin} >
-                            <Button variant="contained" color="primary" className={classes.margin} onClick={sendData} >{langDe.signUp}</Button>
-                            <Button variant="contained" color="secondary" className={classes.margin} onClick={props.onClose}>{langDe.cancel}</Button>
+        <>
+            <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}>
+                <DialogTitle>{langDe.signUp}</DialogTitle>
+                <DialogContent dividers>
+                    <DialogContentText>{langDe.signUpText}</DialogContentText>
+                    <DialogActions>
+                        <Box className={classes.box} >
+                            <TextField label={langDe.username} value={username} fullWidth required className={classes.mb} onChange={evt => setUsername(evt.target.value)} />
+                            <TextField label={langDe.password} value={password} fullWidth required className={classes.mb} onChange={evt => setPassword(evt.target.value)} type="password" />
+                            <TextField label={langDe.email} value={email} fullWidth className={classes.mb} onChange={evt => setEmail(evt.target.value)} />
+                            <Box className={classes.margin} >
+                                <Button variant="contained" color="primary" className={classes.margin} onClick={sendData} >{langDe.signUp}</Button>
+                                <Button variant="contained" color="secondary" className={classes.margin} onClick={props.onClose}>{langDe.cancel}</Button>
+                            </Box>
                         </Box>
-                    </Box>
-                </DialogActions>
-            </DialogContent>
-        </Dialog>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 };
 
