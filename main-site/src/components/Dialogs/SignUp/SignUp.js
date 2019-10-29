@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button, Link } from "@material-ui/core";
+import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import { langDe, ipAddress } from "../../../constants";
 
