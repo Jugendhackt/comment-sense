@@ -1,4 +1,4 @@
-const ipAddress = "http://192.168.2.105";
+const ipAddress = "http://commentsense.de";
 
 const langDe = {
     brandName: "CommentSense",
