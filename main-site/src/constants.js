@@ -21,6 +21,8 @@ const langDe = {
     email: "E-mail",
     cancel: "Abbrechen",
     ok: "OK",
+    saveChanges: "Änderungen speichern",
+    account: "Account bearbeiten"
 };
 
 

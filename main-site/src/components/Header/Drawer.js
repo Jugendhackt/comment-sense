@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SwipeableDrawer, makeStyles, ListItem, Typography, List, Divider, Link, ListItemText, ListItemIcon } from "@material-ui/core";
 import { langDe } from "../../constants";
-import { Home, Person, PersonAdd } from "@material-ui/icons";
+import { Home, Person, PersonAdd, SettingsApplications } from "@material-ui/icons";
 
 import { SignUp } from "../Dialogs/SignUp/index";
 import { SignIn } from "../Dialogs/SignIn/index";
@@ -40,6 +40,12 @@ function Drawer(props) {
                         <ListItemIcon><PersonAdd color="secondary" /></ListItemIcon>
                         <ListItemText primary={langDe.signUp} />
                     </ListItem>
+                    <Link color="inherit" href="/account/">
+                        <ListItem button>
+                            <ListItemIcon><SettingsApplications color="secondary" /></ListItemIcon>
+                            <ListItemText primary={langDe.account} />
+                        </ListItem>
+                    </Link>
                 </List>
             </div>
             <SignUp open={openSignUp} onClose={() => setOpenSignUp(false)} />
