@@ -22,7 +22,7 @@ function TopWebsites(props) {
     const classes = useStyles();
 
     useEffect(() => {
-        fetch(`${ipAddress}/sites/top/`)
+        fetch(`${ipAddress}/api/sites/`)
             .then(res => {
                 if (res.ok)
                     return res.json();

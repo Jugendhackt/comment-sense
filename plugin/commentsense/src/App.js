@@ -13,10 +13,11 @@ function App(props) {
     const [username, setUsername] = useState(undefined);
     const [password, setPassword] = useState(undefined);
     const [loggedIn, setLoggedIn] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const lang = navigator.language;
 
+    /*
     useEffect(() => {
         chrome.storage.local.get(["username", "password"], result => {
             if (result.username && result.password) {
@@ -47,7 +48,7 @@ function App(props) {
                 setLoading(false);
             }
         });
-    }, []);
+    }, []); */
 
     function getLanguage() {
         switch (lang) {

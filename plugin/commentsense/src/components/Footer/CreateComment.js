@@ -15,7 +15,7 @@ function CreateComment(props) {
             currentWindow: true
         }, tabs => {
             let url = tabs[0].url;
-            fetch(`${ipAddress}/comments/`, {
+            fetch(`${ipAddress}/api/comments/`, {
                 method: "POST",
                 body: JSON.stringify({
                     userName: props.username,

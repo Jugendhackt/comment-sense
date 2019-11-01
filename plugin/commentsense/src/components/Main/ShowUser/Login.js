@@ -11,13 +11,7 @@ function Login(props) {
 
     function saveData() {
         if (username && password) {
-            fetch(`${ipAddress}/users/login/`, {
-                method: "POST",
-                body: JSON.stringify({
-                    userName: username,
-                    password: password
-                })
-            })
+            fetch(`${ipAddress}/api/signin/?name='${username}',password='${password}'`)
                 .then(res => res.json())
                 .then(res => {
                     if (res.status === "login data valid") {

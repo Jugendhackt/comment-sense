@@ -33,12 +33,8 @@ function SignIn(props) {
 
 
     const sendData = () => {
-        fetch(`${ipAddress}/users/login/`, {
-            method: "POST",
-            body: JSON.stringify({
-                userName: username,
-                password: password
-            })
+        fetch(`${ipAddress}/api/signin?name='${username}',password='${password}'`, {
+            credentials: "include"
         })
             .then(res => {
                 if (res.status === 200) {

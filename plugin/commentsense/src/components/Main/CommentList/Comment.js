@@ -16,11 +16,11 @@ function Comment(props) {
         if (props.loggedIn) {
             let body;
             if (vote === 0) {
-                body = 1;
+                body = true;
             } else {
-                body = -1;
+                body = false;
             }
-            fetch(`${ipAddress}/comments/vote/`, {
+            fetch(`${ipAddress}/api/comments/`, {
                 method: "PATCH",
                 body: JSON.stringify({
                     userName: props.username,

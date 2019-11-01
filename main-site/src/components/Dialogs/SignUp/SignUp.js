@@ -37,12 +37,11 @@ function SignUp(props) {
 
     const sendData = () => {
         if (username && password) {
-            fetch(`${ipAddress}/users/create/`, {
+            fetch(`${ipAddress}/api/signup/`, {
                 method: "POST",
                 body: JSON.stringify({
                     userName: username,
-                    password: password,
-                    email: (email) ? email : null
+                    password: password
                 })
             })
                 .then(res => {

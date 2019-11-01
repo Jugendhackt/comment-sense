@@ -22,7 +22,7 @@ function TopComments(props) {
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
-        fetch(`${ipAddress}/comments/top/`)
+        fetch(`${ipAddress}/api/comments?count='5'`)
             .then(res => {
                 if (res.ok)
                     return res.json();
@@ -35,7 +35,7 @@ function TopComments(props) {
     function showComments() {
         if (Array.isArray(comments) && comments.length) {
             return comments.map(item => {
-                return <Comment date={item.date} content={item.content} title={item.headline} url={item.url} author={item.userName} votes={item.votes} key={uuid.v4()} />
+                return <Comment date={item.date} content={item.content} title={item.headline} url={item.url} author={item.author} votes={item.likes} key={uuid.v4()} />
             });
         } else {
             return (
