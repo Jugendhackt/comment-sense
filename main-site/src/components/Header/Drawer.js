@@ -3,8 +3,9 @@ import { SwipeableDrawer, makeStyles, ListItem, Typography, List, Divider, Link,
 import { langDe } from "../../constants";
 import { Home, Person, PersonAdd, SettingsApplications } from "@material-ui/icons";
 
-import { SignUp } from "../Dialogs/SignUp/index";
-import { SignIn } from "../Dialogs/SignIn/index";
+
+import { SignUp } from "../Dialogs/SignUp/";
+import { SignIn } from "../Dialogs/SignIn/";
 
 const useStyles = makeStyles(theme => ({
     list: {

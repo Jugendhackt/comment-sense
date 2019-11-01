@@ -4,6 +4,8 @@ import { AppBar, Toolbar, IconButton, Typography, makeStyles, Box } from "@mater
 import { langDe } from "../../constants";
 import { AccountCircle as AccountIcon, Menu as MenuIcon } from "@material-ui/icons";
 
+import { AccountDropDown } from "./AccountDropDown";
+
 const useStyles = makeStyles(theme => ({
     menuButton: {
         marginRight: theme.spacing(2)
@@ -16,13 +18,26 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Navbar(props) {
-    const [open, setOpen] = useState(false);
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [openAccount, setOpenAccount] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+
     const classes = useStyles();
 
     const handleOnClick = evt => {
         if (evt && evt.target.type === "keydown" && (evt.key === "Tab" || evt.key === "Shift"))
             return;
-        setOpen(!open);
+        setOpenDrawer(!openDrawer);
+    };
+
+    const handleClickAccount = evt => {
+        setOpenAccount(true);
+        setAnchorEl(evt.currentTarget);
+    };
+
+    const handleOnClose = () => {
+        setOpenAccount(false);
+        setAnchorEl(null);
     };
 
     return (
@@ -36,13 +51,14 @@ function Navbar(props) {
                         {langDe.brandName}
                     </Typography>
                     <Box className={classes.account}>
-                        <IconButton>
+                        <IconButton onClick={handleClickAccount}>
                             <AccountIcon />
                         </IconButton>
                     </Box>
+                    <AccountDropDown open={openAccount} anchorEl={anchorEl} onClose={handleOnClose} />
                 </Toolbar>
             </AppBar>
-            <Drawer open={open} onClose={handleOnClick} onOpen={handleOnClick} />
+            <Drawer open={openDrawer} onClose={handleOnClick} onOpen={handleOnClick} onClose={() => setOpenDrawer(false)} />
         </div>
     );
 };
