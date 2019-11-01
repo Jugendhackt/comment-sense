@@ -58,7 +58,7 @@ function Navbar(props) {
                     <AccountDropDown open={openAccount} anchorEl={anchorEl} onClose={handleOnClose} />
                 </Toolbar>
             </AppBar>
-            <Drawer open={openDrawer} onClose={handleOnClick} onOpen={handleOnClick} onClose={() => setOpenDrawer(false)} />
+            <Drawer open={openDrawer} onOpen={handleOnClick} onClose={() => setOpenDrawer(false)} />
         </div>
     );
 };
