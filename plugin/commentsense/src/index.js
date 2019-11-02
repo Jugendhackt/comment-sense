@@ -3,8 +3,8 @@ import {BrowserRouter as Router} from "react-router-dom";
 import ReactDOM from 'react-dom';
 import App from './App';
 
-import "bootstrap";
 import "./style/style.css";
+import "bootstrap";
 import "./style/theme.css";
 
 ReactDOM.render(
