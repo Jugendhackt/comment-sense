@@ -23,7 +23,9 @@ const langDe = {
     ok: "OK",
     saveChanges: "Änderungen speichern",
     account: "Account bearbeiten",
-    github: "CommentSense auf Github"
+    github: "CommentSense auf Github",
+    notFoundTitle: "Seite nicht gefunden!",
+    notFoundText: "Die angefragte Seite konnte nicht gefunden werden."
 };
 
 
