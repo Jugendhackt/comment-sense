@@ -22,7 +22,7 @@ function TopComments(props) {
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
-        fetch(`${ipAddress}/api/comments?count='5'`)
+        fetch(`${ipAddress}/api/comments?count=5`)
             .then(res => {
                 if (res.ok)
                     return res.json();
