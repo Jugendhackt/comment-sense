@@ -22,7 +22,8 @@ const langDe = {
     cancel: "Abbrechen",
     ok: "OK",
     saveChanges: "Änderungen speichern",
-    account: "Account bearbeiten"
+    account: "Account bearbeiten",
+    github: "CommentSense auf Github"
 };
 
 
