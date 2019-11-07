@@ -35,7 +35,7 @@ function TopWebsites(props) {
     function showWebsites() {
         if (Array.isArray(websites) && websites.length) {
             return Array.from(websites).map(item => {
-                return <Website url={item.url} count={item.count} key={uuid.v4()} />
+                return <Website url={item.url} comments={item.comments} key={uuid.v4()} />
             });
         } else {
             return (

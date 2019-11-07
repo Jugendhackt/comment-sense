@@ -62,4 +62,18 @@ function Drawer(props) {
     );
 };
 
+function CreateAccount(props) {
+    return (
+        <>
+        </>
+    );
+};
+
+function LoggedInAccount(props) {
+    return (
+        <>
+        </>
+    );
+};
+
 export { Drawer };

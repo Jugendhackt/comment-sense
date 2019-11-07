@@ -33,9 +33,7 @@ function SignIn(props) {
 
 
     const sendData = () => {
-        fetch(`${ipAddress}/api/signin?name='${username}',password='${password}'`, {
-            credentials: "include"
-        })
+        fetch(`${ipAddress}/api/signin?name='${username}'&password='${password}'`)
             .then(res => {
                 if (res.status === 200) {
                     setOpenSuccess(true);

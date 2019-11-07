@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { TextField, makeStyles, Box, Paper, Button } from "@material-ui/core";
+import { TextField, makeStyles, Box, Paper, Button, useMediaQuery } from "@material-ui/core";
 import { langDe } from "../constants";
 
 const useStyles = makeStyles(theme => ({
     paper: {
-        width: "50%",
+        width: "100%",
         padding: theme.spacing(2)
     },
     textField: {
@@ -25,8 +25,14 @@ const useStyles = makeStyles(theme => ({
     buttonBox: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-around",
-        width: "100%"
+        justifyContent: "center",
+        width: "100%",
+        [theme.breakpoints.down("sm")]: {
+            flexDirection: "column"
+        }
+    },
+    button: {
+        margin: theme.spacing(2)
     }
 }));
 
@@ -54,8 +60,8 @@ function Account(props) {
                     <TextField label={langDe.password} className={classes.textField} value={password} onChange={evt => setPassword(evt.target.value)} type="password" />
                     <TextField label={langDe.email} className={classes.textField} value={email} onChange={evt => setEmail(evt.target.value)} />
                     <Box className={classes.buttonBox}>
-                        <Button variant="contained" color="primary" onClick={sendData}>{langDe.saveChanges}</Button>
-                        <Button variant="contained" color="secondary" onClick={home}>{langDe.cancel}</Button>
+                        <Button variant="contained" color="primary" onClick={sendData} className={classes.button}>{langDe.saveChanges}</Button>
+                        <Button variant="contained" color="secondary" onClick={home} className={classes.button}>{langDe.cancel}</Button>
                     </Box>
                 </Box>
             </Paper>

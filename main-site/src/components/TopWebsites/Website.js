@@ -41,9 +41,9 @@ function Website(props) {
                     <br />
                     <Box display="flex">
                         <ThumbUp color="secondary" />
-                        <ListItemText primary={props.count} className={classes.text} />
+                        <ListItemText primary={props.comments} className={classes.text} />
                     </Box>
-                    <Link color="inherit" href={`http://${props.url}`}>
+                    <Link color="inherit" href={props.url}>
                         <Button color="primary" variant="contained">{langDe.toWebsite}</Button>
                     </Link>
                 </Paper>
