@@ -14,11 +14,6 @@ import {UserStoreContext} from "./stores/UserStore";
 
 const App = observer((props) => {
 
-  const userStore =  useContext(UserStoreContext);
-  console.log(userStore.email + "hi")
-
-  const sessionId = useSessionId();
-
   return (
     <div>
       <ThemeProvider theme={theme}>

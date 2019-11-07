@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { observer } from "mobx-react-lite";
 import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import { langDe, ipAddress } from "../../../constants";
+import { UserStoreContext } from "../../../stores/UserStore";
+import { DialogStoreContext } from "../../../stores/DialogStore";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -21,11 +24,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function SignIn(props) {
-    const [openSuccess, setOpenSuccess] = useState(false);
-    const [openErr, setOpenErr] = useState(false);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+const SignIn = observer((props) => {
+    const userStore = useContext(UserStoreContext);
+    const dialogStore = useContext(DialogStoreContext);
 
     const classes = useStyles();
     const theme = useTheme();
@@ -33,16 +34,16 @@ function SignIn(props) {
 
 
     const sendData = () => {
-        fetch(`${ipAddress}/api/signin?name='${username}'&password='${password}'`)
+        fetch(`${ipAddress}/api/signin?name='${userStore.username}'&password='${userStore.username}'`)
             .then(res => {
                 if (res.status === 200) {
-                    setOpenSuccess(true);
+                    dialogStore.openSignInSuccess = true;
                 } else {
-                    setOpenErr(true);
+                    dialogStore.openSignInFail = true;
                 }
             })
             .catch(e => {
-                setOpenErr(true);
+                dialogStore.openSignInFail = true;
             })
     };
 
@@ -54,8 +55,8 @@ function SignIn(props) {
                     <DialogContentText>{langDe.signInText}</DialogContentText>
                     <DialogActions>
                         <Box className={classes.box}>
-                            <TextField label={langDe.username} value={username} fullWidth required className={classes.mb} onChange={evt => setUsername(evt.target.value)} />
-                            <TextField label={langDe.password} value={password} fullWidth required className={classes.mb} onChange={evt => setPassword(evt.target.value)} type="password" />
+                            <TextField label={langDe.username} value={userStore.username} fullWidth required className={classes.mb} onChange={evt => userStore.username = evt.target.value} />
+                            <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
                             <Box className={classes.margin}>
                                 <Button variant="contained" color="primary" className={classes.margin} onClick={sendData} >{langDe.signIn}</Button>
                                 <Button variant="contained" color="secondary" className={classes.margin} onClick={props.onClose} >{langDe.cancel}</Button>
@@ -64,11 +65,11 @@ function SignIn(props) {
                     </DialogActions>
                 </DialogContent>
             </Dialog>
-            <SignInSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <SignInErr open={openErr} onClose={() => setOpenErr(false)} />
+            <SignInSuccess open={dialogStore.openSignInSuccess} onClose={() => dialogStore.openSignInSuccess = false} />
+            <SignInErr open={dialogStore.openSignInFail} onClose={() => dialogStore.openSignInFail = false} />
         </>
     );
-};
+});
 
 function SignInSuccess(props) {
     const theme = useTheme();
