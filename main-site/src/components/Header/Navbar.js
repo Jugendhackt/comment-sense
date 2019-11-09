@@ -7,6 +7,7 @@ import { AccountCircle as AccountIcon, Menu as MenuIcon } from "@material-ui/ico
 import { AccountDropDown } from "./AccountDropDown";
 import { DialogStoreContext } from "../../stores/DialogStore";
 import { observer } from "mobx-react-lite";
+import { UserStoreContext } from "../../stores/UserStore";
 
 const useStyles = makeStyles(theme => ({
     menuButton: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles(theme => ({
 
 const Navbar = observer((props) => {
     const dialogStore = useContext(DialogStoreContext);
+    const userStore = useContext(UserStoreContext);
 
     const classes = useStyles();
 
@@ -50,12 +52,12 @@ const Navbar = observer((props) => {
                     <Typography variant="h6">
                         {langDe.brandName}
                     </Typography>
-                    <Box className={classes.account}>
+                    <Box className={classes.account} display={(userStore.loggedIn) ? "block" : "none !important"}>
                         <IconButton onClick={handleClickAccount}>
                             <AccountIcon />
                         </IconButton>
                     </Box>
-                    <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} onClose={handleOnClose} />
+                    <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} onClose={handleOnClose} display={UserStoreContext.loggedIn} />
                 </Toolbar>
             </AppBar>
             <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} onClose={() => dialogStore.openDrawer = false} />
