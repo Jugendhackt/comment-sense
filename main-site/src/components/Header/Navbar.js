@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Drawer } from "./Drawer";
 import { AppBar, Toolbar, IconButton, Typography, makeStyles, Box } from "@material-ui/core";
 import { langDe } from "../../constants";
 import { AccountCircle as AccountIcon, Menu as MenuIcon } from "@material-ui/icons";
 
 import { AccountDropDown } from "./AccountDropDown";
+import { DialogStoreContext } from "../../stores/DialogStore";
+import { observer } from "mobx-react-lite";
 
 const useStyles = makeStyles(theme => ({
     menuButton: {
@@ -17,27 +19,25 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function Navbar(props) {
-    const [openDrawer, setOpenDrawer] = useState(false);
-    const [openAccount, setOpenAccount] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
+const Navbar = observer((props) => {
+    const dialogStore = useContext(DialogStoreContext);
 
     const classes = useStyles();
 
     const handleOnClick = evt => {
         if (evt && evt.target.type === "keydown" && (evt.key === "Tab" || evt.key === "Shift"))
             return;
-        setOpenDrawer(!openDrawer);
+        dialogStore.openDrawer = !dialogStore.openDrawer;
     };
 
     const handleClickAccount = evt => {
-        setOpenAccount(true);
-        setAnchorEl(evt.currentTarget);
+        dialogStore.openAccount = true;
+        dialogStore.anchorElAccount = evt.currentTarget;
     };
 
     const handleOnClose = () => {
-        setOpenAccount(false);
-        setAnchorEl(null);
+        dialogStore.openAccount = false;
+        dialogStore.anchorElAccount = null;
     };
 
     return (
@@ -55,12 +55,12 @@ function Navbar(props) {
                             <AccountIcon />
                         </IconButton>
                     </Box>
-                    <AccountDropDown open={openAccount} anchorEl={anchorEl} onClose={handleOnClose} />
+                    <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} onClose={handleOnClose} />
                 </Toolbar>
             </AppBar>
-            <Drawer open={openDrawer} onOpen={handleOnClick} onClose={() => setOpenDrawer(false)} />
+            <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} onClose={() => dialogStore.openDrawer = false} />
         </div>
     );
-};
+});
 
 export { Navbar };

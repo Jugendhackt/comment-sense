@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { SwipeableDrawer, makeStyles, ListItem, Typography, List, Divider, Link, ListItemText, ListItemIcon } from "@material-ui/core";
 import { langDe } from "../../constants";
 import { Home, Person, PersonAdd, SettingsApplications, Code } from "@material-ui/icons";
@@ -6,6 +6,8 @@ import { Home, Person, PersonAdd, SettingsApplications, Code } from "@material-u
 
 import { SignUp } from "../Dialogs/SignUp/";
 import { SignIn } from "../Dialogs/SignIn/";
+import { observer } from "mobx-react-lite";
+import { DialogStoreContext } from "../../stores/DialogStore";
 
 const useStyles = makeStyles(theme => ({
     list: {
@@ -14,9 +16,8 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function Drawer(props) {
-    const [openSignUp, setOpenSignUp] = useState(false);
-    const [openSignIn, setOpenSignIn] = useState(false);
+const Drawer = observer((props) => {
+    const dialogStore = useContext(DialogStoreContext);
 
     const classes = useStyles();
 
@@ -34,11 +35,11 @@ function Drawer(props) {
                             <ListItemText primary={langDe.home} />
                         </ListItem>
                     </Link>
-                    <ListItem button onClick={() => setOpenSignIn(true)} >
+                    <ListItem button onClick={() => dialogStore.openSignIn = true} >
                         <ListItemIcon><Person color="secondary" /></ListItemIcon>
                         <ListItemText primary={langDe.signIn} />
                     </ListItem>
-                    <ListItem button onClick={() => setOpenSignUp(true)} >
+                    <ListItem button onClick={() => dialogStore.openSignUp = true} >
                         <ListItemIcon><PersonAdd color="secondary" /></ListItemIcon>
                         <ListItemText primary={langDe.signUp} />
                     </ListItem>
@@ -56,11 +57,11 @@ function Drawer(props) {
                     </Link>
                 </List>
             </div>
-            <SignUp open={openSignUp} onClose={() => setOpenSignUp(false)} />
-            <SignIn open={openSignIn} onClose={() => setOpenSignIn(false)} />
+            <SignUp open={dialogStore.openSignUp} onClose={() => dialogStore.openSignUp = false} />
+            <SignIn open={dialogStore.openSignIn} onClose={() => dialogStore.openSignIn = false} />
         </SwipeableDrawer>
     );
-};
+});
 
 function CreateAccount(props) {
     return (

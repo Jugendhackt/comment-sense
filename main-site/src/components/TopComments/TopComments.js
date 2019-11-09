@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import uuid from "uuid";
+import {observer} from "mobx-react-lite";
 import { List, makeStyles, CircularProgress, Box } from "@material-ui/core";
 import { Comment } from "./Comment";
 import { ipAddress } from "../../constants";
+import { CommentStoreContext } from "../../stores/CommentStore";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -16,10 +18,10 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function TopComments(props) {
+const TopComments = observer((props) => {
     const classes = useStyles();
 
-    const [comments, setComments] = useState([]);
+    const commentStore = useContext(CommentStoreContext);
 
     useEffect(() => {
         fetch(`${ipAddress}/api/comments?count=5`)
@@ -28,13 +30,13 @@ function TopComments(props) {
                     return res.json();
             })
             .then(res => {
-                setComments(res.comments);
+                commentStore.comments = res.comments;
             })
     }, []);
 
     function showComments() {
-        if (Array.isArray(comments) && comments.length) {
-            return comments.map(item => {
+        if (Array.isArray(commentStore.comments) && commentStore.comments.length) {
+            return commentStore.comments.map(item => {
                 return <Comment date={item.date} content={item.content} title={item.headline} url={item.url} author={item.author} votes={item.likes} key={uuid.v4()} />
             });
         } else {
@@ -48,7 +50,7 @@ function TopComments(props) {
                 </Box>
             );
         }
-        
+
     };
 
     return (
@@ -56,6 +58,6 @@ function TopComments(props) {
             {showComments()}
         </List>
     );
-};
+});
 
 export { TopComments };

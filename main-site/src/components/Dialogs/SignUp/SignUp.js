@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
+import { observer } from "mobx-react-lite";
+import { UserStoreContext } from "../../../stores/UserStore";
+import { DialogStoreContext } from "../../../stores/DialogStore";
 import { langDe, ipAddress } from "../../../constants";
-
-
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -22,38 +23,35 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function SignUp(props) {
+const SignUp = observer((props) => {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const [openSuccess, setOpenSuccess] = useState(false);
-    const [openErr, setOpenErr] = useState(false);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [email, setEmail] = useState("");
+    const userStore = useContext(UserStoreContext);
+    const dialogStore = useContext(DialogStoreContext);
 
     const classes = useStyles();
 
 
     const sendData = () => {
-        if (username && password) {
+        if (userStore.username && userStore.password) {
             fetch(`${ipAddress}/api/signup/`, {
                 method: "POST",
                 body: JSON.stringify({
-                    userName: username,
-                    password: password
+                    userName: userStore.username,
+                    password: userStore.password
                 })
             })
                 .then(res => {
                     if (res.status === 200) {
-                        setOpenSuccess(true);
+                        dialogStore.openSignUpSuccess = true;
                     } else {
-                        setOpenErr(true);
+                        dialogStore.openSignUpFail = true;
                     }
                 })
                 .catch(e => {
-                    setOpenErr(true);
-                })
+                    dialogStore.openSignUpFail = true;
+                });
         }
     };
 
@@ -65,9 +63,9 @@ function SignUp(props) {
                     <DialogContentText>{langDe.signUpText}</DialogContentText>
                     <DialogActions>
                         <Box className={classes.box} >
-                            <TextField label={langDe.username} value={username} fullWidth required className={classes.mb} onChange={evt => setUsername(evt.target.value)} />
-                            <TextField label={langDe.password} value={password} fullWidth required className={classes.mb} onChange={evt => setPassword(evt.target.value)} type="password" />
-                            <TextField label={langDe.email} value={email} fullWidth className={classes.mb} onChange={evt => setEmail(evt.target.value)} />
+                            <TextField label={langDe.username} value={userStore.username} fullWidth required className={classes.mb} onChange={evt => userStore.username = evt.target.value} />
+                            <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
+                            <TextField label={langDe.email} value={userStore.email} fullWidth className={classes.mb} onChange={evt => userStore.email = evt.target.value} />
                             <Box className={classes.margin} >
                                 <Button variant="contained" color="primary" className={classes.margin} onClick={sendData} >{langDe.signUp}</Button>
                                 <Button variant="contained" color="secondary" className={classes.margin} onClick={props.onClose}>{langDe.cancel}</Button>
@@ -76,11 +74,11 @@ function SignUp(props) {
                     </DialogActions>
                 </DialogContent>
             </Dialog>
-            <SignUpSuccess open={openSuccess} onClose={() => setOpenSuccess(false)} />
-            <SignUpErr open={openErr} onClose={() => setOpenErr(false)} />
+            <SignUpSuccess open={dialogStore.openSignUpSuccess} onClose={() => dialogStore.openSignInSuccess = false} />
+            <SignUpErr open={dialogStore.openSignUpFail} onClose={() => dialogStore.openSignUpFail = false} />
         </>
     );
-};
+});
 
 function SignUpSuccess(props) {
     const theme = useTheme();

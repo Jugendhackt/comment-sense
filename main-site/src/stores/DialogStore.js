@@ -8,6 +8,9 @@ class DialogStore {
     @observable openSignInFail = false;
     @observable openSignUpSuccess = false;
     @observable openSignUpFail = false;
+    @observable openAccount = false;
+    @observable anchorElAccount = null;
+    @observable openDrawer = false;
 };
 
 export const DialogStoreContext = createContext(new DialogStore());

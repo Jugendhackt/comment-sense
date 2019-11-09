@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { TextField, makeStyles, Box, Paper, Button, useMediaQuery } from "@material-ui/core";
+import {observer} from "mobx-react-lite";
+import { TextField, makeStyles, Box, Paper, Button } from "@material-ui/core";
 import { langDe } from "../constants";
+import {UserStoreContext} from "../stores/UserStore";
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -36,10 +38,8 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function Account(props) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [email, setEmail] = useState("");
+const Account = observer((props) =>{
+    const userStore = useContext(UserStoreContext);
 
     const classes = useStyles();
     let history = useHistory();
@@ -56,9 +56,9 @@ function Account(props) {
         <div className={classes.div} >
             <Paper className={classes.paper}>
                 <Box className={classes.box}>
-                    <TextField label={langDe.username} className={classes.textField} value={username} onChange={evt => setUsername(evt.target.value)} />
-                    <TextField label={langDe.password} className={classes.textField} value={password} onChange={evt => setPassword(evt.target.value)} type="password" />
-                    <TextField label={langDe.email} className={classes.textField} value={email} onChange={evt => setEmail(evt.target.value)} />
+                    <TextField label={langDe.username} className={classes.textField} value={userStore.username} onChange={evt => userStore.username = evt.target.value} />
+                    <TextField label={langDe.password} className={classes.textField} value={userStore.password} onChange={evt => userStore.password = evt.target.value} type="password" />
+                    <TextField label={langDe.email} className={classes.textField} value={userStore.email} onChange={evt => userStore.email = evt.target.value} />
                     <Box className={classes.buttonBox}>
                         <Button variant="contained" color="primary" onClick={sendData} className={classes.button}>{langDe.saveChanges}</Button>
                         <Button variant="contained" color="secondary" onClick={home} className={classes.button}>{langDe.cancel}</Button>
@@ -67,6 +67,6 @@ function Account(props) {
             </Paper>
         </div>
     );
-};
+});
 
 export { Account };
