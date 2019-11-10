@@ -2,12 +2,11 @@ import React, { useContext } from "react";
 import { SwipeableDrawer, makeStyles, ListItem, Typography, List, Divider, Link, ListItemText, ListItemIcon } from "@material-ui/core";
 import { langDe } from "../../constants";
 import { Home, Person, PersonAdd, SettingsApplications, Code } from "@material-ui/icons";
-
-
 import { SignUp } from "../Dialogs/SignUp/";
 import { SignIn } from "../Dialogs/SignIn/";
 import { observer } from "mobx-react-lite";
 import { DialogStoreContext } from "../../stores/DialogStore";
+import { UserStoreContext } from "../../stores/UserStore";
 
 const useStyles = makeStyles(theme => ({
     list: {
@@ -18,6 +17,7 @@ const useStyles = makeStyles(theme => ({
 
 const Drawer = observer((props) => {
     const dialogStore = useContext(DialogStoreContext);
+    const userStore = useContext(UserStoreContext);
 
     const classes = useStyles();
 
@@ -35,20 +35,8 @@ const Drawer = observer((props) => {
                             <ListItemText primary={langDe.home} />
                         </ListItem>
                     </Link>
-                    <ListItem button onClick={() => dialogStore.openSignIn = true} >
-                        <ListItemIcon><Person color="secondary" /></ListItemIcon>
-                        <ListItemText primary={langDe.signIn} />
-                    </ListItem>
-                    <ListItem button onClick={() => dialogStore.openSignUp = true} >
-                        <ListItemIcon><PersonAdd color="secondary" /></ListItemIcon>
-                        <ListItemText primary={langDe.signUp} />
-                    </ListItem>
-                    <Link color="inherit" href="/account/">
-                        <ListItem button>
-                            <ListItemIcon><SettingsApplications color="secondary" /></ListItemIcon>
-                            <ListItemText primary={langDe.account} />
-                        </ListItem>
-                    </Link>
+                    <CreateAccount display={userStore.loggedIn} onClickSignIn={() => dialogStore.openSignIn = true} onClickSignUp={() => dialogStore.openSignUp = true} />
+                    <LoggedInAccount display={userStore.loggedIn} />
                     <Link color="inherit" href="https://github.com/Jugendhackt/comment-sense/">
                         <ListItem button>
                             <ListItemIcon><Code color="secondary" /></ListItemIcon>
@@ -63,18 +51,46 @@ const Drawer = observer((props) => {
     );
 });
 
-function CreateAccount(props) {
-    return (
-        <>
-        </>
-    );
+const CreateAccount = (props) => {
+    if (!props.display) {
+        return (
+            <>
+                <ListItem button onClick={props.onClickSignIn} >
+                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
+                    <ListItemText primary={langDe.signIn} />
+                </ListItem>
+                <ListItem button onClick={props.onClickSignUp} >
+                    <ListItemIcon><PersonAdd color="secondary" /></ListItemIcon>
+                    <ListItemText primary={langDe.signUp} />
+                </ListItem>
+            </>
+        );
+    } else {
+        return null;
+    }
 };
 
-function LoggedInAccount(props) {
-    return (
-        <>
-        </>
-    );
-};
+const LoggedInAccount = observer((props) => {
+    const userStore = useContext(UserStoreContext);
+    
+    if (props.display) {
+        return (
+            <>
+                <Link color="inherit" href="/account/">
+                    <ListItem button>
+                        <ListItemIcon><SettingsApplications color="secondary" /></ListItemIcon>
+                        <ListItemText primary={langDe.account} />
+                    </ListItem>
+                </Link>
+                <ListItem button>
+                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
+                    <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`} />
+                </ListItem>
+            </>
+        );
+    } else {
+        return null;
+    }
+});
 
 export { Drawer };

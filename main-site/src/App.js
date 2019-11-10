@@ -6,9 +6,13 @@ import theme from "../src/ui/theme/";
 import { Header } from "./components/Header";
 import { Pages } from "./pages/Routes";
 import { CssBaseline } from '@material-ui/core';
+import { useSessionId, useLoggedIn } from './helpers';
 
 
 const App = (props) => {
+
+  const sessionId = useSessionId();
+  useLoggedIn(sessionId).then(res => console.log(res));
 
   return (
     <div>
