@@ -3,8 +3,8 @@ import { List, makeStyles, CircularProgress, Box } from "@material-ui/core";
 import uuid from "uuid";
 import { ipAddress } from "../../constants";
 import { Website } from "./Website";
-import {WebsiteStoreContext} from "../../stores/WebsiteStore";
-import {observer} from "mobx-react-lite";
+import { WebsiteStoreContext } from "../../stores/WebsiteStore";
+import { observer } from "mobx-react-lite";
 
 const useStyles = makeStyles(theme => ({
     progress: {
@@ -32,6 +32,7 @@ const TopWebsites = observer((props) => {
             .then(res => {
                 websiteStore.websites = res.sites;
             })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function showWebsites() {
@@ -42,11 +43,11 @@ const TopWebsites = observer((props) => {
         } else {
             return (
                 <Box className={classes.box}>
-                    <CircularProgress size={100} className={classes.progress}/>
-                    <CircularProgress size={100} className={classes.progress}/>
-                    <CircularProgress size={100} className={classes.progress}/>
-                    <CircularProgress size={100} className={classes.progress}/>
-                    <CircularProgress size={100} className={classes.progress}/>
+                    <CircularProgress size={100} className={classes.progress} />
+                    <CircularProgress size={100} className={classes.progress} />
+                    <CircularProgress size={100} className={classes.progress} />
+                    <CircularProgress size={100} className={classes.progress} />
+                    <CircularProgress size={100} className={classes.progress} />
                 </Box>
             );
         }

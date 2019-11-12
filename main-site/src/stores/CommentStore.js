@@ -5,5 +5,5 @@ class CommentStore {
     @observable comments = [];
 };
 
-export const CommentStoreContext = createContext(new CommentStore);
+export const CommentStoreContext = createContext(new CommentStore());
 
