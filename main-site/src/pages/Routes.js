@@ -19,9 +19,9 @@ function Routes(props) {
         <Container fixed className={classes.mt}>
             <Switch>
                 <Route exact path="/" render={(para) => <Home {...para} />} />
-                <Route exact path="/account/" render={(para) => <Account {...para} />} />
-                <Route exact path="/404/" render={(para) => <NotFound {...para} />} />
-                <Redirect to="/404/" />
+                <Route exact path="/account" render={(para) => <Account {...para} />} />
+                <Route exact path="/404" render={(para) => <NotFound {...para} />} />
+                <Redirect to="/404" />
             </Switch>
         </Container>
     );

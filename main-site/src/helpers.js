@@ -2,7 +2,8 @@ import { ipAddress } from "./constants";
 
 const useSessionId = () => {
     const sessionId = document.cookie.match(new RegExp('(^| )sid=([^;]+)'));
-    return (sessionId.length) ? sessionId[0].split("=")[1] : null;
+    if (sessionId) 
+        return (sessionId.length) ? sessionId[0].split("=")[1] : null;
 };
 
 const useLoggedIn = (sessionId) => {
