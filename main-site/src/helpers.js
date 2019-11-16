@@ -1,10 +1,7 @@
 import { ipAddress } from "./constants";
-import { useContext } from "react";
-import { UserStoreContext } from "./stores/UserStore";
 
 const useSessionId = () => {
     const sessionId = document.cookie.match(new RegExp('(^| )sid=([^;]+)'));
-    console.log(sessionId);
     if (sessionId)
         return (sessionId.length) ? sessionId[0].split("=")[1] : null;
 };

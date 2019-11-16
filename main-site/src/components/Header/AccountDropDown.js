@@ -4,7 +4,8 @@ import { Person, SettingsApplications } from "@material-ui/icons";
 import { langDe } from "../../constants";
 import { observer } from "mobx-react-lite";
 import { UserStoreContext } from "../../stores/UserStore";
-import {DialogStoreContext} from "../../stores/DialogStore";
+import { DialogStoreContext } from "../../stores/DialogStore";
+import { removeSessionId } from "../../helpers";
 
 const AccountDropDown = observer((props) => {
     const userStore = useContext(UserStoreContext);
@@ -13,6 +14,16 @@ const AccountDropDown = observer((props) => {
     const handleOnClose = () => {
         dialogStore.anchorElAccount = null;
         dialogStore.openAccount = false;
+    };
+
+    const logout = () => {
+        userStore.username = "";
+        userStore.password = "";
+        userStore.email = "";
+        userStore.sid = "";
+        userStore.loggedIn = false;
+        removeSessionId();
+        window.location.reload();
     };
 
     if (props.display) {
@@ -28,6 +39,10 @@ const AccountDropDown = observer((props) => {
                         <ListItemText primary={langDe.account} />
                     </MenuItem>
                 </Link>
+                <MenuItem onClick={logout}>
+                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
+                    <ListItemText primary={langDe.logout} />
+                </MenuItem>
             </Menu>
         );
     } else {

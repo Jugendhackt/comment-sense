@@ -83,7 +83,7 @@ const LoggedInAccount = observer((props) => {
         userStore.email = "";
         userStore.sid = "";
         removeSessionId();
-        console.log("called");
+        window.location.reload();
     };
 
     if (props.display) {
