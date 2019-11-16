@@ -1,10 +1,10 @@
 import React from "react";
 import { Navbar } from "./Navbar";
 
-function index(props) {
+const index = (props) => {
     return (
         <Navbar {...props} />
     );
 };
 
-export { index as Header};
+export { index as Header };

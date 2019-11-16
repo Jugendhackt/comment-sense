@@ -5,6 +5,8 @@ import { useTheme } from "@material-ui/styles";
 import { langDe, ipAddress } from "../../../constants";
 import { UserStoreContext } from "../../../stores/UserStore";
 import { DialogStoreContext } from "../../../stores/DialogStore";
+import { SignInFail } from "./SignInFail";
+import { SignInSuccess } from "./SignInSuccess";
 import { saveUsername } from "../../../helpers";
 
 const useStyles = makeStyles(theme => ({
@@ -68,49 +70,9 @@ const SignIn = observer((props) => {
                 </DialogContent>
             </Dialog>
             <SignInSuccess open={dialogStore.openSignInSuccess} />
-            <SignInErr open={dialogStore.openSignInFail} />
+            <SignInFail open={dialogStore.openSignInFail} />
         </>
     );
 });
-
-function SignInSuccess(props) {
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const dialogStore = useContext(DialogStoreContext);
-
-    const reload = () => {
-        window.location.reload();
-    };
-
-    return (
-        <Dialog open={props.open} onClose={() => dialogStore.openSignInSuccess = false} fullScreen={fullScreen}>
-            <DialogTitle>{langDe.signInSuccessTitle}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>{langDe.signInSuccessText}</DialogContentText>
-                <DialogActions>
-                    <Button variant="contained" color="primary" onClick={reload}>{langDe.ok}</Button>
-                </DialogActions>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
-function SignInErr(props) {
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const dialogStore = useContext(DialogStoreContext);
-
-    return (
-        <Dialog open={props.open} onClose={() => dialogStore.openSignInFail = false} fullScreen={fullScreen}>
-            <DialogTitle>{langDe.signInErrTitle}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>{langDe.signInErrText}</DialogContentText>
-                <DialogActions>
-                    <Button variant="contained" color="secondary" onClick={props.onClose}>{langDe.ok}</Button>
-                </DialogActions>
-            </DialogContent>
-        </Dialog>
-    );
-};
 
 export { SignIn };

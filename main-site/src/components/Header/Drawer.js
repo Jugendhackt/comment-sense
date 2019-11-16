@@ -53,16 +53,16 @@ const Drawer = observer((props) => {
 });
 
 const CreateAccount = observer((props) => {
-    const userStore = useContext(UserStoreContext);
+    const dialogStore = useContext(DialogStoreContext);
 
     if (!props.display) {
         return (
             <>
-                <ListItem button onClick={() => userStore.openSignIn = true} >
+                <ListItem button onClick={() => dialogStore.openSignIn = true} >
                     <ListItemIcon><Person color="secondary" /></ListItemIcon>
                     <ListItemText primary={langDe.signIn} />
                 </ListItem>
-                <ListItem button onClick={() => userStore.openSignUp = true} >
+                <ListItem button onClick={() => dialogStore.openSignUp = true} >
                     <ListItemIcon><PersonAdd color="secondary" /></ListItemIcon>
                     <ListItemText primary={langDe.signUp} />
                 </ListItem>
