@@ -1,6 +1,6 @@
-import {
-    ipAddress
-} from "./constants";
+import { ipAddress } from "./constants";
+import { useContext } from "react";
+import { UserStoreContext } from "./stores/UserStore";
 
 const useSessionId = () => {
     const sessionId = document.cookie.match(new RegExp('(^| )sid=([^;]+)'));
@@ -22,6 +22,10 @@ const useLoggedIn = (sessionId) => {
     });
 };
 
+const removeSessionId = () => {
+    document.cookie = "sid=; expires Thu, 01 Jan 1970 00:00:01 GMT;";
+};
+
 const saveUsername = (username) => {
     const storage = localStorage;
     storage.setItem("username", username);
@@ -36,5 +40,6 @@ export {
     useSessionId,
     useLoggedIn,
     saveUsername,
-    getUsername
+    getUsername,
+    removeSessionId
 };

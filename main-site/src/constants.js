@@ -26,7 +26,8 @@ const langDe = {
     github: "CommentSense auf Github",
     notFoundTitle: "Seite nicht gefunden!",
     notFoundText: "Die angefragte Seite konnte nicht gefunden werden.",
-    loggedInAs: "Angemeldet als: "
+    loggedInAs: "Angemeldet als: ",
+    logout: "Abmelden"
 };
 
 

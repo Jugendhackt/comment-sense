@@ -1,12 +1,13 @@
 import React, { useContext } from "react";
 import { SwipeableDrawer, makeStyles, ListItem, Typography, List, Divider, Link, ListItemText, ListItemIcon } from "@material-ui/core";
 import { langDe } from "../../constants";
-import { Home, Person, PersonAdd, SettingsApplications, Code } from "@material-ui/icons";
+import { Home, Person, PersonAdd, SettingsApplications, Code, ExitToApp } from "@material-ui/icons";
 import { SignUp } from "../Dialogs/SignUp/";
 import { SignIn } from "../Dialogs/SignIn/";
 import { observer } from "mobx-react-lite";
 import { DialogStoreContext } from "../../stores/DialogStore";
 import { UserStoreContext } from "../../stores/UserStore";
+import { removeSessionId } from "../../helpers";
 
 const useStyles = makeStyles(theme => ({
     list: {
@@ -72,7 +73,17 @@ const CreateAccount = (props) => {
 
 const LoggedInAccount = observer((props) => {
     const userStore = useContext(UserStoreContext);
-    
+
+    const logout = () => {
+        userStore.loggedIn = false;
+        userStore.password = "";
+        userStore.username = "";
+        userStore.email = "";
+        userStore.sid = "";
+        removeSessionId();
+        console.log("called");
+    };
+
     if (props.display) {
         return (
             <>
@@ -85,6 +96,10 @@ const LoggedInAccount = observer((props) => {
                 <ListItem button>
                     <ListItemIcon><Person color="secondary" /></ListItemIcon>
                     <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`} />
+                </ListItem>
+                <ListItem button onClick={logout}>
+                    <ListItemIcon><ExitToApp color="secondary" /></ListItemIcon>
+                    <ListItemText primary={langDe.logout} />
                 </ListItem>
             </>
         );
