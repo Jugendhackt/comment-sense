@@ -51,7 +51,7 @@ const SignIn = observer((props) => {
 
     return (
         <>
-            <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}>
+            <Dialog open={props.open} onClose={() => dialogStore.openSignIn = false} fullScreen={fullScreen}>
                 <DialogTitle>{langDe.signIn}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{langDe.signInText}</DialogContentText>
@@ -61,14 +61,14 @@ const SignIn = observer((props) => {
                             <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
                             <Box className={classes.margin}>
                                 <Button variant="contained" color="primary" className={classes.margin} onClick={sendData} >{langDe.signIn}</Button>
-                                <Button variant="contained" color="secondary" className={classes.margin} onClick={props.onClose} >{langDe.cancel}</Button>
+                                <Button variant="contained" color="secondary" className={classes.margin} onClick={() => dialogStore.openSignIn = false} >{langDe.cancel}</Button>
                             </Box>
                         </Box>
                     </DialogActions>
                 </DialogContent>
             </Dialog>
-            <SignInSuccess open={dialogStore.openSignInSuccess} onClose={() => dialogStore.openSignInSuccess = false} />
-            <SignInErr open={dialogStore.openSignInFail} onClose={() => dialogStore.openSignInFail = false} />
+            <SignInSuccess open={dialogStore.openSignInSuccess} />
+            <SignInErr open={dialogStore.openSignInFail} />
         </>
     );
 });
@@ -76,13 +76,14 @@ const SignIn = observer((props) => {
 function SignInSuccess(props) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const dialogStore = useContext(DialogStoreContext);
 
     const reload = () => {
         window.location.reload();
     };
 
     return (
-        <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}>
+        <Dialog open={props.open} onClose={() => dialogStore.openSignInSuccess = false} fullScreen={fullScreen}>
             <DialogTitle>{langDe.signInSuccessTitle}</DialogTitle>
             <DialogContent>
                 <DialogContentText>{langDe.signInSuccessText}</DialogContentText>
@@ -97,9 +98,10 @@ function SignInSuccess(props) {
 function SignInErr(props) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const dialogStore = useContext(DialogStoreContext);
 
     return (
-        <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}>
+        <Dialog open={props.open} onClose={() => dialogStore.openSignInFail = false} fullScreen={fullScreen}>
             <DialogTitle>{langDe.signInErrTitle}</DialogTitle>
             <DialogContent>
                 <DialogContentText>{langDe.signInErrText}</DialogContentText>

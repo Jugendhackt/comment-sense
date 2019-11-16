@@ -37,11 +37,6 @@ const Navbar = observer((props) => {
         dialogStore.anchorElAccount = evt.currentTarget;
     };
 
-    const handleOnClose = () => {
-        dialogStore.openAccount = false;
-        dialogStore.anchorElAccount = null;
-    };
-
     return (
         <div>
             <AppBar position="static">
@@ -57,7 +52,7 @@ const Navbar = observer((props) => {
                             <AccountIcon />
                         </IconButton>
                     </Box>
-                    <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} onClose={handleOnClose} display={userStore.loggedIn} />
+                    <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} display={userStore.loggedIn} />
                 </Toolbar>
             </AppBar>
             <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} onClose={() => dialogStore.openDrawer = false} />

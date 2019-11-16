@@ -36,7 +36,7 @@ const Drawer = observer((props) => {
                             <ListItemText primary={langDe.home} />
                         </ListItem>
                     </Link>
-                    <CreateAccount display={userStore.loggedIn} onClickSignIn={() => dialogStore.openSignIn = true} onClickSignUp={() => dialogStore.openSignUp = true} />
+                    <CreateAccount display={userStore.loggedIn} />
                     <LoggedInAccount display={userStore.loggedIn} />
                     <Link color="inherit" href="https://github.com/Jugendhackt/comment-sense/">
                         <ListItem button>
@@ -46,21 +46,23 @@ const Drawer = observer((props) => {
                     </Link>
                 </List>
             </div>
-            <SignUp open={dialogStore.openSignUp} onClose={() => dialogStore.openSignUp = false} />
-            <SignIn open={dialogStore.openSignIn} onClose={() => dialogStore.openSignIn = false} />
+            <SignUp open={dialogStore.openSignUp} />
+            <SignIn open={dialogStore.openSignIn} />
         </SwipeableDrawer>
     );
 });
 
-const CreateAccount = (props) => {
+const CreateAccount = observer((props) => {
+    const userStore = useContext(UserStoreContext);
+
     if (!props.display) {
         return (
             <>
-                <ListItem button onClick={props.onClickSignIn} >
+                <ListItem button onClick={() => userStore.openSignIn = true} >
                     <ListItemIcon><Person color="secondary" /></ListItemIcon>
                     <ListItemText primary={langDe.signIn} />
                 </ListItem>
-                <ListItem button onClick={props.onClickSignUp} >
+                <ListItem button onClick={() => userStore.openSignUp = true} >
                     <ListItemIcon><PersonAdd color="secondary" /></ListItemIcon>
                     <ListItemText primary={langDe.signUp} />
                 </ListItem>
@@ -69,7 +71,7 @@ const CreateAccount = (props) => {
     } else {
         return null;
     }
-};
+});
 
 const LoggedInAccount = observer((props) => {
     const userStore = useContext(UserStoreContext);
