@@ -5,6 +5,8 @@ import { observer } from "mobx-react-lite";
 import { UserStoreContext } from "../../../stores/UserStore";
 import { DialogStoreContext } from "../../../stores/DialogStore";
 import { langDe, ipAddress } from "../../../constants";
+import { SignUpSuccess } from "./SignUpSuccess";
+import { SignUpFail } from "./SignUpFail";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -75,49 +77,9 @@ const SignUp = observer((props) => {
                 </DialogContent>
             </Dialog>
             <SignUpSuccess open={dialogStore.openSignUpSuccess} />
-            <SignUpErr open={dialogStore.openSignUpFail} />
+            <SignUpFail open={dialogStore.openSignUpFail} />
         </>
     );
 });
-
-function SignUpSuccess(props) {
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const dialogStore = useContext(DialogStoreContext);
-
-    const reload = () => {
-        window.location.reload();
-    };
-
-    return (
-        <Dialog open={props.open} onClose={() => dialogStore.openSignUpSuccess = false} fullScreen={fullScreen}>
-            <DialogTitle>{langDe.signUpSuccessTitle}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>{langDe.signUpSuccessText}</DialogContentText>
-                <DialogActions>
-                    <Button variant="contained" color="primary" onClick={reload}>{langDe.ok}</Button>
-                </DialogActions>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
-function SignUpErr(props) {
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const dialogStore = useContext(DialogStoreContext);
-
-    return (
-        <Dialog open={props.open} onClose={() => dialogStore.openSignUpFail = false} fullScreen={fullScreen}>
-            <DialogTitle>{langDe.signUpErrTitle}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>{langDe.signUpErrText}</DialogContentText>
-                <DialogActions>
-                    <Button variant="contained" color="secondary" onClick={props.onClose}>{langDe.ok}</Button>
-                </DialogActions>
-            </DialogContent>
-        </Dialog>
-    );
-};
 
 export { SignUp };
