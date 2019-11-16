@@ -1,8 +1,11 @@
-import { ipAddress } from "./constants";
+import {
+    ipAddress
+} from "./constants";
 
 const useSessionId = () => {
     const sessionId = document.cookie.match(new RegExp('(^| )sid=([^;]+)'));
-    if (sessionId) 
+    console.log(sessionId);
+    if (sessionId)
         return (sessionId.length) ? sessionId[0].split("=")[1] : null;
 };
 
@@ -19,4 +22,19 @@ const useLoggedIn = (sessionId) => {
     });
 };
 
-export { useSessionId, useLoggedIn };
+const saveUsername = (username) => {
+    const storage = localStorage;
+    storage.setItem("username", username);
+};
+
+const getUsername = () => {
+    const storage = localStorage;
+    return storage.getItem("username");
+};
+
+export {
+    useSessionId,
+    useLoggedIn,
+    saveUsername,
+    getUsername
+};

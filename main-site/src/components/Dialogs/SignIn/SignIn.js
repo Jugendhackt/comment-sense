@@ -5,6 +5,7 @@ import { useTheme } from "@material-ui/styles";
 import { langDe, ipAddress } from "../../../constants";
 import { UserStoreContext } from "../../../stores/UserStore";
 import { DialogStoreContext } from "../../../stores/DialogStore";
+import { saveUsername } from "../../../helpers";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -34,10 +35,11 @@ const SignIn = observer((props) => {
 
 
     const sendData = () => {
-        fetch(`${ipAddress}/api/signin?name='${userStore.username}'&password='${userStore.username}'`)
+        fetch(`${ipAddress}/api/signin?name='${userStore.username}'&password='${userStore.password}'`)
             .then(res => {
                 if (res.status === 200) {
                     dialogStore.openSignInSuccess = true;
+                    saveUsername(userStore.username);
                 } else {
                     dialogStore.openSignInFail = true;
                 }
