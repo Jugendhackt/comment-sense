@@ -26,19 +26,19 @@ const useStyles = makeStyles(theme => ({
 function Website(props) {
     const classes = useStyles();
 
-    /*
+    
     const showTitle = () => {
         if (props.url.length > 40) {
             return props.url.substring(0, 40) + "...";
         }
         return props.url;
-    }; */
+    }; 
 
 
     return (
         <ListItem button className={classes.website} >
             <Paper className={classes.paper}>
-                <Typography variant="h5">{props.url}</Typography>
+                <Typography variant="h5">{showTitle}</Typography>
                 <br />
                 <Box display="flex">
                     <ThumbUp color="secondary" />

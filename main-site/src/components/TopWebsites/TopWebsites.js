@@ -32,7 +32,7 @@ const TopWebsites = observer((props) => {
             .then(res => {
                 websiteStore.websites = res.sites;
             })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        
     }, []);
 
     function showWebsites() {
