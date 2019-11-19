@@ -32,7 +32,6 @@ const TopComments = observer((props) => {
             .then(res => {
                 commentStore.comments = res.comments;
             })
-            // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function showComments() {

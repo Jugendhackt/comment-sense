@@ -6,7 +6,7 @@ import { Website } from "./Website";
 import { WebsiteStoreContext } from "../../stores/WebsiteStore";
 import { observer } from "mobx-react-lite";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     progress: {
         margin: "5%"
     },
@@ -35,7 +35,7 @@ const TopWebsites = observer((props) => {
         
     }, []);
 
-    function showWebsites() {
+    const showWebsites = () => {
         if (Array.isArray(websiteStore.websites) && websiteStore.websites.length) {
             return Array.from(websiteStore.websites).map(item => {
                 return <Website url={item.url} comments={item.comments} key={uuid.v4()} />
