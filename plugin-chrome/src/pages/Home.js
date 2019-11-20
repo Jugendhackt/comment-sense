@@ -6,7 +6,7 @@ const Home = observer((props) => {
     
     return (
         <>
-        <CommentList />
+            <CommentList />
         </>
     );
 });
