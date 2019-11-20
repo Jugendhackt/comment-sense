@@ -1,7 +1,7 @@
 import React from "react";
 import {TopWebsites} from "./TopWebsites";
 
-function index(props) {
+const index = (props) => {
     return (
         <TopWebsites {...props} />
     );

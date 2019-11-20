@@ -18,6 +18,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+// eslint-disable-next-line no-unused-vars
 const TopWebsites = observer((props) => {
     const websiteStore = useContext(WebsiteStoreContext);
 

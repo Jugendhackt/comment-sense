@@ -23,8 +23,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function Website(props) {
+const Website = (props) => {
     const classes = useStyles();
+    const para = props;
 
     
     const showTitle = () => {
