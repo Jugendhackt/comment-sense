@@ -6,7 +6,7 @@ function NotFound(props) {
     return (
         <>
             <Typography variant="h3">{langDe.notFoundTitle}</Typography>
-            <Typography variant="p">{langDe.notFoundText}</Typography>
+            <Typography variant="body1">{langDe.notFoundText}</Typography>
         </>
     );
 };
