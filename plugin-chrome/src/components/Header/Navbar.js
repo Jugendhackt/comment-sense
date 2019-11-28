@@ -29,6 +29,7 @@ const Navbar = observer((props) => {
             return;
         dialogStore.openDrawer = !dialogStore.openDrawer;
     };
+    
     return (
         <>
             <AppBar position="static">
@@ -38,7 +39,6 @@ const Navbar = observer((props) => {
                     </IconButton>
                     <Typography variant="h6">{langDe.brandName}</Typography>
                     <LoggedIn loggedIn={userStore.loggedIn} />
-
                 </Toolbar>
                 <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} />
             </AppBar>

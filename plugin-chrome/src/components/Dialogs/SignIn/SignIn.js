@@ -45,6 +45,8 @@ const SignIn = observer((props) => {
             })
             .then(res => {
                 if (res.sid) {
+                    console.log(res.sid);
+                    userStore.sid = res.sid;
                     setStorage("sid", res.sid);
                 }
             })

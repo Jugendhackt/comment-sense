@@ -18,8 +18,8 @@ const setStorage = (id, data) => {
 };
 
 const getStorage = (id) => {
-    localStorage.getItem(id);
-    return id;
+    const item = localStorage.getItem(id);
+    return item;
 };
 
 const removeStorage = (id) => {

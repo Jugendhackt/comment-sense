@@ -7,22 +7,22 @@ import theme from "./ui/theme";
 import { CssBaseline } from '@material-ui/core';
 import { observer } from "mobx-react-lite";
 import { UserStoreContext } from './stores/UserStore';
-import { useSessionId, useLoggedIn, getUsername } from './helpers';
+import { getStorage, useLoggedIn } from './helpers';
 
 const App = observer((props) => {
   const userStore = useContext(UserStoreContext);
-  const sessionId = useSessionId();
+  const sessionId = getStorage("sid");
+  console.log(sessionId);
 
   useLoggedIn(sessionId).then(res => {
     if (res) {
       userStore.loggedIn = true;
+      userStore.username = getStorage("username");
     }
   });
 
-  console.log(localStorage.getItem("sid"));
-
   return (
-    <div>
+    <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
@@ -30,7 +30,7 @@ const App = observer((props) => {
           <Routes />
         </Router>
       </ThemeProvider>
-    </div>
+    </>
   );
 });
 

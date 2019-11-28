@@ -8,5 +8,5 @@ class UserStore {
     @observable loggedIn = false;
 };
 
-export const UserStoreContext = createContext(new UserStore);
+export const UserStoreContext = createContext(new UserStore());
 
