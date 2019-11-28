@@ -1,13 +1,12 @@
 import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
-import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
-import { useTheme } from "@material-ui/styles";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
 import { langDe, ipAddress } from "../../../constants";
 import { UserStoreContext } from "../../../stores/UserStore";
 import { DialogStoreContext } from "../../../stores/DialogStore";
 import { SignInFail } from "./SignInFail";
 import { SignInSuccess } from "./SignInSuccess";
-import { saveUsername } from "../../../helpers";
+import { setStorage } from "../../../helpers";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -32,16 +31,13 @@ const SignIn = observer((props) => {
     const dialogStore = useContext(DialogStoreContext);
 
     const classes = useStyles();
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
 
     const sendData = () => {
         fetch(`${ipAddress}/api/signin?name='${userStore.username}'&password='${userStore.password}'`)
             .then(res => {
                 if (res.status === 200) {
+                    setStorage("username", userStore.username);
                     dialogStore.openSignInSuccess = true;
-                    saveUsername(userStore.username);
                     return res.json();
                 } else {
                     dialogStore.openSignInFail = true;
@@ -49,17 +45,17 @@ const SignIn = observer((props) => {
             })
             .then(res => {
                 if (res.sid) {
-                    localStorage.setItem("sid", res.sid);
+                    setStorage("sid", res.sid);
                 }
             })
-            .catch(e => {
+            .catch((e) => {
                 dialogStore.openSignInFail = true;
-            })
+            });
     };
 
     return (
         <>
-            <Dialog open={props.open} onClose={() => dialogStore.openSignIn = false} fullScreen={fullScreen}>
+            <Dialog open={props.open} onClose={() => dialogStore.openSignIn = false} fullScreen={true}>
                 <DialogTitle>{langDe.signIn}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{langDe.signInText}</DialogContentText>

@@ -1,10 +1,5 @@
 import { ipAddress } from "./constants";
 
-const useSessionId = () => {
-    const sessionId = localStorage.getItem("sid");
-    return sessionId;
-};
-
 const useLoggedIn = (sessionId) => {
     return new Promise(resolve => {
         fetch(`${ipAddress}/api/checksid?sid='${sessionId}'`)
@@ -18,24 +13,22 @@ const useLoggedIn = (sessionId) => {
     });
 };
 
-const removeSessionId = () => {
-    localStorage.removeItem("sid");
+const setStorage = (id, data) => {
+    localStorage.setItem(id, data);
 };
 
-const saveUsername = (username) => {
-    const storage = localStorage;
-    storage.setItem("username", username);
+const getStorage = (id) => {
+    localStorage.getItem(id);
+    return id;
 };
 
-const getUsername = () => {
-    const storage = localStorage;
-    return storage.getItem("username");
+const removeStorage = (id) => {
+    localStorage.removeItem(id);
 };
 
 export {
-    useSessionId,
-    useLoggedIn,
-    saveUsername,
-    getUsername,
-    removeSessionId
+    setStorage,
+    getStorage,
+    removeStorage,
+    useLoggedIn
 };

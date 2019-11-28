@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
-import { Dialog, useMediaQuery, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
-import { useTheme } from "@material-ui/styles";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
 import { observer } from "mobx-react-lite";
 import { UserStoreContext } from "../../../stores/UserStore";
 import { DialogStoreContext } from "../../../stores/DialogStore";
@@ -26,12 +25,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignUp = observer((props) => {
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
     const userStore = useContext(UserStoreContext);
     const dialogStore = useContext(DialogStoreContext);
-
     const classes = useStyles();
 
 
@@ -51,7 +46,7 @@ const SignUp = observer((props) => {
                         dialogStore.openSignUpFail = true;
                     }
                 })
-                .catch(e => {
+                .catch((e) => {
                     dialogStore.openSignUpFail = true;
                 });
         }
@@ -59,7 +54,7 @@ const SignUp = observer((props) => {
 
     return (
         <>
-            <Dialog open={props.open} onClose={() => dialogStore.openSignUp = false} fullScreen={fullScreen}>
+            <Dialog open={props.open} onClose={() => dialogStore.openSignUp = false} fullScreen={true}>
                 <DialogTitle>{langDe.signUp}</DialogTitle>
                 <DialogContent dividers>
                     <DialogContentText>{langDe.signUpText}</DialogContentText>
