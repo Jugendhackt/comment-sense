@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
-import { AppBar, Typography, Toolbar, IconButton, makeStyles } from "@material-ui/core";
+import { AppBar, Typography, Toolbar, IconButton, makeStyles, Box } from "@material-ui/core";
 import { Person, Menu } from "@material-ui/icons";
 import { langDe } from "../../constants";
-import { UserStoreContext } from "../../stores/UserStore";
 import { DialogStoreContext } from "../../stores/DialogStore";
 import { Drawer } from "./Drawer";
 import { observer } from "mobx-react-lite";
+import { AccountDropDown } from "./AccountDropDown";
+import { UserStoreContext } from "../../stores/UserStore";
 
 const useStyles = makeStyles(theme => ({
     menuButton: {
@@ -21,15 +22,15 @@ const useStyles = makeStyles(theme => ({
 
 const Navbar = observer((props) => {
     const classes = useStyles();
-    const userStore = useContext(UserStoreContext);
     const dialogStore = useContext(DialogStoreContext);
+    const userStore = useContext(UserStoreContext);
 
     const handleOnClick = evt => {
         if (evt && evt.target.type === "keydown" && (evt.key === "Tab" || evt.key === "Shift"))
             return;
         dialogStore.openDrawer = !dialogStore.openDrawer;
     };
-    
+
     return (
         <>
             <AppBar position="static">
@@ -39,6 +40,7 @@ const Navbar = observer((props) => {
                     </IconButton>
                     <Typography variant="h6">{langDe.brandName}</Typography>
                     <LoggedIn loggedIn={userStore.loggedIn} />
+                    <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} display={userStore.loggedIn} />
                 </Toolbar>
                 <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} />
             </AppBar>
@@ -48,11 +50,20 @@ const Navbar = observer((props) => {
 
 const LoggedIn = observer((props) => {
     const classes = useStyles();
+    const dialogStore = useContext(DialogStoreContext);
+
+    const handleOnClick = (evt) => {
+        dialogStore.openAccount = true;
+        dialogStore.anchorElAccount = evt.currentTarget;
+    };
+
     if (props.loggedIn) {
         return (
-            <IconButton className={classes.account}>
-                <Person color="secondary" />
-            </IconButton>
+            <Box className={classes.account}>
+                <IconButton color="inherit" onClick={handleOnClick} >
+                    <Person color="secondary" />
+                </IconButton>
+            </Box>
         );
     } else {
         return null;
