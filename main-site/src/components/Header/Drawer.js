@@ -23,7 +23,7 @@ const Drawer = observer((props) => {
     const classes = useStyles();
 
     return (
-        <SwipeableDrawer open={props.open} onClose={props.onClose} onOpen={props.onClose}>
+        <SwipeableDrawer open={props.open} onClose={() => dialogStore.openDrawer = false} onOpen={props.onClose}>
             <div className={classes.list}>
                 <List>
                     <ListItem>

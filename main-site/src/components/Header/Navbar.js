@@ -55,7 +55,7 @@ const Navbar = observer((props) => {
                     <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} display={userStore.loggedIn} />
                 </Toolbar>
             </AppBar>
-            <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} onClose={() => dialogStore.openDrawer = false} />
+            <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} />
         </div>
     );
 });

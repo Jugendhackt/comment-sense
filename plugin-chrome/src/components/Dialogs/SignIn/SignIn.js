@@ -42,8 +42,14 @@ const SignIn = observer((props) => {
                 if (res.status === 200) {
                     dialogStore.openSignInSuccess = true;
                     saveUsername(userStore.username);
+                    return res.json();
                 } else {
                     dialogStore.openSignInFail = true;
+                }
+            })
+            .then(res => {
+                if (res.sid) {
+                    localStorage.setItem("sid", res.sid);
                 }
             })
             .catch(e => {

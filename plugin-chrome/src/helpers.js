@@ -1,9 +1,8 @@
 import { ipAddress } from "./constants";
 
 const useSessionId = () => {
-    const sessionId = document.cookie.match(new RegExp('(^| )sid=([^;]+)'));
-    if (sessionId)
-        return (sessionId.length) ? sessionId[0].split("=")[1] : null;
+    const sessionId = localStorage.getItem("sid");
+    return sessionId;
 };
 
 const useLoggedIn = (sessionId) => {
@@ -20,7 +19,7 @@ const useLoggedIn = (sessionId) => {
 };
 
 const removeSessionId = () => {
-    document.cookie = "sid=; expires Thu, 01 Jan 1970 00:00:01 GMT;";
+    localStorage.removeItem("sid");
 };
 
 const saveUsername = (username) => {

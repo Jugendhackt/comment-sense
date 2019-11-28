@@ -19,6 +19,8 @@ const App = observer((props) => {
     }
   });
 
+  console.log(localStorage.getItem("sid"));
+
   return (
     <div>
       <ThemeProvider theme={theme}>
