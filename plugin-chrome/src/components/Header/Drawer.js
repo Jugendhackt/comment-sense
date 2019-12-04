@@ -7,9 +7,9 @@ import { SignIn } from "../Dialogs/SignIn/";
 import { observer } from "mobx-react-lite";
 import { DialogStoreContext } from "../../stores/DialogStore";
 import { UserStoreContext } from "../../stores/UserStore";
-import { removeStorage } from "../../helpers";
+import { removeStorage, restoreUserStore } from "../../helpers";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     list: {
         width: 250,
         height: "100%"
@@ -65,11 +65,7 @@ const LoggedInAccount = observer((props) => {
     const userStore = useContext(UserStoreContext);
 
     const logout = () => {
-        userStore.loggedIn = false;
-        userStore.password = "";
-        userStore.username = "";
-        userStore.email = "";
-        userStore.sid = "";
+        restoreUserStore(userStore);
         removeStorage("sid");
         window.location.reload();
     };

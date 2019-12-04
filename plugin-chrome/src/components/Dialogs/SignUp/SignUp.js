@@ -19,8 +19,9 @@ const useStyles = makeStyles(theme => ({
     mb: {
         marginBottom: theme.spacing(2)
     },
-    margin: {
-        margin: theme.spacing(1)
+    center: {
+        display: "flex",
+        justifyContent: "center"
     }
 }));
 
@@ -58,18 +59,14 @@ const SignUp = observer((props) => {
                 <DialogTitle>{langDe.signUp}</DialogTitle>
                 <DialogContent dividers>
                     <DialogContentText>{langDe.signUpText}</DialogContentText>
-                    <DialogActions>
-                        <Box className={classes.box} >
-                            <TextField label={langDe.username} value={userStore.username} fullWidth required className={classes.mb} onChange={evt => userStore.username = evt.target.value} />
-                            <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
-                            <TextField label={langDe.email} value={userStore.email} fullWidth className={classes.mb} onChange={evt => userStore.email = evt.target.value} />
-                            <Box className={classes.margin} >
-                                <Button variant="contained" color="primary" className={classes.margin} onClick={sendData} >{langDe.signUp}</Button>
-                                <Button variant="contained" color="secondary" className={classes.margin} onClick={() => dialogStore.openSignUp = false}>{langDe.cancel}</Button>
-                            </Box>
-                        </Box>
-                    </DialogActions>
+                    <TextField label={langDe.username} value={userStore.username} fullWidth required className={classes.mb} onChange={evt => userStore.username = evt.target.value} />
+                    <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
+                    <TextField label={langDe.email} value={userStore.email} fullWidth className={classes.mb} onChange={evt => userStore.email = evt.target.value} />
                 </DialogContent>
+                <DialogActions className={classes.center} >
+                    <Button variant="contained" color="primary" onClick={sendData} >{langDe.signUp}</Button>
+                    <Button variant="contained" color="secondary" onClick={() => dialogStore.openSignUp = false}>{langDe.cancel}</Button>
+                </DialogActions>
             </Dialog>
             <SignUpSuccess open={dialogStore.openSignUpSuccess} />
             <SignUpFail open={dialogStore.openSignUpFail} />

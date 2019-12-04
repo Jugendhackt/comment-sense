@@ -17,8 +17,9 @@ const useStyles = makeStyles(theme => ({
         alignContent: "center",
         width: "100%"
     },
-    margin: {
-        margin: theme.spacing(1)
+    center: {
+        display: "flex",
+        justifyContent: "center"
     },
     mb: {
         marginBottom: theme.spacing(2)
@@ -61,17 +62,13 @@ const SignIn = observer((props) => {
                 <DialogTitle>{langDe.signIn}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{langDe.signInText}</DialogContentText>
-                    <DialogActions>
-                        <Box className={classes.box}>
-                            <TextField label={langDe.username} value={userStore.username} fullWidth required className={classes.mb} onChange={evt => userStore.username = evt.target.value} />
-                            <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
-                            <Box className={classes.margin}>
-                                <Button variant="contained" color="primary" className={classes.margin} onClick={sendData} >{langDe.signIn}</Button>
-                                <Button variant="contained" color="secondary" className={classes.margin} onClick={() => dialogStore.openSignIn = false} >{langDe.cancel}</Button>
-                            </Box>
-                        </Box>
-                    </DialogActions>
+                    <TextField label={langDe.username} value={userStore.username} fullWidth required className={classes.mb} onChange={evt => userStore.username = evt.target.value} />
+                    <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
                 </DialogContent>
+                <DialogActions className={classes.center} >
+                    <Button variant="contained" color="primary" onClick={sendData} >{langDe.signIn}</Button>
+                    <Button variant="contained" color="secondary" onClick={() => dialogStore.openSignIn = false} >{langDe.cancel}</Button>
+                </DialogActions>
             </Dialog>
             <SignInSuccess open={dialogStore.openSignInSuccess} />
             <SignInFail open={dialogStore.openSignInFail} />

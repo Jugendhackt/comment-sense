@@ -11,6 +11,9 @@ class DialogStore {
     @observable openAccount = false;
     @observable anchorElAccount = null;
     @observable openDrawer = false;
+    @observable openComment = false;
+    @observable openCommentSuccess = false;
+    @observable openCommentFail = false;
 };
 
 export const DialogStoreContext = createContext(new DialogStore());

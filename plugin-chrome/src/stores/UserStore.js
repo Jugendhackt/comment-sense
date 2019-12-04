@@ -6,6 +6,8 @@ class UserStore {
     @observable password = "";
     @observable sid = "";
     @observable loggedIn = false;
+    @observable title = "";
+    @observable comment = "";
 };
 
 export const UserStoreContext = createContext(new UserStore());

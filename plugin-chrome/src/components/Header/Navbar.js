@@ -33,7 +33,7 @@ const Navbar = observer((props) => {
 
     return (
         <>
-            <AppBar position="static">
+            <AppBar position="static" className={classes.appBar}>
                 <Toolbar>
                     <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={handleOnClick} >
                         <Menu />
@@ -42,8 +42,8 @@ const Navbar = observer((props) => {
                     <LoggedIn loggedIn={userStore.loggedIn} />
                     <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} display={userStore.loggedIn} />
                 </Toolbar>
-                <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} />
             </AppBar>
+            <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} />
         </>
     );
 });

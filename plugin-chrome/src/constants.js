@@ -27,7 +27,14 @@ const langDe = {
     notFoundTitle: "Seite nicht gefunden!",
     notFoundText: "Die angefragte Seite konnte nicht gefunden werden.",
     loggedInAs: "Angemeldet als: ",
-    logout: "Abmelden"
+    logout: "Abmelden",
+    addComment: "Kommentar schreiben",
+    addCommentText: "Bitte fülle alle Felder aus",
+    commentSend: "Kommentar senden",
+    commentTitle: "Titel",
+    commentText: "Kommentar",
+    commentSuccessTitle: "Kommentar erfolgreich erstellt",
+    commentSuccessText: "Hier kommt noch Text hin",
 };
 
 

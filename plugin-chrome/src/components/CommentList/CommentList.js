@@ -5,6 +5,7 @@ import { List, makeStyles, CircularProgress, Box } from "@material-ui/core";
 import { Comment } from "./Comment";
 import { ipAddress } from "../../constants";
 import { CommentStoreContext } from "../../stores/CommentStore";
+import { getCurrentTab } from "../../helpers";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -24,20 +25,30 @@ const CommentList = observer((props) => {
     const commentStore = useContext(CommentStoreContext);
 
     useEffect(() => {
-        fetch(`${ipAddress}/api/comments?count=5`)
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-            })
-            .then(res => {
-                commentStore.comments = res.comments;
-            })
+        getCurrentTab().then(url => {
+            console.log(url);
+            const url2 = `${ipAddress}/api/comments?site='${url}'`;
+            console.log(url2);
+            fetch(`${ipAddress}/api/comments?site=%27${url}%27`)
+                .then(res => {
+                    if (res.ok)
+                        return res.json();
+                })
+                .then(res => {
+                    console.log(res);
+                    commentStore.comments = res.comments;
+                })
+        })
     }, []);
 
     function showComments() {
         if (Array.isArray(commentStore.comments) && commentStore.comments.length) {
             return commentStore.comments.map(item => {
                 return <Comment date={item.date} content={item.content} title={item.headline} url={item.url} author={item.author} votes={item.likes} key={uuid.v4()} />
+            });
+        } else if (Array.isArray(commentStore.comments) && !commentStore.comments.length) {
+            return commentStore.comment.map(item => {
+                return <Comment date="1.1.1970" content="Keine Kommentare vorhanden" title="Kein Kommentar" author="CommentSense" votes="1" key={uuid.v4()} />
             });
         } else {
             return (

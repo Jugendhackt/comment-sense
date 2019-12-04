@@ -1,3 +1,5 @@
+
+/*global chrome*/
 import { ipAddress } from "./constants";
 
 const useLoggedIn = (sessionId) => {
@@ -26,9 +28,28 @@ const removeStorage = (id) => {
     localStorage.removeItem(id);
 };
 
+const restoreUserStore = (userStore) => {
+    userStore.username = "";
+    userStore.password = "";
+    userStore.email = "";
+    userStore.sid = "";
+    userStore.loggedIn = false;
+};
+
+const getCurrentTab = () => {
+    return new Promise ((resolve) => {
+        chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+            const url = tabs[0].url;
+            resolve(url);
+        });
+    });
+};
+
 export {
     setStorage,
     getStorage,
     removeStorage,
-    useLoggedIn
+    useLoggedIn,
+    restoreUserStore,
+    getCurrentTab
 };
