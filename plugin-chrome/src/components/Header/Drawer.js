@@ -1,13 +1,22 @@
-import React, { useContext } from "react";
-import { SwipeableDrawer, makeStyles, ListItem, Typography, List, Divider, ListItemText, ListItemIcon } from "@material-ui/core";
-import { langDe } from "../../constants";
-import { Person, PersonAdd, ExitToApp } from "@material-ui/icons";
-import { SignUp } from "../Dialogs/SignUp/";
-import { SignIn } from "../Dialogs/SignIn/";
-import { observer } from "mobx-react-lite";
-import { DialogStoreContext } from "../../stores/DialogStore";
-import { UserStoreContext } from "../../stores/UserStore";
-import { removeStorage, restoreUserStore } from "../../helpers";
+import React, {useContext} from "react";
+import {
+    SwipeableDrawer,
+    makeStyles,
+    ListItem,
+    Typography,
+    List,
+    Divider,
+    ListItemText,
+    ListItemIcon
+} from "@material-ui/core";
+import {langDe} from "../../constants";
+import {Person, PersonAdd, ExitToApp} from "@material-ui/icons";
+import SignUp from "../Dialogs/SignUp/SignUp";
+import SignIn from "../Dialogs/SignIn/SignIn";
+import {observer} from "mobx-react-lite";
+import {DialogStoreContext} from "../../stores/DialogStore";
+import {UserStoreContext} from "../../stores/UserStore";
+import {removeStorage, restoreUserStore} from "../../helpers";
 
 const useStyles = makeStyles((theme) => ({
     list: {
@@ -23,36 +32,38 @@ const Drawer = observer((props) => {
     const classes = useStyles();
 
     return (
-        <SwipeableDrawer open={props.open} onClose={() => dialogStore.openDrawer = false} onOpen={props.onOpen}>
+        <SwipeableDrawer open={dialogStore.openDrawer} onClose={() => dialogStore.openDrawer = false}
+                         onOpen={props.onOpen}>
             <div className={classes.list}>
                 <List>
                     <ListItem>
                         <Typography variant="h6">{langDe.brandName}</Typography>
                     </ListItem>
-                    <Divider />
-                    <CreateAccount display={userStore.loggedIn} />
-                    <LoggedInAccount display={userStore.loggedIn} />
+                    <Divider/>
+                    <CreateAccount/>
+                    <LoggedInAccount/>
                 </List>
             </div>
-            <SignUp open={dialogStore.openSignUp} />
-            <SignIn open={dialogStore.openSignIn} />
+            <SignUp/>
+            <SignIn/>
         </SwipeableDrawer>
     );
 });
 
 const CreateAccount = observer((props) => {
     const dialogStore = useContext(DialogStoreContext);
+    const userStore = useContext(UserStoreContext);
 
-    if (!props.display) {
+    if (!userStore.loggedIn) {
         return (
             <>
-                <ListItem button onClick={() => dialogStore.openSignIn = true} >
-                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
-                    <ListItemText primary={langDe.signIn} />
+                <ListItem button onClick={() => dialogStore.openSignIn = true}>
+                    <ListItemIcon><Person color="secondary"/></ListItemIcon>
+                    <ListItemText primary={langDe.signIn}/>
                 </ListItem>
-                <ListItem button onClick={() => dialogStore.openSignUp = true} >
-                    <ListItemIcon><PersonAdd color="secondary" /></ListItemIcon>
-                    <ListItemText primary={langDe.signUp} />
+                <ListItem button onClick={() => dialogStore.openSignUp = true}>
+                    <ListItemIcon><PersonAdd color="secondary"/></ListItemIcon>
+                    <ListItemText primary={langDe.signUp}/>
                 </ListItem>
             </>
         );
@@ -70,16 +81,16 @@ const LoggedInAccount = observer((props) => {
         window.location.reload();
     };
 
-    if (props.display) {
+    if (userStore.loggedIn) {
         return (
             <>
                 <ListItem button>
-                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
-                    <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`} />
+                    <ListItemIcon><Person color="secondary"/></ListItemIcon>
+                    <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`}/>
                 </ListItem>
                 <ListItem button onClick={logout}>
-                    <ListItemIcon><ExitToApp color="secondary" /></ListItemIcon>
-                    <ListItemText primary={langDe.logout} />
+                    <ListItemIcon><ExitToApp color="secondary"/></ListItemIcon>
+                    <ListItemText primary={langDe.logout}/>
                 </ListItem>
             </>
         );
@@ -88,4 +99,4 @@ const LoggedInAccount = observer((props) => {
     }
 });
 
-export { Drawer };
+export default Drawer;

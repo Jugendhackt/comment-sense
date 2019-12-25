@@ -14,6 +14,6 @@ class DialogStore {
     @observable openComment = false;
     @observable openCommentSuccess = false;
     @observable openCommentFail = false;
-};
+}
 
 export const DialogStoreContext = createContext(new DialogStore());

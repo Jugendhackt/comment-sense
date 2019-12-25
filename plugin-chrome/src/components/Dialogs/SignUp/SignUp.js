@@ -1,11 +1,21 @@
-import React, { useContext } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
-import { observer } from "mobx-react-lite";
-import { UserStoreContext } from "../../../stores/UserStore";
-import { DialogStoreContext } from "../../../stores/DialogStore";
-import { langDe, ipAddress } from "../../../constants";
-import { SignUpSuccess } from "./SignUpSuccess";
-import { SignUpFail } from "./SignUpFail";
+import React, {useContext} from "react";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    TextField,
+    Box,
+    makeStyles,
+    Button
+} from "@material-ui/core";
+import {observer} from "mobx-react-lite";
+import {UserStoreContext} from "../../../stores/UserStore";
+import {DialogStoreContext} from "../../../stores/DialogStore";
+import {langDe, ipAddress} from "../../../constants";
+import SignUpSuccess from "./SignUpSuccess";
+import SignUpFail from "./SignUpFail";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -55,23 +65,28 @@ const SignUp = observer((props) => {
 
     return (
         <>
-            <Dialog open={props.open} onClose={() => dialogStore.openSignUp = false} fullScreen={true}>
+            <Dialog open={dialogStore.openSignUp} onClose={() => dialogStore.openSignUp = false} fullScreen={true}>
                 <DialogTitle>{langDe.signUp}</DialogTitle>
                 <DialogContent dividers>
                     <DialogContentText>{langDe.signUpText}</DialogContentText>
-                    <TextField label={langDe.username} value={userStore.username} fullWidth required className={classes.mb} onChange={evt => userStore.username = evt.target.value} />
-                    <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
-                    <TextField label={langDe.email} value={userStore.email} fullWidth className={classes.mb} onChange={evt => userStore.email = evt.target.value} />
+                    <TextField label={langDe.username} value={userStore.username} fullWidth required
+                               className={classes.mb} onChange={evt => userStore.username = evt.target.value}/>
+                    <TextField label={langDe.password} value={userStore.password} fullWidth required
+                               className={classes.mb} onChange={evt => userStore.password = evt.target.value}
+                               type="password"/>
+                    <TextField label={langDe.email} value={userStore.email} fullWidth className={classes.mb}
+                               onChange={evt => userStore.email = evt.target.value}/>
                 </DialogContent>
-                <DialogActions className={classes.center} >
-                    <Button variant="contained" color="primary" onClick={sendData} >{langDe.signUp}</Button>
-                    <Button variant="contained" color="secondary" onClick={() => dialogStore.openSignUp = false}>{langDe.cancel}</Button>
+                <DialogActions className={classes.center}>
+                    <Button variant="contained" color="primary" onClick={sendData}>{langDe.signUp}</Button>
+                    <Button variant="contained" color="secondary"
+                            onClick={() => dialogStore.openSignUp = false}>{langDe.cancel}</Button>
                 </DialogActions>
             </Dialog>
-            <SignUpSuccess open={dialogStore.openSignUpSuccess} />
-            <SignUpFail open={dialogStore.openSignUpFail} />
+            <SignUpSuccess/>
+            <SignUpFail/>
         </>
     );
 });
 
-export { SignUp };
+export default SignUp;

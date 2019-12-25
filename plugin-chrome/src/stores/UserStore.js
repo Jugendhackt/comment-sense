@@ -1,5 +1,5 @@
-import { observable } from "mobx";
-import { createContext } from "react";
+import {observable} from "mobx";
+import {createContext} from "react";
 
 class UserStore {
     @observable username = "";
@@ -8,7 +8,7 @@ class UserStore {
     @observable loggedIn = false;
     @observable title = "";
     @observable comment = "";
-};
+}
 
 export const UserStoreContext = createContext(new UserStore());
 

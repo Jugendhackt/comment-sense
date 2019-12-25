@@ -1,11 +1,11 @@
-import { ListItemIcon, ListItemText, Menu, MenuItem } from "@material-ui/core";
-import { Person } from "@material-ui/icons";
-import { observer } from "mobx-react-lite";
-import React, { useContext } from "react";
-import { langDe } from "../../constants";
-import { removeStorage, restoreUserStore } from "../../helpers";
-import { DialogStoreContext } from "../../stores/DialogStore";
-import { UserStoreContext } from "../../stores/UserStore";
+import {ListItemIcon, ListItemText, Menu, MenuItem} from "@material-ui/core";
+import {Person} from "@material-ui/icons";
+import {observer} from "mobx-react-lite";
+import React, {useContext} from "react";
+import {langDe} from "../../constants";
+import {removeStorage, restoreUserStore} from "../../helpers";
+import {DialogStoreContext} from "../../stores/DialogStore";
+import {UserStoreContext} from "../../stores/UserStore";
 
 const AccountDropDown = observer((props) => {
     const userStore = useContext(UserStoreContext);
@@ -22,16 +22,16 @@ const AccountDropDown = observer((props) => {
         window.location.reload();
     };
 
-    if (props.display) {
+    if (userStore.loggedIn) {
         return (
-            <Menu keepMounted anchorEl={props.anchorEl} open={props.open} onClose={handleOnClose}>
+            <Menu keepMounted={true} anchorEl={dialogStore.anchorElAccount} open={dialogStore.openAccount} onClose={handleOnClose}>
                 <MenuItem>
-                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
-                    <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`} />
+                    <ListItemIcon><Person color="secondary"/></ListItemIcon>
+                    <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`}/>
                 </MenuItem>
                 <MenuItem onClick={logout}>
-                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
-                    <ListItemText primary={langDe.logout} />
+                    <ListItemIcon><Person color="secondary"/></ListItemIcon>
+                    <ListItemText primary={langDe.logout}/>
                 </MenuItem>
             </Menu>
         );
@@ -40,4 +40,4 @@ const AccountDropDown = observer((props) => {
     }
 });
 
-export { AccountDropDown };
+export default AccountDropDown;

@@ -1,6 +1,6 @@
 import React from "react";
-import { ListItem, Paper, makeStyles, Typography, ListItemText, Box } from "@material-ui/core";
-import { ThumbUp } from "@material-ui/icons";
+import {ListItem, Paper, makeStyles, Typography, ListItemText, Box} from "@material-ui/core";
+import {ThumbUp} from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
     comment: {
@@ -37,12 +37,12 @@ const Comment = (props) => {
                     <Typography variant="h5">{props.title}</Typography>
                     <Typography variant="caption">{props.date}</Typography>
                 </Box>
-                <ListItemText primary={props.content} className={classes.mb} />
+                <ListItemText primary={props.content} className={classes.mb}/>
                 <Box className={classes.box}>
                     <Typography variant="caption">{props.author}</Typography>
                     <Box display="flex">
-                        <ThumbUp color="secondary" />
-                        <ListItemText primary={props.votes} className={classes.text} />
+                        <ThumbUp color="secondary"/>
+                        <ListItemText primary={props.votes} className={classes.text}/>
                     </Box>
                 </Box>
             </Paper>
@@ -50,4 +50,4 @@ const Comment = (props) => {
     );
 };
 
-export { Comment };
+export default Comment;

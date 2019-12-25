@@ -1,6 +1,5 @@
-
 /*global chrome*/
-import { ipAddress } from "./constants";
+import {ipAddress} from "./constants";
 
 const useLoggedIn = (sessionId) => {
     return new Promise(resolve => {
@@ -37,10 +36,11 @@ const restoreUserStore = (userStore) => {
 };
 
 const getCurrentTab = () => {
-    return new Promise ((resolve) => {
-        chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+    return new Promise((resolve) => {
+        chrome.tabs.query({active: true}, (tabs) => {
+            console.log(tabs[0]);
             const url = tabs[0].url;
-            resolve(url);
+            resolve(tabs[0].url);
         });
     });
 };

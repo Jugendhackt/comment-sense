@@ -1,12 +1,21 @@
-import React, { useContext } from "react";
-import { observer } from "mobx-react-lite";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Box, makeStyles, Button } from "@material-ui/core";
-import { langDe, ipAddress } from "../../../constants";
-import { UserStoreContext } from "../../../stores/UserStore";
-import { DialogStoreContext } from "../../../stores/DialogStore";
-import { SignInFail } from "./SignInFail";
-import { SignInSuccess } from "./SignInSuccess";
-import { setStorage } from "../../../helpers";
+import React, {useContext} from "react";
+import {observer} from "mobx-react-lite";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    TextField,
+    makeStyles,
+    Button
+} from "@material-ui/core";
+import {langDe, ipAddress} from "../../../constants";
+import {UserStoreContext} from "../../../stores/UserStore";
+import {DialogStoreContext} from "../../../stores/DialogStore";
+import SignInFail from "./SignInFail";
+import SignInSuccess from "./SignInSuccess";
+import {setStorage} from "../../../helpers";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -58,22 +67,26 @@ const SignIn = observer((props) => {
 
     return (
         <>
-            <Dialog open={props.open} onClose={() => dialogStore.openSignIn = false} fullScreen={true}>
+            <Dialog open={dialogStore.openSignIn} onClose={() => dialogStore.openSignIn = false} fullScreen={true}>
                 <DialogTitle>{langDe.signIn}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{langDe.signInText}</DialogContentText>
-                    <TextField label={langDe.username} value={userStore.username} fullWidth required className={classes.mb} onChange={evt => userStore.username = evt.target.value} />
-                    <TextField label={langDe.password} value={userStore.password} fullWidth required className={classes.mb} onChange={evt => userStore.password = evt.target.value} type="password" />
+                    <TextField label={langDe.username} value={userStore.username} fullWidth required
+                               className={classes.mb} onChange={evt => userStore.username = evt.target.value}/>
+                    <TextField label={langDe.password} value={userStore.password} fullWidth required
+                               className={classes.mb} onChange={evt => userStore.password = evt.target.value}
+                               type="password"/>
                 </DialogContent>
-                <DialogActions className={classes.center} >
-                    <Button variant="contained" color="primary" onClick={sendData} >{langDe.signIn}</Button>
-                    <Button variant="contained" color="secondary" onClick={() => dialogStore.openSignIn = false} >{langDe.cancel}</Button>
+                <DialogActions className={classes.center}>
+                    <Button variant="contained" color="primary" onClick={sendData}>{langDe.signIn}</Button>
+                    <Button variant="contained" color="secondary"
+                            onClick={() => dialogStore.openSignIn = false}>{langDe.cancel}</Button>
                 </DialogActions>
             </Dialog>
-            <SignInSuccess open={dialogStore.openSignInSuccess} />
-            <SignInFail open={dialogStore.openSignInFail} />
+            <SignInSuccess/>
+            <SignInFail/>
         </>
     );
 });
 
-export { SignIn };
+export default SignIn;

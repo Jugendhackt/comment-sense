@@ -1,4 +1,4 @@
-body {
+body, #root {
     width: 350px;
     height: 600px;
 }

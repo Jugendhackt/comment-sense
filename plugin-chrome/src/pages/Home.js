@@ -1,14 +1,13 @@
 import React from "react";
-import { observer } from "mobx-react-lite";
-import {CommentList} from "../components/CommentList";
+import CommentList from "../components/CommentList/CommentList";
 
-const Home = observer((props) => {
-    
+const Home = (props) => {
+
     return (
         <>
-            <CommentList />
+            <CommentList/>
         </>
     );
-});
+};
 
-export { Home };
+export default Home;

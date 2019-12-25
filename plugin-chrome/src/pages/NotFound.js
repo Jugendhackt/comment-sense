@@ -1,8 +1,8 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
-import { langDe } from "../constants";
+import {Typography} from "@material-ui/core";
+import {langDe} from "../constants";
 
-function NotFound(props) {
+const NotFound = (props) => {
     return (
         <>
             <Typography variant="h3">{langDe.notFoundTitle}</Typography>
@@ -11,4 +11,4 @@ function NotFound(props) {
     );
 };
 
-export { NotFound };
+export default NotFound;

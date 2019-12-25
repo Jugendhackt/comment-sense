@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
-import { AppBar, Typography, Toolbar, IconButton, makeStyles, Box } from "@material-ui/core";
-import { Person, Menu } from "@material-ui/icons";
-import { langDe } from "../../constants";
-import { DialogStoreContext } from "../../stores/DialogStore";
-import { Drawer } from "./Drawer";
-import { observer } from "mobx-react-lite";
-import { AccountDropDown } from "./AccountDropDown";
-import { UserStoreContext } from "../../stores/UserStore";
+import React, {useContext} from "react";
+import {AppBar, Typography, Toolbar, IconButton, makeStyles, Box} from "@material-ui/core";
+import {Person, Menu} from "@material-ui/icons";
+import {langDe} from "../../constants";
+import {DialogStoreContext} from "../../stores/DialogStore";
+import Drawer from "./Drawer";
+import {observer} from "mobx-react-lite";
+import AccountDropDown from "./AccountDropDown";
+import {UserStoreContext} from "../../stores/UserStore";
 
 const useStyles = makeStyles(theme => ({
     menuButton: {
@@ -21,9 +21,10 @@ const useStyles = makeStyles(theme => ({
 
 
 const Navbar = observer((props) => {
-    const classes = useStyles();
     const dialogStore = useContext(DialogStoreContext);
     const userStore = useContext(UserStoreContext);
+
+    const classes = useStyles();
 
     const handleOnClick = evt => {
         if (evt && evt.target.type === "keydown" && (evt.key === "Tab" || evt.key === "Shift"))
@@ -35,33 +36,35 @@ const Navbar = observer((props) => {
         <>
             <AppBar position="static" className={classes.appBar}>
                 <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={handleOnClick} >
-                        <Menu />
+                    <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={handleOnClick}>
+                        <Menu/>
                     </IconButton>
                     <Typography variant="h6">{langDe.brandName}</Typography>
-                    <LoggedIn loggedIn={userStore.loggedIn} />
-                    <AccountDropDown open={dialogStore.openAccount} anchorEl={dialogStore.anchorElAccount} display={userStore.loggedIn} />
+                    <LoggedIn/>
+                    <AccountDropDown/>
                 </Toolbar>
             </AppBar>
-            <Drawer open={dialogStore.openDrawer} onOpen={handleOnClick} />
+            <Drawer onOpen={handleOnClick}/>
         </>
     );
 });
 
 const LoggedIn = observer((props) => {
-    const classes = useStyles();
     const dialogStore = useContext(DialogStoreContext);
+    const userStore = useContext(UserStoreContext);
+
+    const classes = useStyles();
 
     const handleOnClick = (evt) => {
         dialogStore.openAccount = true;
         dialogStore.anchorElAccount = evt.currentTarget;
     };
 
-    if (props.loggedIn) {
+    if (userStore.loggedIn) {
         return (
             <Box className={classes.account}>
-                <IconButton color="inherit" onClick={handleOnClick} >
-                    <Person color="secondary" />
+                <IconButton color="inherit" onClick={handleOnClick}>
+                    <Person color="secondary"/>
                 </IconButton>
             </Box>
         );
@@ -70,4 +73,4 @@ const LoggedIn = observer((props) => {
     }
 });
 
-export { Navbar };
+export default Navbar;
