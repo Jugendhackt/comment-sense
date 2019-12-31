@@ -21,7 +21,8 @@
   "homepage_url": "https://github.com/Jugendhackt/comment-sense/",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "tabs"
   ],
   "content_security_policy": "script-src 'self' 'sha256-Oumozv53GP3iSStwljUPtn3nxfSj8CnH43N/xZ22az4='; object-src 'self'"
 }

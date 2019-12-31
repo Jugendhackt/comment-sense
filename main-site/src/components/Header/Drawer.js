@@ -23,7 +23,7 @@ const Drawer = observer((props) => {
     const classes = useStyles();
 
     return (
-        <SwipeableDrawer open={props.open} onClose={() => dialogStore.openDrawer = false} onOpen={props.onClose}>
+        <SwipeableDrawer open={props.open} onClose={() => dialogStore.openDrawer = false} onOpen={props.onOpen}>
             <div className={classes.list}>
                 <List>
                     <ListItem>
@@ -110,4 +110,4 @@ const LoggedInAccount = observer((props) => {
     }
 });
 
-export { Drawer };
+export default Drawer;
