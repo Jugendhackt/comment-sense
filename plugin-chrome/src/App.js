@@ -10,8 +10,7 @@ import {CssBaseline} from '@material-ui/core';
 import {observer} from "mobx-react-lite";
 import {useStores, useLoggedIn} from "./util/hooks";
 
-const App = observer((props) => {
-    const [loading, setLoading] = useState(true);
+const App = observer(() => {
 
     const {userStore} = useStores();
     const sessionId = getStorage("sid");
@@ -21,13 +20,10 @@ const App = observer((props) => {
             userStore.loggedIn = true;
             userStore.handleUsername(getStorage("username"));
             userStore.handleSid(sessionId);
-            setLoading(false);
         } else {
-            setLoading(false);
         }
     });
 
-    if (loading === false) {
         return (
             <>
                 <ThemeProvider theme={theme}>
@@ -40,9 +36,6 @@ const App = observer((props) => {
                 </ThemeProvider>
             </>
         );
-    } else {
-        return null;
-    }
 });
 
 export default App;

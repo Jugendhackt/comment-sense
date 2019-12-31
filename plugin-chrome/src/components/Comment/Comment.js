@@ -58,7 +58,7 @@ const Comment = (props) => {
     if (props.voted) {
         color = "secondary";
     } else {
-        color = "";
+        color = "primary";
     }
 
     return (

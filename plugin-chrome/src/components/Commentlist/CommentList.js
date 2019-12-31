@@ -8,7 +8,7 @@ import {getCurrentTab} from "../../util/helpers";
 import {commentRoute} from "../../util/routes";
 import {useStores} from "../../util/hooks";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     box: {
         display: "flex",
         flexDirection: "column",
@@ -20,22 +20,23 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const CommentList = observer((props) => {
+const CommentList = observer(() => {
     const {commentStore, userStore} = useStores();
     const classes = useStyles();
 
-
-    getCurrentTab().then(url => {
-        console.log(url, "url");
-        fetch(commentRoute(url, userStore.username))
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-            })
-            .then(res => {
-                commentStore.handleComments(res.comments);
-            })
-    })
+    useEffect(() => {
+        getCurrentTab().then(url => {
+            console.log(url, "url");
+            fetch(commentRoute(url, userStore.username))
+                .then(res => {
+                    if (res.ok)
+                        return res.json();
+                })
+                .then(res => {
+                    commentStore.handleComments(res.comments);
+                })
+        })
+    }, []);
 
     const showComments = () => {
         if (Array.isArray(commentStore.comments) && commentStore.comments.length) {
