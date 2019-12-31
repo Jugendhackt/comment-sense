@@ -1,15 +1,15 @@
-import React, {useContext} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import {makeStyles} from "@material-ui/styles";
 import {Button} from "@material-ui/core";
-import {langDe} from "../../constants";
-import {DialogStoreContext} from "../../stores/DialogStore";
-import Comment from "../Dialogs/CommentDialog/Comment";
+import {langDe} from "../../util/lang";
+import {CreateComment} from "../CreateComment";
+import {useStores} from "../../util/hooks";
 
 const useStyles = makeStyles((theme) => ({
     footer: {
         display: "flex",
-        position: "absolute",
+        position: "fixed",
         bottom: 0,
         width: "100%",
         backgroundColor: theme.palette.primary.main,
@@ -19,18 +19,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Footer = observer((props) => {
-    const dialogStore = useContext(DialogStoreContext);
+    const {dialogStore, userStore} = useStores();
 
     const classes = useStyles();
 
-    return (
-        <>
-            <Comment/>
-            <footer className={classes.footer}>
-                <Button onClick={() => dialogStore.openComment = true}>{langDe.addComment}</Button>
-            </footer>
-        </>
-    );
+    if (userStore.loggedIn) {
+        return (
+            <>
+                <CreateComment/>
+                <footer className={classes.footer}>
+                    <Button onClick={() => dialogStore.handleComment(true)}>{langDe.addComment}</Button>
+                </footer>
+            </>
+        );
+    } else {
+        return null;
+    }
 });
 
 export default Footer;

@@ -1,6 +1,6 @@
 import React from "react";
 import {Typography} from "@material-ui/core";
-import {langDe} from "../constants";
+import {langDe} from "../util/lang";
 
 const NotFound = (props) => {
     return (

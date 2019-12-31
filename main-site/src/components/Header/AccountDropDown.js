@@ -50,4 +50,4 @@ const AccountDropDown = observer((props) => {
     }
 });
 
-export { AccountDropDown };
+export default AccountDropDown;

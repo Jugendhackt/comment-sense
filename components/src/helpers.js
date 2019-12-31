@@ -51,9 +51,10 @@ export const restoreUserStore = (userStore) => {
 
 export const getCurrentTab = async () => {
     return new Promise((resolve) => {
-        chrome.tabs.query({active: true}, (tabs) => {
+        resolve("https://www.google.de/");
+        /*chrome.tabs.query({active: true}, (tabs) => {
             resolve(tabs[0].url);
-        });
+        });*/
     });
 };
 

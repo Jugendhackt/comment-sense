@@ -1,5 +1,5 @@
 import React from "react";
-import CommentList from "../components/CommentList/CommentList";
+import {CommentList} from "../components/Commentlist";
 
 const Home = (props) => {
 

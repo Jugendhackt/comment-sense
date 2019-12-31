@@ -1,39 +1,48 @@
-import React, {useContext} from 'react';
+import React, {useState} from 'react';
 import {BrowserRouter as Router} from "react-router-dom";
-import Navbar from "./components/Header/Navbar";
-import Footer from "./components/Footer/Footer";
+import {Header} from "./components/Header";
+import {getStorage} from "./util/helpers";
+import {Footer} from "./components/Footer";
 import Routes from "./pages/Routes";
 import {ThemeProvider} from '@material-ui/styles';
-import theme from "./ui/theme";
+import theme from "./theme";
 import {CssBaseline} from '@material-ui/core';
 import {observer} from "mobx-react-lite";
-import {UserStoreContext} from './stores/UserStore';
-import {getStorage, useLoggedIn} from './helpers';
+import {useStores, useLoggedIn} from "./util/hooks";
 
 const App = observer((props) => {
-    const userStore = useContext(UserStoreContext);
+    const [loading, setLoading] = useState(true);
+
+    const {userStore} = useStores();
     const sessionId = getStorage("sid");
-    console.log(sessionId);
 
     useLoggedIn(sessionId).then(res => {
         if (res) {
             userStore.loggedIn = true;
-            userStore.username = getStorage("username");
+            userStore.handleUsername(getStorage("username"));
+            userStore.handleSid(sessionId);
+            setLoading(false);
+        } else {
+            setLoading(false);
         }
     });
 
-    return (
-        <>
-            <ThemeProvider theme={theme}>
-                <CssBaseline/>
-                <Router>
-                    <Navbar/>
-                    <Routes/>
-                    <Footer/>
-                </Router>
-            </ThemeProvider>
-        </>
-    );
+    if (loading === false) {
+        return (
+            <>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline/>
+                    <Router>
+                        <Header/>
+                        <Routes/>
+                        <Footer/>
+                    </Router>
+                </ThemeProvider>
+            </>
+        );
+    } else {
+        return null;
+    }
 });
 
 export default App;
