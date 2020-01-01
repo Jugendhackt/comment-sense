@@ -50,8 +50,10 @@ export const CreateComment = observer((props) => {
                 .then(res => {
                     if (res.status === 200) {
                         dialogStore.handleCommentSuccess(true);
+                        dialogStore.handleComment(false);
                     } else {
                         dialogStore.handleCommentFail(true);
+                        dialogStore.handleComment(false);
                     }
                 })
                 .catch(e => {

@@ -5,7 +5,7 @@ export const useLoggedIn = (sessionId) => {
         if (sessionId !== null) {
             fetch(`${ipAddress}/api/checksid?sid='${sessionId}'`)
                 .then(res => {
-                    if (res.status === 410) {
+                    if (res.status === 401) {
                         resolve(false);
                     } else if (res.status === 200) {
                         resolve(true);

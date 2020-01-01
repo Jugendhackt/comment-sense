@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Box, ListItem, ListItemText, makeStyles, Paper, Typography} from "@material-ui/core";
 import {ThumbUp} from "@material-ui/icons";
 import {useStores} from "../../util/hooks";
@@ -29,11 +29,13 @@ const useStyles = makeStyles(theme => ({
 
 
 const Comment = (props) => {
-    const classes = useStyles();
-
     const {userStore} = useStores();
 
+    const classes = useStyles();
+
+
     const sendVote = () => {
+        console.log(userStore.sid);
         fetch(voteCommentRoute(), {
             method: "PATCH",
             headers: {
@@ -43,7 +45,8 @@ const Comment = (props) => {
                 sid: userStore.sid,
                 username: userStore.username,
                 id: props.id,
-                vote: 1
+                vote: !props.voted,
+                password: "q"
             })
         }).then(res => {
             if (res.status === 200) {
@@ -54,12 +57,7 @@ const Comment = (props) => {
         })
     };
 
-    let color;
-    if (props.voted) {
-        color = "secondary";
-    } else {
-        color = "primary";
-    }
+
 
     return (
         <ListItem button className={classes.comment}>
@@ -72,7 +70,7 @@ const Comment = (props) => {
                 <Box className={classes.box}>
                     <Typography variant="caption">{props.author}</Typography>
                     <Box display="flex" onClick={sendVote}>
-                        <ThumbUp color={color}/>
+                        <ThumbUp color={(props.voted) ? "primary" : "inherit"}/>
                         <ListItemText primary={props.votes} className={classes.text}/>
                     </Box>
                 </Box>

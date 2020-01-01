@@ -37,10 +37,9 @@ export const restoreUserStore = (userStore) => {
 
 export const getCurrentTab = () => {
     return new Promise((resolve) => {
-        /*chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs) => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
             console.log(tabs[0].url, "getCurrentTab");
             resolve(tabs[0].url);
-        });*/
-        resolve("https://github.com/");
+        })
     });
 };

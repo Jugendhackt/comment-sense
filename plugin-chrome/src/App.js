@@ -6,12 +6,12 @@ import {Footer} from "./components/Footer";
 import Routes from "./pages/Routes";
 import {ThemeProvider} from '@material-ui/styles';
 import theme from "./theme";
-import {CssBaseline} from '@material-ui/core';
+import {CircularProgress, CssBaseline, makeStyles} from '@material-ui/core';
 import {observer} from "mobx-react-lite";
 import {useStores, useLoggedIn} from "./util/hooks";
 
 const App = observer(() => {
-
+    const [loading, setLoading] = useState(true);
     const {userStore} = useStores();
     const sessionId = getStorage("sid");
 
@@ -20,10 +20,13 @@ const App = observer(() => {
             userStore.loggedIn = true;
             userStore.handleUsername(getStorage("username"));
             userStore.handleSid(sessionId);
+            setLoading(false);
         } else {
+            setLoading(false);
         }
     });
 
+    if (!loading) {
         return (
             <>
                 <ThemeProvider theme={theme}>
@@ -36,6 +39,14 @@ const App = observer(() => {
                 </ThemeProvider>
             </>
         );
+    } else {
+        return (
+            <ThemeProvider theme={theme}>
+                <CssBaseline/>
+                <CircularProgress size={100}/>
+            </ThemeProvider>
+        );
+    }
 });
 
 export default App;

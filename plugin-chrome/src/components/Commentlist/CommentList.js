@@ -25,17 +25,22 @@ const CommentList = observer(() => {
     const classes = useStyles();
 
     useEffect(() => {
-        getCurrentTab().then(url => {
-            console.log(url, "url");
-            fetch(commentRoute(url, userStore.username))
-                .then(res => {
-                    if (res.ok)
-                        return res.json();
-                })
-                .then(res => {
-                    commentStore.handleComments(res.comments);
-                })
-        })
+        const getData = () => {
+            getCurrentTab().then(url => {
+                fetch(commentRoute(url, userStore.username))
+                    .then(res => {
+                        if (res.ok)
+                            return res.json();
+                    })
+                    .then(res => {
+                        commentStore.handleComments(res.comments);
+                    })
+            })
+        };
+
+        const interval = setInterval(getData, 30000);
+        getData();
+        return () => clearInterval(interval);
     }, []);
 
     const showComments = () => {

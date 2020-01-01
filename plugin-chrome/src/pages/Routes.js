@@ -6,13 +6,15 @@ import NotFound from "./NotFound";
 
 const Routes = (props) => {
     return (
-        <Container fixed>
-            <Switch>
-                <Route exact path="/index.html" render={(para) => <Home {...para} />}/>
-                <Route exact path="/404/" render={(para) => <NotFound {...para} />}/>
-                <Redirect to="/404/"/>
-            </Switch>
-        </Container>
+        <div className="scrollbar">
+            <Container fixed>
+                <Switch>
+                    <Route exact path="/index.html" render={(para) => <Home {...para} />}/>
+                    <Route exact path="/404/" render={(para) => <NotFound {...para} />}/>
+                    <Redirect to="/404/"/>
+                </Switch>
+            </Container>
+        </div>
     );
 };
 
