@@ -3,9 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.WebsiteStoreContext = void 0;
-
-var _react = require("react");
+exports["default"] = exports.WebsiteStore = void 0;
 
 var _mobx = require("mobx");
 
@@ -31,8 +29,6 @@ var WebsiteStore = (_class = (_temp = function WebsiteStore() {
     return [];
   }
 })), _class);
-;
-var WebsiteStoreContext = (0, _react.createContext)(new WebsiteStore());
-exports.WebsiteStoreContext = WebsiteStoreContext;
+exports.WebsiteStore = WebsiteStore;
 var _default = WebsiteStore;
 exports["default"] = _default;

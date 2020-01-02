@@ -84,7 +84,7 @@ const SignIn = observer((props) => {
             <Alert open={dialogStore.openSignInSuccess} onClose={() => dialogStore.handleSignInSuccess(false)}
                    title={langDe.signInSuccessTitle} text={langDe.signInSuccessText}/>
             <Alert open={dialogStore.openSignInFail} onClose={() => dialogStore.handleSignInFail(false)}
-                   title={langDe.signUpErrTitle} text={langDe.signUpErrText}/>
+                   title={langDe.signInErrTitle} text={langDe.signInErrTitle}/>
         </>
     );
 });

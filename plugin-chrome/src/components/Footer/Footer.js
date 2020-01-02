@@ -2,9 +2,8 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {makeStyles} from "@material-ui/styles";
 import {Button} from "@material-ui/core";
-import {langDe} from "../../util/lang";
+import {langDe, useStores} from "package";
 import {CreateComment} from "../CreateComment";
-import {useStores} from "../../util/hooks";
 
 const useStyles = makeStyles((theme) => ({
     footer: {

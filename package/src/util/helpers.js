@@ -1,3 +1,5 @@
+/*global chrome*/
+
 export const setStorage = (id, value) => {
     if (Array.isArray(id) && Array.isArray(value)) {
         for (let i = 0; i < id.length; i++) {
@@ -31,4 +33,12 @@ export const restoreUserStore = (userStore) => {
     userStore.email = "";
     userStore.sid = "";
     userStore.loggedIn = false;
+};
+export const getCurrentTab = () => {
+    return new Promise((resolve) => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            console.log(tabs[0].url, "getCurrentTab");
+            resolve(tabs[0].url);
+        })
+    });
 };

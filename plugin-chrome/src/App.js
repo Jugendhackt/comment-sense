@@ -1,14 +1,11 @@
 import React, {useState} from 'react';
 import {BrowserRouter as Router} from "react-router-dom";
-import {Header} from "./components/Header";
-import {getStorage} from "./util/helpers";
+import {Header, getStorage, useStores, useLoggedIn, theme} from "package";
 import {Footer} from "./components/Footer";
 import Routes from "./pages/Routes";
 import {ThemeProvider} from '@material-ui/styles';
-import theme from "./theme";
-import {CircularProgress, CssBaseline, makeStyles} from '@material-ui/core';
+import {CircularProgress, CssBaseline} from '@material-ui/core';
 import {observer} from "mobx-react-lite";
-import {useStores, useLoggedIn} from "./util/hooks";
 
 const App = observer(() => {
     const [loading, setLoading] = useState(true);

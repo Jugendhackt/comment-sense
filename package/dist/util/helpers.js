@@ -3,8 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.restoreUserStore = exports.removeStorage = exports.getStorage = exports.setStorage = void 0;
+exports.getCurrentTab = exports.restoreUserStore = exports.removeStorage = exports.getStorage = exports.setStorage = void 0;
 
+/*global chrome*/
 var setStorage = function setStorage(id, value) {
   if (Array.isArray(id) && Array.isArray(value)) {
     for (var i = 0; i < id.length; i++) {
@@ -49,3 +50,17 @@ var restoreUserStore = function restoreUserStore(userStore) {
 };
 
 exports.restoreUserStore = restoreUserStore;
+
+var getCurrentTab = function getCurrentTab() {
+  return new Promise(function (resolve) {
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function (tabs) {
+      console.log(tabs[0].url, "getCurrentTab");
+      resolve(tabs[0].url);
+    });
+  });
+};
+
+exports.getCurrentTab = getCurrentTab;

@@ -2,11 +2,7 @@ import React, {useEffect} from "react";
 import uuid from "uuid";
 import {observer} from "mobx-react-lite";
 import {List, makeStyles, CircularProgress, Box} from "@material-ui/core";
-import {Comment} from "../Comment";
-import {standardComment} from "../../util/constants";
-import {getCurrentTab} from "../../util/helpers";
-import {commentRoute} from "../../util/routes";
-import {useStores} from "../../util/hooks";
+import {Comment, standardComment, getCurrentTab, commentRoute, useStores} from "package";
 
 const useStyles = makeStyles(() => ({
     box: {

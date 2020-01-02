@@ -1,0 +1,16 @@
+.scrollbar {
+    overflow-x: hidden;
+    height: 494px;
+}
+
+::-webkit-scrollbar {
+    background-color: #424242;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #202020;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #606060;
+}

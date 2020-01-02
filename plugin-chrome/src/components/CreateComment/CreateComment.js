@@ -5,16 +5,12 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    TextField
+    TextField,
+    makeStyles
 } from "@material-ui/core";
 import {observer} from "mobx-react-lite";
 import React from "react";
-import {langDe} from "../../util/lang";
-import {makeStyles} from "@material-ui/styles";
-import {getCurrentTab} from "../../util/helpers";
-import {Alert} from "../Alert";
-import {createCommentRoute} from "../../util/routes";
-import {useStores} from "../../util/hooks";
+import {langDe, Alert, createCommentRoute, useStores, getCurrentTab} from "package";
 
 const useStyles = makeStyles((theme) => ({
     textField: {

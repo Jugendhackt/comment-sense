@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {Box, ListItem, ListItemText, makeStyles, Paper, Typography} from "@material-ui/core";
 import {ThumbUp} from "@material-ui/icons";
 import {useStores} from "../../util/hooks";

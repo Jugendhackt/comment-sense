@@ -4,8 +4,6 @@ export {default as Comment} from "./dist/components/Comment/Comment";
 export {default as SideList} from "./dist/components/SideList/SideList";
 export {default as SignIn} from "./dist/components/SignIn/SignIn";
 export {default as SignUp} from "./dist/components/SignUp/SignUp";
-export {default as TopComments} from "./dist/components/TopComments/TopComments";
-export {default as TopWebsites} from "./dist/components/TopWebsites/TopWebsites";
 export {default as Website} from "./dist/components/Website/Website";
 
 export * from "./dist/util/lang";
@@ -16,3 +14,5 @@ export * from "./dist/util/helpers";
 export * from "./dist/util/constants";
 
 export * from "./dist/stores";
+
+export * from "./dist/theme";
