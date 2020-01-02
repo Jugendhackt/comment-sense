@@ -1,10 +1,8 @@
-import React, {useContext} from "react";
+import React from "react";
 import {useHistory} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 import {TextField, makeStyles, Box, Paper, Button} from "@material-ui/core";
-import {langDe} from "../util/lang";
-import {useStores} from "../util/hooks";
-import {changeUserRoute} from "../util/routes";
+import {langDe, useStores, changeUserRoute} from "package";
 
 const useStyles = makeStyles(theme => ({
     paper: {

@@ -1,6 +1,6 @@
 import React from "react";
 import {Typography} from "@material-ui/core";
-import {langDe} from "../util/lang";
+import {langDe} from "package";
 
 function NotFound(props) {
     return (

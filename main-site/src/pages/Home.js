@@ -1,9 +1,8 @@
 import React from "react";
 import {Grid} from "@material-ui/core";
-import {TopWebsites} from "../components/TopWebsites";
-import {TopComments} from "../components/TopComments";
+import {TopWebsites, TopComments} from "package";
 
-function Home() {
+export const Home = () =>  {
     return (
         <Grid container>
             <Grid item xs={12} sm={6}>
@@ -16,4 +15,4 @@ function Home() {
     );
 };
 
-export {Home};
+export default Home;
