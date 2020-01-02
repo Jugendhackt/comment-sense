@@ -1,47 +1,36 @@
-import React, { useContext } from "react";
-import { MenuItem, ListItemIcon, ListItemText, Menu, Link } from "@material-ui/core";
-import { Person, SettingsApplications } from "@material-ui/icons";
-import { langDe } from "../../constants";
-import { observer } from "mobx-react-lite";
-import { UserStoreContext } from "../../stores/UserStore";
-import { DialogStoreContext } from "../../stores/DialogStore";
-import { removeSessionId } from "../../helpers";
+import {ListItemIcon, ListItemText, Menu, MenuItem} from "@material-ui/core";
+import {Person} from "@material-ui/icons";
+import {observer} from "mobx-react-lite";
+import React from "react";
+import {langDe} from "../../util/lang";
+import {removeStorage, restoreUserStore} from "../../util/helpers";
+import {useStores} from "../../util/hooks";
 
 const AccountDropDown = observer((props) => {
-    const userStore = useContext(UserStoreContext);
-    const dialogStore = useContext(DialogStoreContext);
+    const {userStore, dialogStore} = useStores();
 
     const handleOnClose = () => {
-        dialogStore.anchorElAccount = null;
-        dialogStore.openAccount = false;
+        dialogStore.handleAnchorElAccount(null);
+        dialogStore.handleAccount(false);
     };
 
     const logout = () => {
-        userStore.username = "";
-        userStore.password = "";
-        userStore.email = "";
-        userStore.sid = "";
-        userStore.loggedIn = false;
-        removeSessionId();
+        restoreUserStore(userStore);
+        removeStorage("sid");
         window.location.reload();
     };
 
-    if (props.display) {
+    if (userStore.loggedIn) {
         return (
-            <Menu keepMounted anchorEl={props.anchorEl} open={props.open} onClose={handleOnClose}>
+            <Menu keepMounted={true} anchorEl={dialogStore.anchorElAccount} open={dialogStore.openAccount}
+                  onClose={handleOnClose}>
                 <MenuItem>
-                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
-                    <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`} />
+                    <ListItemIcon><Person color="secondary"/></ListItemIcon>
+                    <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`}/>
                 </MenuItem>
-                <Link color="inherit" href="/account/">
-                    <MenuItem>
-                        <ListItemIcon><SettingsApplications color="secondary" /></ListItemIcon>
-                        <ListItemText primary={langDe.account} />
-                    </MenuItem>
-                </Link>
                 <MenuItem onClick={logout}>
-                    <ListItemIcon><Person color="secondary" /></ListItemIcon>
-                    <ListItemText primary={langDe.logout} />
+                    <ListItemIcon><Person color="secondary"/></ListItemIcon>
+                    <ListItemText primary={langDe.logout}/>
                 </MenuItem>
             </Menu>
         );

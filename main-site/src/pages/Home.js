@@ -1,19 +1,19 @@
 import React from "react";
-import { Grid } from "@material-ui/core";
-import { TopWebsites } from "../components/TopWebsites/index";
-import { TopComments } from "../components/TopComments/index";
+import {Grid} from "@material-ui/core";
+import {TopWebsites} from "../components/TopWebsites";
+import {TopComments} from "../components/TopComments";
 
 function Home() {
     return (
         <Grid container>
             <Grid item xs={12} sm={6}>
-                <TopWebsites />
+                <TopWebsites/>
             </Grid>
             <Grid item xs={12} sm={6}>
-                <TopComments />
+                <TopComments/>
             </Grid>
         </Grid>
     );
 };
 
-export { Home };
+export {Home};

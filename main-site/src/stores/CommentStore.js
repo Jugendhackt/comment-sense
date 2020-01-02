@@ -1,9 +1,10 @@
-import { observable } from "mobx";
+import { observable, action } from "mobx";
 import { createContext } from "react";
 
-class CommentStore {
+export class CommentStore {
     @observable comments = [];
-};
 
-export const CommentStoreContext = createContext(new CommentStore());
-
+    @action handleComments(comments) {
+        this.comments = comments;
+    }
+}
