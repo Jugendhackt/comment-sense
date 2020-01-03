@@ -11,9 +11,8 @@ import {
     TextField
 } from "@material-ui/core";
 import {langDe} from "../../util/lang";
-import {setStorage} from "../../util/helpers";
 import {Alert} from "../Alert";
-import {useStores} from "../../util/hooks";
+import {useStores, useSetStorage} from "../../util/hooks";
 import {signInRoute} from "../../util/routes";
 
 const useStyles = makeStyles(theme => ({
@@ -43,7 +42,7 @@ const SignIn = observer((props) => {
         fetch(signInRoute({username: userStore.username, password: userStore.password}))
             .then(res => {
                 if (res.status === 200) {
-                    setStorage("username", userStore.username);
+                    useSetStorage("username", userStore.username);
                     dialogStore.handleSignInSuccess(true);
                     dialogStore.handleSignIn(false);
                     return res.json();
@@ -55,7 +54,7 @@ const SignIn = observer((props) => {
             .then(res => {
                 if (res.sid) {
                     userStore.handleSid(res.sid);
-                    setStorage("sid", res.sid);
+                    useSetStorage("sid", res.sid);
                 }
             })
             .catch(e => {

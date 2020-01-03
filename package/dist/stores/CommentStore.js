@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.CommentStore = void 0;
+exports.CommentStore = void 0;
 
 var _mobx = require("mobx");
 
@@ -35,6 +35,11 @@ function () {
     value: function handleComments(comments) {
       this.comments = comments;
     }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.comments = [];
+    }
   }]);
 
   return CommentStore;
@@ -45,7 +50,5 @@ function () {
   initializer: function initializer() {
     return [];
   }
-}), _applyDecoratedDescriptor(_class.prototype, "handleComments", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleComments"), _class.prototype)), _class);
+}), _applyDecoratedDescriptor(_class.prototype, "handleComments", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleComments"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "reset", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "reset"), _class.prototype)), _class);
 exports.CommentStore = CommentStore;
-var _default = CommentStore;
-exports["default"] = _default;

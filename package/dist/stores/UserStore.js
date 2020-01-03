@@ -3,11 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.UserStore = void 0;
+exports.UserStore = void 0;
 
 var _mobx = require("mobx");
-
-var _react = require("react");
 
 var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _temp;
 
@@ -60,6 +58,15 @@ function () {
     value: function handleLoggedIn(loggedIn) {
       this.loggedIn = loggedIn;
     }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.username = "";
+      this.password = "";
+      this.email = "";
+      this.sid = "";
+      this.loggedIn = false;
+    }
   }]);
 
   return UserStore;
@@ -98,7 +105,5 @@ function () {
   initializer: function initializer() {
     return false;
   }
-}), _applyDecoratedDescriptor(_class.prototype, "handleUsername", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleUsername"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handlePassword", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handlePassword"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSid", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSid"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleLoggedIn", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleLoggedIn"), _class.prototype)), _class);
+}), _applyDecoratedDescriptor(_class.prototype, "handleUsername", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleUsername"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handlePassword", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handlePassword"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSid", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSid"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleLoggedIn", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleLoggedIn"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "reset", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "reset"), _class.prototype)), _class);
 exports.UserStore = UserStore;
-var _default = UserStore;
-exports["default"] = _default;

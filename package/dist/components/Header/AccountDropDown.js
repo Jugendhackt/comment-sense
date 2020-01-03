@@ -15,8 +15,6 @@ var _react = _interopRequireDefault(require("react"));
 
 var _lang = require("../../util/lang");
 
-var _helpers = require("../../util/helpers");
-
 var _hooks = require("../../util/hooks");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -32,8 +30,8 @@ var AccountDropDown = (0, _mobxReactLite.observer)(function (props) {
   };
 
   var logout = function logout() {
-    (0, _helpers.restoreUserStore)(userStore);
-    (0, _helpers.removeStorage)("sid");
+    userStore.reset();
+    (0, _hooks.useRemoveStorage)("sid");
     window.location.reload();
   };
 

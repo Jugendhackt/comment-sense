@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.DialogStore = void 0;
+exports.DialogStore = void 0;
 
 var _mobx = require("mobx");
 
@@ -91,6 +91,19 @@ function () {
     value: function handleDrawer(drawer) {
       this.openDrawer = drawer;
     }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.openSignIn = false;
+      this.openSignUp = false;
+      this.openSignInSuccess = false;
+      this.openSignInFail = false;
+      this.openSignUpSuccess = false;
+      this.openSignUpFail = false;
+      this.openAccount = false;
+      this.anchorElAccount = null;
+      this.openDrawer = false;
+    }
   }]);
 
   return DialogStore;
@@ -157,7 +170,5 @@ function () {
   initializer: function initializer() {
     return false;
   }
-}), _applyDecoratedDescriptor(_class.prototype, "handleSignIn", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignIn"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignUp", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignUp"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignInSuccess", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignInSuccess"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignInFail", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignInFail"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignUpSuccess", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignUpSuccess"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignUpFail", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignUpFail"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleAccount", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleAccount"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleAnchorElAccount", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleAnchorElAccount"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleDrawer", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleDrawer"), _class.prototype)), _class);
+}), _applyDecoratedDescriptor(_class.prototype, "handleSignIn", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignIn"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignUp", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignUp"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignInSuccess", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignInSuccess"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignInFail", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignInFail"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignUpSuccess", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignUpSuccess"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleSignUpFail", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleSignUpFail"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleAccount", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleAccount"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleAnchorElAccount", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleAnchorElAccount"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "handleDrawer", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "handleDrawer"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "reset", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "reset"), _class.prototype)), _class);
 exports.DialogStore = DialogStore;
-var _default = DialogStore;
-exports["default"] = _default;

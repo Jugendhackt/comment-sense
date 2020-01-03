@@ -3,8 +3,7 @@ import {Person} from "@material-ui/icons";
 import {observer} from "mobx-react-lite";
 import React from "react";
 import {langDe} from "../../util/lang";
-import {removeStorage, restoreUserStore} from "../../util/helpers";
-import {useStores} from "../../util/hooks";
+import {useStores, useRemoveStorage} from "../../util/hooks";
 
 const AccountDropDown = observer((props) => {
     const {userStore, dialogStore} = useStores();
@@ -15,8 +14,8 @@ const AccountDropDown = observer((props) => {
     };
 
     const logout = () => {
-        restoreUserStore(userStore);
-        removeStorage("sid");
+        userStore.reset();
+        useRemoveStorage("sid");
         window.location.reload();
     };
 

@@ -27,6 +27,30 @@ Object.defineProperty(exports, "useRemoveSessionId", {
     return _useRemoveSessionId["default"];
   }
 });
+Object.defineProperty(exports, "useSetStorage", {
+  enumerable: true,
+  get: function get() {
+    return _useSetStorage["default"];
+  }
+});
+Object.defineProperty(exports, "useGetStorage", {
+  enumerable: true,
+  get: function get() {
+    return _useGetStorage["default"];
+  }
+});
+Object.defineProperty(exports, "useRemoveStorage", {
+  enumerable: true,
+  get: function get() {
+    return _useRemoveStorage["default"];
+  }
+});
+Object.defineProperty(exports, "useCurrentTab", {
+  enumerable: true,
+  get: function get() {
+    return _useCurrentTab["default"];
+  }
+});
 
 var _useStores = _interopRequireDefault(require("./use-stores"));
 
@@ -35,5 +59,13 @@ var _useLoggedIn = _interopRequireDefault(require("./use-loggedIn"));
 var _useSessionId = _interopRequireDefault(require("./use-sessionId"));
 
 var _useRemoveSessionId = _interopRequireDefault(require("./use-removeSessionId"));
+
+var _useSetStorage = _interopRequireDefault(require("./use-setStorage"));
+
+var _useGetStorage = _interopRequireDefault(require("./use-getStorage"));
+
+var _useRemoveStorage = _interopRequireDefault(require("./use-removeStorage"));
+
+var _useCurrentTab = _interopRequireDefault(require("./use-currentTab"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

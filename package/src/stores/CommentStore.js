@@ -6,6 +6,8 @@ export class CommentStore {
     @action handleComments(comments) {
         this.comments = comments;
     }
-}
 
-export default CommentStore;
+    @action reset() {
+        this.comments = [];
+    }
+}

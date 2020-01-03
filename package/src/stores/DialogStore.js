@@ -39,13 +39,23 @@ export class DialogStore {
         this.openAccount = account;
     }
 
-    @action handleAnchorElAccount(anchorEl){
+    @action handleAnchorElAccount(anchorEl) {
         this.anchorElAccount = anchorEl;
     }
 
     @action handleDrawer(drawer) {
         this.openDrawer = drawer;
     }
-}
 
-export default DialogStore;
+    @action reset() {
+        this.openSignIn = false;
+        this.openSignUp = false;
+        this.openSignInSuccess = false;
+        this.openSignInFail = false;
+        this.openSignUpSuccess = false;
+        this.openSignUpFail = false;
+        this.openAccount = false;
+        this.anchorElAccount = null;
+        this.openDrawer = false;
+    }
+}

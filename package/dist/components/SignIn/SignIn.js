@@ -13,8 +13,6 @@ var _core = require("@material-ui/core");
 
 var _lang = require("../../util/lang");
 
-var _helpers = require("../../util/helpers");
-
 var _Alert = require("../Alert");
 
 var _hooks = require("../../util/hooks");
@@ -55,7 +53,7 @@ var SignIn = (0, _mobxReactLite.observer)(function (props) {
       password: userStore.password
     })).then(function (res) {
       if (res.status === 200) {
-        (0, _helpers.setStorage)("username", userStore.username);
+        (0, _hooks.useSetStorage)("username", userStore.username);
         dialogStore.handleSignInSuccess(true);
         dialogStore.handleSignIn(false);
         return res.json();
@@ -66,7 +64,7 @@ var SignIn = (0, _mobxReactLite.observer)(function (props) {
     }).then(function (res) {
       if (res.sid) {
         userStore.handleSid(res.sid);
-        (0, _helpers.setStorage)("sid", res.sid);
+        (0, _hooks.useSetStorage)("sid", res.sid);
       }
     })["catch"](function (e) {
       dialogStore.handleSignInFail(true);
@@ -122,8 +120,8 @@ var SignIn = (0, _mobxReactLite.observer)(function (props) {
     onClose: function onClose() {
       return dialogStore.handleSignInFail(false);
     },
-    title: _lang.langDe.signUpErrTitle,
-    text: _lang.langDe.signUpErrText
+    title: _lang.langDe.signInErrTitle,
+    text: _lang.langDe.signInErrTitle
   }));
 });
 var _default = SignIn;

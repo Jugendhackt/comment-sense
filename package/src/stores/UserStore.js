@@ -1,5 +1,4 @@
-import { observable, action} from "mobx"
-import {createContext} from "react";
+import {observable, action} from "mobx"
 
 export class UserStore {
     @observable username = "";
@@ -23,6 +22,12 @@ export class UserStore {
     @action handleLoggedIn(loggedIn) {
         this.loggedIn = loggedIn;
     }
-}
 
-export default UserStore;
+    @action reset() {
+        this.username = "";
+        this.password = "";
+        this.email = "";
+        this.sid = "";
+        this.loggedIn = false;
+    }
+}

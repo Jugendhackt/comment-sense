@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.WebsiteStore = void 0;
+exports.WebsiteStore = void 0;
 
 var _mobx = require("mobx");
 
@@ -30,5 +30,3 @@ var WebsiteStore = (_class = (_temp = function WebsiteStore() {
   }
 })), _class);
 exports.WebsiteStore = WebsiteStore;
-var _default = WebsiteStore;
-exports["default"] = _default;
