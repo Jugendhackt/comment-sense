@@ -1,6 +1,5 @@
-.scrollbar {
-    overflow-x: hidden;
-    height: 494px;
+a {
+    text-decoration: none !important;
 }
 
 ::-webkit-scrollbar {

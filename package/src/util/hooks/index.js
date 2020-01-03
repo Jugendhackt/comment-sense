@@ -6,3 +6,5 @@ export {default as useSetStorage} from "./use-setStorage";
 export {default as useGetStorage} from "./use-getStorage";
 export {default as useRemoveStorage} from "./use-removeStorage";
 export {default as useCurrentTab} from "./use-currentTab";
+export {default as useFullscreen} from "./use-fullscreen";
+export {default as useTimeout} from "./use-timeout";

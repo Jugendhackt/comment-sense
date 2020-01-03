@@ -29,7 +29,7 @@ var LoggedIn = (0, _mobxReactLite.observer)(function (props) {
     userStore.username = "";
     userStore.email = "";
     userStore.sid = "";
-    (0, _hooks.useRemoveSessionId)();
+    (0, _hooks.useRemoveStorage)("sid");
     window.location.reload();
   };
 

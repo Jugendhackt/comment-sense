@@ -1,6 +1,5 @@
 import {observer} from "mobx-react-lite";
-import {useStores} from "../../util/hooks";
-import {useRemoveSessionId} from "../../util/hooks";
+import {useRemoveStorage, useStores} from "../../util/hooks";
 import {Link, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {ExitToApp, Person, SettingsApplications} from "@material-ui/icons";
 import {langDe} from "../../util/lang";
@@ -15,7 +14,7 @@ export const LoggedIn = observer((props) => {
         userStore.username = "";
         userStore.email = "";
         userStore.sid = "";
-        useRemoveSessionId();
+        useRemoveStorage("sid");
         window.location.reload();
     };
 

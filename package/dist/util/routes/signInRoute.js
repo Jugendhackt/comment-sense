@@ -9,7 +9,7 @@ var _constants = require("../constants");
 
 var signInRoute = function signInRoute(data) {
   if (data.username && data.password) {
-    return "".concat(_constants.ipAddress, "/api/signin?username='").concat(data.username, "'&password='").concat(data.password, "'");
+    return "".concat(_constants.ipAddress, "/api/signin?username=").concat(data.username, "&password=").concat(data.password);
   } else {
     return null;
   }

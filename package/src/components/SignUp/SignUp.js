@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
     Button,
     Dialog,
@@ -7,13 +7,14 @@ import {
     DialogContentText,
     DialogTitle,
     makeStyles,
-    TextField
+    TextField,
+    Typography,
+    Box
 } from "@material-ui/core";
 import {observer} from "mobx-react-lite";
 import {langDe} from "../../util/lang";
-import {Alert} from "../Alert";
 import {signUpRoute} from "../../util/routes";
-import {useStores} from "../../util/hooks";
+import {useFullscreen, useStores, useTimeout} from "../../util/hooks";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -34,10 +35,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignUp = observer((props) => {
+    const [status, setStatus] = useState("");
     const {userStore, dialogStore} = useStores();
+    const fullscreen = useFullscreen("sm");
     const classes = useStyles();
 
+    const handleOnClose = () => {
+        dialogStore.handleSignUp(false);
+        userStore.reset();
+    };
+
+    const handleOnChange = (evt) => {
+        if (evt.target.name === "username") {
+            userStore.handleUsername(evt.target.value);
+        } else if (evt.target.name === "password") {
+            userStore.handlePassword(evt.target.value);
+        }
+    };
+
     const sendData = () => {
+        const closeDialog = () => {
+            dialogStore.handleSignUp(false);
+            window.location.reload();
+        };
+
         if (userStore.username && userStore.password) {
             fetch(signUpRoute(), {
                 method: "POST",
@@ -51,42 +72,45 @@ const SignUp = observer((props) => {
             })
                 .then(res => {
                     if (res.status === 200) {
-                        dialogStore.handleSignUpSuccess(true);
-                        dialogStore.handleSignUp(false);
-                    } else {
-                        dialogStore.handleSignUpFail(true);
-                        dialogStore.handleSignUp(false);
+                        setStatus(langDe.signUpSuccessText);
+                    } else if (res.status === 403) {
+                        setStatus(langDe.signUpErrText403);
                     }
+                    useTimeout(2000, closeDialog);
                 })
                 .catch(e => {
-                    dialogStore.handleSignUpFail(true);
+                    setStatus(langDe.signUpErrText500);
                 });
         }
     };
 
     return (
-        <React.Fragment>
-            <Dialog open={dialogStore.openSignUp} onClose={() => dialogStore.handleSignUp(false)} fullScreen={true}>
+        <>
+            <Dialog open={dialogStore.openSignUp} onClose={handleOnClose}
+                    fullScreen={fullscreen}>
                 <DialogTitle>{langDe.signUp}</DialogTitle>
-                <DialogContent dividers>
+                <DialogContent>
                     <DialogContentText>{langDe.signUpText}</DialogContentText>
-                    <TextField label={langDe.username} value={userStore.username} fullWidth required
-                               className={classes.mb} onChange={evt => userStore.handleUsername(evt.target.value)}/>
-                    <TextField label={langDe.password} value={userStore.password} fullWidth required
-                               className={classes.mb} onChange={evt => userStore.handlePassword(evt.target.value)}
-                               type="password"/>
+                    <form>
+                        <TextField label={langDe.username} value={userStore.username} fullWidth required name="username"
+                                   autoComplete="username"
+                                   className={classes.mb} onChange={handleOnChange}/>
+                        <TextField label={langDe.password} value={userStore.password} fullWidth required name="password"
+                                   autoComplete="new-password"
+                                   className={classes.mb} onChange={handleOnChange}
+                                   type="password"/>
+                    </form>
+                    <Typography component="div" variant="body1">
+                        <Box textAlign="center">{status}</Box>
+                    </Typography>
                 </DialogContent>
                 <DialogActions className={classes.center}>
                     <Button variant="contained" color="primary" onClick={sendData}>{langDe.signUp}</Button>
                     <Button variant="contained" color="secondary"
-                            onClick={() => dialogStore.handleSignUp(false)}>{langDe.cancel}</Button>
+                            onClick={handleOnClose}>{langDe.cancel}</Button>
                 </DialogActions>
             </Dialog>
-            <Alert open={dialogStore.openSignUpSuccess} onClose={() => dialogStore.handleSignUpSuccess(false)}
-                   title={langDe.signUpSuccessTitle} text={langDe.signUpSuccessText}/>
-            <Alert open={dialogStore.openSignUpFail} onClose={() => dialogStore.handleSignUpFail(false)}
-                   title={langDe.signUpErrTitle} text={langDe.signUpErrText}/>
-        </React.Fragment>
+        </>
     );
 });
 

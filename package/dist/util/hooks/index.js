@@ -51,6 +51,18 @@ Object.defineProperty(exports, "useCurrentTab", {
     return _useCurrentTab["default"];
   }
 });
+Object.defineProperty(exports, "useFullscreen", {
+  enumerable: true,
+  get: function get() {
+    return _useFullscreen["default"];
+  }
+});
+Object.defineProperty(exports, "useTimeout", {
+  enumerable: true,
+  get: function get() {
+    return _useTimeout["default"];
+  }
+});
 
 var _useStores = _interopRequireDefault(require("./use-stores"));
 
@@ -67,5 +79,9 @@ var _useGetStorage = _interopRequireDefault(require("./use-getStorage"));
 var _useRemoveStorage = _interopRequireDefault(require("./use-removeStorage"));
 
 var _useCurrentTab = _interopRequireDefault(require("./use-currentTab"));
+
+var _useFullscreen = _interopRequireDefault(require("./use-fullscreen"));
+
+var _useTimeout = _interopRequireDefault(require("./use-timeout"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

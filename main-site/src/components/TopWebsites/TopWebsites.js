@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Box, CircularProgress, List, makeStyles} from "@material-ui/core";
 import uuid from "uuid";
-import {ipAddress, useStores} from "package";
+import {ipAddress, useStores, topWebsitesRoute} from "package";
 import {Website} from "../Website";
 import {observer} from "mobx-react-lite";
 
@@ -23,15 +23,15 @@ export const TopWebsites = observer((props) => {
     const classes = useStyles();
 
     useEffect(() => {
-        fetch(`${ipAddress}/api/sites/`)
+        fetch(topWebsitesRoute(5))
             .then(res => {
-                if (res.ok)
+                if (res.status === 200){
                     return res.json();
+                }
             })
             .then(res => {
-                websiteStore.websites = res.sites;
+                websiteStore.handleWebsites(res.sites);
             })
-
     }, []);
 
     const showWebsites = () => {

@@ -39,6 +39,18 @@ Object.defineProperty(exports, "changeUserRoute", {
     return _changeUserRoute["default"];
   }
 });
+Object.defineProperty(exports, "topCommentsRoute", {
+  enumerable: true,
+  get: function get() {
+    return _topCommentsRoute["default"];
+  }
+});
+Object.defineProperty(exports, "topWebsitesRoute", {
+  enumerable: true,
+  get: function get() {
+    return _topWebsitesRoute["default"];
+  }
+});
 
 var _commentRoute = _interopRequireDefault(require("./commentRoute"));
 
@@ -51,5 +63,9 @@ var _createCommentRoute = _interopRequireDefault(require("./createCommentRoute")
 var _voteCommentRoute = _interopRequireDefault(require("./voteCommentRoute"));
 
 var _changeUserRoute = _interopRequireDefault(require("./changeUserRoute"));
+
+var _topCommentsRoute = _interopRequireDefault(require("./topCommentsRoute"));
+
+var _topWebsitesRoute = _interopRequireDefault(require("./topWebsitesRoute"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {observer} from "mobx-react-lite";
 import {
     Button,
@@ -8,12 +8,14 @@ import {
     DialogContentText,
     DialogTitle,
     makeStyles,
-    TextField
+    TextField,
+    Typography,
+    Box
 } from "@material-ui/core";
 import {langDe} from "../../util/lang";
-import {Alert} from "../Alert";
-import {useStores, useSetStorage} from "../../util/hooks";
+import {useStores, useSetStorage, useTimeout} from "../../util/hooks";
 import {signInRoute} from "../../util/routes";
+import useFullscreen from "../../util/hooks/use-fullscreen";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -35,55 +37,80 @@ const useStyles = makeStyles(theme => ({
 
 
 const SignIn = observer((props) => {
+    const [status, setStatus] = useState("");
     const {userStore, dialogStore} = useStores();
+    const fullscreen = useFullscreen("sm");
     const classes = useStyles();
 
+    const handleOnClose = () => {
+        dialogStore.handleSignIn(false);
+        userStore.reset();
+    };
+
+    const handleOnChange = (evt) => {
+        if (evt.target.name === "username") {
+            userStore.handleUsername(evt.target.value);
+        } else if (evt.target.name === "password") {
+            userStore.handlePassword(evt.target.value);
+        }
+    };
+
     const sendData = () => {
+        const closeDialog = () => {
+            dialogStore.handleSignIn(false);
+            window.location.reload();
+        };
+
         fetch(signInRoute({username: userStore.username, password: userStore.password}))
             .then(res => {
                 if (res.status === 200) {
                     useSetStorage("username", userStore.username);
-                    dialogStore.handleSignInSuccess(true);
-                    dialogStore.handleSignIn(false);
+                    setStatus(langDe.signInSuccessText);
                     return res.json();
                 } else {
-                    dialogStore.handleSignInFail(true);
-                    dialogStore.handleSignIn(false);
+                    setStatus(langDe.signInErrText);
                 }
             })
             .then(res => {
                 if (res.sid) {
                     userStore.handleSid(res.sid);
                     useSetStorage("sid", res.sid);
+                    useTimeout(2000, closeDialog);
                 }
             })
             .catch(e => {
-                dialogStore.handleSignInFail(true);
+                setStatus(langDe.signInErrText);
             });
     };
 
     return (
         <>
-            <Dialog open={dialogStore.openSignIn} onClose={() => dialogStore.handleSignIn(false)} fullScreen={true}>
+            <Dialog open={dialogStore.openSignIn} onClose={handleOnClose}
+                    fullScreen={fullscreen}>
                 <DialogTitle>{langDe.signIn}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{langDe.signInText}</DialogContentText>
-                    <TextField label={langDe.username} value={userStore.username} fullWidth required
-                               className={classes.mb} onChange={evt => userStore.handleUsername(evt.target.value)}/>
-                    <TextField label={langDe.password} value={userStore.password} fullWidth required
-                               className={classes.mb} onChange={evt => userStore.handlePassword(evt.target.value)}
-                               type="password"/>
+                    <form>
+                        <TextField label={langDe.username} value={userStore.username} fullWidth required name="username"
+                                   autoComplete="username"
+                                   className={classes.mb} onChange={handleOnChange}/>
+                        <TextField label={langDe.password} value={userStore.password} fullWidth required name="password"
+                                   autoComplete="password"
+                                   className={classes.mb} onChange={handleOnChange}
+                                   type="password"/>
+                    </form>
+                    <Typography variant="body1" component="div">
+                        <Box textAlign="center">
+                            {status}
+                        </Box>
+                    </Typography>
                 </DialogContent>
                 <DialogActions className={classes.center}>
                     <Button variant="contained" color="primary" onClick={sendData}>{langDe.signIn}</Button>
                     <Button variant="contained" color="secondary"
-                            onClick={() => dialogStore.handleSignIn(false)}>{langDe.cancel}</Button>
+                            onClick={handleOnClose}>{langDe.cancel}</Button>
                 </DialogActions>
             </Dialog>
-            <Alert open={dialogStore.openSignInSuccess} onClose={() => dialogStore.handleSignInSuccess(false)}
-                   title={langDe.signInSuccessTitle} text={langDe.signInSuccessText}/>
-            <Alert open={dialogStore.openSignInFail} onClose={() => dialogStore.handleSignInFail(false)}
-                   title={langDe.signInErrTitle} text={langDe.signInErrTitle}/>
         </>
     );
 });

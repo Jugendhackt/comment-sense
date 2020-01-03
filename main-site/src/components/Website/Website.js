@@ -19,6 +19,14 @@ const useStyles = makeStyles(theme => ({
     },
     text: {
         marginLeft: theme.spacing(1)
+    },
+    link: {
+        display: "flex",
+        justifyContent: "center"
+    },
+    box: {
+        display: "flex",
+        flexDirection: "row"
     }
 }));
 
@@ -27,10 +35,19 @@ export const Website = (props) => {
     const classes = useStyles();
 
     const showTitle = () => {
-        if (props.url.length > 40) {
-            return props.url.substring(0, 40) + "...";
+        if (props.url.substring(0, 8) === "https://") {
+            if (props.url.length > 48) {
+                return `${props.url.substring(8, 45)}...`;
+            } else {
+                return props.url.substring(8, props.url.length);
+            }
+        } else if (props.url.substring(0, 7) === "http://") {
+            if (props.url.length > 47) {
+                return `${props.url.substring(7, 45)}...`;
+            } else {
+                return props.url.substring(7, props.url.length);
+            }
         }
-        return props.url;
     };
 
     return (
@@ -38,11 +55,11 @@ export const Website = (props) => {
             <Paper className={classes.paper}>
                 <Typography variant="h5">{showTitle()}</Typography>
                 <br/>
-                <Box display="flex">
-                    <ThumbUp color="secondary"/>
-                    <ListItemText primary={props.comments} className={classes.text}/>
+                <Box className={classes.box}>
+                    <ThumbUp/>
+                    <ListItemText className={classes.text}>{props.comments}</ListItemText>
                 </Box>
-                <Link color="inherit" href={props.url}>
+                <Link color="inherit" href={props.url} className={classes.link}>
                     <Button color="primary" variant="contained">{langDe.toWebsite}</Button>
                 </Link>
             </Paper>

@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import uuid from "uuid";
 import {observer} from "mobx-react-lite";
 import {Box, CircularProgress, List, makeStyles} from "@material-ui/core";
-import {Comment, ipAddress, useStores} from "package";
+import {Comment, useStores, topCommentsRoute} from "package";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -22,17 +22,18 @@ export const TopComments = observer((props) => {
     const {commentStore} = useStores();
 
     useEffect(() => {
-        fetch(`${ipAddress}/api/comments?count=5`)
+        fetch(topCommentsRoute(5))
             .then(res => {
-                if (res.ok)
+                if (res.status === 200) {
                     return res.json();
+                }
             })
             .then(res => {
-                commentStore.comments = res.comments;
+                commentStore.handleComments(res.comments);
             })
     }, []);
 
-    function showComments() {
+    const showComments = () => {
         if (Array.isArray(commentStore.comments) && commentStore.comments.length) {
             return commentStore.comments.map(item => {
                 return <Comment date={item.date} content={item.content} title={item.headline} url={item.url}
