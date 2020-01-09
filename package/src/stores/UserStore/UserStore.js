@@ -1,4 +1,4 @@
-import {observable, action} from "mobx"
+import {action, observable} from "mobx"
 
 export class UserStore {
     @observable username = "";
@@ -31,3 +31,5 @@ export class UserStore {
         this.loggedIn = false;
     }
 }
+
+export default UserStore;

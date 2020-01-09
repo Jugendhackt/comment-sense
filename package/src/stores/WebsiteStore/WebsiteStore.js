@@ -7,3 +7,5 @@ export class WebsiteStore {
         this.websites = websites;
     }
 }
+
+export default WebsiteStore;

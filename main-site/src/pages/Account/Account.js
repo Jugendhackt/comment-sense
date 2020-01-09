@@ -1,8 +1,10 @@
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {observer} from "mobx-react-lite";
-import {TextField, makeStyles, Box, Paper, Button} from "@material-ui/core";
-import {langDe, useStores, changeUserRoute} from "package";
+import {Box, Button, makeStyles, Paper, TextField} from "@material-ui/core";
+import {useStores} from "package/util/hooks";
+import {langDe} from "package/util/lang";
+import {changeUserRoute} from "package/util/routes";
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -37,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export const Account = observer((props) => {
+export const Account = observer(() => {
     const {userStore} = useStores();
 
     const classes = useStyles();
@@ -55,7 +57,9 @@ export const Account = observer((props) => {
                 email: userStore.email,
                 "new password": ""
             })
-        })
+        }).then(res => {
+            console.log(res.status);
+        });
     };
 
     const home = () => {

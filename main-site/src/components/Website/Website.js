@@ -1,6 +1,6 @@
 import React from "react";
-import {ListItem, ListItemText, Typography, Link, Button, makeStyles, Paper, Box} from "@material-ui/core";
-import {langDe} from "package";
+import {Box, Button, Link, ListItem, ListItemText, makeStyles, Paper, Typography} from "@material-ui/core";
+import {langDe} from "package/util/lang";
 import {ThumbUp} from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({

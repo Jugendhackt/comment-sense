@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/babel src --out-dir dist"
+    "build": "./node_modules/.bin/babel src --out-dir dist",
+    "buildUtil": "./node_modules/.bin/babel src/util --out-dir util",
+    "buildStores": "./node_modules/.bin/babel src/stores --out-dir stores",
+    "buildComponents": "./node_modules/.bin/babel src/components --out-dir components",
+    "buildTheme": "./node_modules/.bin/babel src/theme --out-dir theme",
+    "buildAll": "npm run buildUtil && npm run buildStores && npm run buildComponents && npm run buildTheme"
   },
   "author": "",
   "license": "ISC",

@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, Redirect, Switch} from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import {Home} from "./Home";
 import {Account} from "./Account";
 import {NotFound} from "./NotFound";
@@ -31,5 +31,3 @@ export const Routes = () => {
         </Container>
     );
 };
-
-export {Routes as Pages};

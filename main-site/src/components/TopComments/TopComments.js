@@ -2,9 +2,11 @@ import React, {useEffect} from "react";
 import uuid from "uuid";
 import {observer} from "mobx-react-lite";
 import {Box, CircularProgress, List, makeStyles} from "@material-ui/core";
-import {Comment, useStores, topCommentsRoute} from "package";
+import {useStores} from "package/util/hooks";
+import {topCommentsRoute} from "package/util/routes";
+import {Comment} from "package/components";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     box: {
         display: "flex",
         flexDirection: "column",
@@ -16,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export const TopComments = observer((props) => {
+export const TopComments = observer(() => {
     const classes = useStyles();
 
     const {commentStore} = useStores();
@@ -36,8 +38,9 @@ export const TopComments = observer((props) => {
     const showComments = () => {
         if (Array.isArray(commentStore.comments) && commentStore.comments.length) {
             return commentStore.comments.map(item => {
-                return <Comment date={item.date} content={item.content} title={item.headline} url={item.url}
-                                author={item.author} votes={item.likes} key={uuid.v4()}/>
+                const {date, content, headline, url, author, likes} = item;
+                return <Comment date={date} content={content} title={headline} url={url}
+                                author={author} votes={likes} key={uuid.v4()}/>
             });
         } else {
             return (

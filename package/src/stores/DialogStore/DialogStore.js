@@ -1,4 +1,4 @@
-import {observable, action} from "mobx";
+import {action, observable} from "mobx";
 
 export class DialogStore {
     @observable openSignIn = false;
@@ -59,3 +59,5 @@ export class DialogStore {
         this.openDrawer = false;
     }
 }
+
+export default DialogStore;

@@ -1,19 +1,21 @@
 import React from 'react';
 import {BrowserRouter as Router} from "react-router-dom";
 import {ThemeProvider} from '@material-ui/core/styles';
-import {Header, getStorage, useLoggedIn, useStores, theme} from "package";
-import {Pages} from "./pages/Routes";
+import {useGetStorage, useLoggedIn, useStores} from "package/util/hooks";
+import {Header} from "package/components";
+import {theme} from "package/theme";
+import {Routes} from "./pages/Routes";
 import {CssBaseline} from '@material-ui/core';
 import {observer} from 'mobx-react-lite';
 
-const App = observer((props) => {
+const App = observer(() => {
     const {userStore} = useStores();
-    const sessionId = getStorage("sid");
+    const sessionId = useGetStorage("sid");
 
     useLoggedIn(sessionId).then(res => {
         if (res) {
             userStore.loggedIn = true;
-            userStore.username = getStorage("username");
+            userStore.username = useGetStorage("username");
         }
     });
 
@@ -23,7 +25,7 @@ const App = observer((props) => {
                 <Router>
                     <CssBaseline/>
                     <Header/>
-                    <Pages/>
+                    <Routes/>
                 </Router>
             </ThemeProvider>
         </div>

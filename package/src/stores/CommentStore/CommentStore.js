@@ -1,4 +1,4 @@
-import { observable, action } from "mobx";
+import {action, observable} from "mobx";
 
 export class CommentStore {
     @observable comments = [];
@@ -11,3 +11,5 @@ export class CommentStore {
         this.comments = [];
     }
 }
+
+export default CommentStore;
