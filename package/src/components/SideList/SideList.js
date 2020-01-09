@@ -1,17 +1,17 @@
 import React from "react";
 import {
-    Drawer,
-    makeStyles,
-    ListItem,
-    Typography,
-    List,
     Divider,
+    Drawer,
     Link,
+    List,
+    ListItem,
+    ListItemIcon,
     ListItemText,
-    ListItemIcon
+    makeStyles,
+    Typography
 } from "@material-ui/core";
 import {langDe} from "../../util/lang";
-import {Home, Code} from "@material-ui/icons";
+import {Code, Home} from "@material-ui/icons";
 import {SignUp} from "../SignUp";
 import {SignIn} from "../SignIn";
 import {observer} from "mobx-react-lite";
@@ -19,14 +19,14 @@ import {useStores} from "../../util/hooks";
 import {LoggedIn} from "./LoggedIn";
 import {CreateAccount} from "./CreateAccount";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     list: {
         width: 250,
         height: "100%"
     }
 }));
 
-const SideList = observer((props) => {
+const SideList = observer(() => {
     const {dialogStore} = useStores();
 
     const classes = useStyles();

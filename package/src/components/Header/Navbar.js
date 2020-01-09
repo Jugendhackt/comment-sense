@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const Navbar = observer((props) => {
+const Navbar = observer(() => {
     const {dialogStore} = useStores();
 
     const classes = useStyles();

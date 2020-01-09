@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 const Comment = (props) => {
     const {userStore} = useStores();
-
+    const {voted} = props;
     const classes = useStyles();
 
 
@@ -45,7 +45,7 @@ const Comment = (props) => {
                 sid: userStore.sid,
                 username: userStore.username,
                 id: props.id,
-                vote: !props.voted,
+                vote: !voted,
                 password: "q"
             })
         }).then(res => {
@@ -70,7 +70,7 @@ const Comment = (props) => {
                 <Box className={classes.box}>
                     <Typography variant="caption">{props.author}</Typography>
                     <Box display="flex" onClick={sendVote}>
-                        <ThumbUp color={(props.voted) ? "primary" : "inherit"}/>
+                        <ThumbUp color={(voted) ? "primary" : "inherit"}/>
                         <ListItemText primary={props.votes} className={classes.text}/>
                     </Box>
                 </Box>

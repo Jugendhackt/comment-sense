@@ -3,9 +3,9 @@ import {Person} from "@material-ui/icons";
 import {observer} from "mobx-react-lite";
 import React from "react";
 import {langDe} from "../../util/lang";
-import {useStores, useRemoveStorage} from "../../util/hooks";
+import {useRemoveStorage, useStores} from "../../util/hooks";
 
-const AccountDropDown = observer((props) => {
+const AccountDropDown = observer(() => {
     const {userStore, dialogStore} = useStores();
 
     const handleOnClose = () => {

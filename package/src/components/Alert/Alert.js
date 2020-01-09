@@ -1,15 +1,15 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {
+    Button,
     Dialog,
-    DialogTitle,
+    DialogActions,
     DialogContent,
     DialogContentText,
-    DialogActions,
-    useTheme,
-    useMediaQuery,
+    DialogTitle,
     Slide,
-    Button
+    useMediaQuery,
+    useTheme
 } from "@material-ui/core";
 import {langDe} from "../../util/lang";
 
@@ -20,16 +20,17 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const Alert = observer((props) => {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const {open, onClose, title, text} = props;
 
     return (
-        <Dialog open={props.open} onClose={props.onClose} fullScreen={fullScreen}
+        <Dialog open={open} onClose={onClose} fullScreen={fullScreen}
                 TransitionComponent={Transition}>
-            <DialogTitle>{props.title}</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogContent>
-                <DialogContentText>{props.text}</DialogContentText>
+                <DialogContentText>{text}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" color="secondary" onClick={props.onClose}>{langDe.cancel}</Button>
+                <Button variant="contained" color="secondary" onClick={onClose}>{langDe.cancel}</Button>
             </DialogActions>
         </Dialog>
     );

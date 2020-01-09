@@ -5,7 +5,7 @@ import {ExitToApp, Person, SettingsApplications} from "@material-ui/icons";
 import {langDe} from "../../util/lang";
 import React from "react";
 
-export const LoggedIn = observer((props) => {
+export const LoggedIn = observer(() => {
     const {userStore} = useStores();
 
     const logout = () => {
@@ -21,7 +21,7 @@ export const LoggedIn = observer((props) => {
     if (userStore.loggedIn) {
         return (
             <>
-                <Link color="inherit" href="/account/">
+                <Link color="inherit" href={"/account/"}>
                     <ListItem button>
                         <ListItemIcon><SettingsApplications color="secondary"/></ListItemIcon>
                         <ListItemText primary={langDe.account}/>

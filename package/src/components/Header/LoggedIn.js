@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export const LoggedIn = observer((props) => {
+export const LoggedIn = observer(() => {
     const {dialogStore, userStore} = useStores();
 
     const classes = useStyles();

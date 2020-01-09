@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {observer} from "mobx-react-lite";
 import {
+    Box,
     Button,
     Dialog,
     DialogActions,
@@ -9,11 +10,10 @@ import {
     DialogTitle,
     makeStyles,
     TextField,
-    Typography,
-    Box
+    Typography
 } from "@material-ui/core";
 import {langDe} from "../../util/lang";
-import {useStores, useSetStorage, useTimeout} from "../../util/hooks";
+import {useSetStorage, useStores, useTimeout} from "../../util/hooks";
 import {signInRoute} from "../../util/routes";
 import useFullscreen from "../../util/hooks/use-fullscreen";
 
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const SignIn = observer((props) => {
+const SignIn = observer(() => {
     const [status, setStatus] = useState("");
     const {userStore, dialogStore} = useStores();
     const fullscreen = useFullscreen("sm");
@@ -78,7 +78,7 @@ const SignIn = observer((props) => {
                     useTimeout(2000, closeDialog);
                 }
             })
-            .catch(e => {
+            .catch(() => {
                 setStatus(langDe.signInErrText);
             });
     };

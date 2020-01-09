@@ -5,7 +5,7 @@ import {Person, PersonAdd} from "@material-ui/icons";
 import {langDe} from "../../util/lang";
 import React from "react";
 
-export const CreateAccount = observer((props) => {
+export const CreateAccount = observer(() => {
     const {dialogStore, userStore} = useStores();
 
     if (!userStore.loggedIn) {
