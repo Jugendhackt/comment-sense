@@ -1,21 +1,25 @@
 import {observer} from "mobx-react-lite";
-import {useRemoveStorage, useStores} from "../../util/hooks";
+import {useRemoveStorage, useSignOut, useStores} from "../../util/hooks";
 import {Link, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {ExitToApp, Person, SettingsApplications} from "@material-ui/icons";
 import {langDe} from "../../util/lang";
 import React from "react";
 
 export const LoggedIn = observer(() => {
-    const {userStore} = useStores();
+    const {userStore, dialogStore, snackbarStore} = useStores();
 
-    const logout = () => {
-        userStore.loggedIn = false;
-        userStore.password = "";
-        userStore.username = "";
-        userStore.email = "";
-        userStore.sid = "";
-        useRemoveStorage("sid");
-        window.location.reload();
+    const signOut = () => {
+        useSignOut(userStore.sid)
+            .then(res => {
+                if (res) {
+                    userStore.reset();
+                    useRemoveStorage(["sid", "username"]);
+                    dialogStore.openDrawer = false;
+                    snackbarStore.openSignOutSuccess = true;
+                } else {
+                    snackbarStore.openSignOutFail = true;
+                }
+            });
     };
 
     if (userStore.loggedIn) {
@@ -31,7 +35,7 @@ export const LoggedIn = observer(() => {
                     <ListItemIcon><Person color="secondary"/></ListItemIcon>
                     <ListItemText primary={`${langDe.loggedInAs} ${userStore.username}`}/>
                 </ListItem>
-                <ListItem button onClick={logout}>
+                <ListItem button onClick={signOut}>
                     <ListItemIcon><ExitToApp color="secondary"/></ListItemIcon>
                     <ListItemText primary={langDe.logout}/>
                 </ListItem>
@@ -41,4 +45,3 @@ export const LoggedIn = observer(() => {
         return null;
     }
 });
-export default LoggedIn;

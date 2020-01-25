@@ -32,7 +32,7 @@ const SideList = observer(() => {
     const classes = useStyles();
 
     return (
-        <Drawer open={dialogStore.openDrawer} onClose={() => dialogStore.handleDrawer(false)}>
+        <Drawer open={dialogStore.openDrawer} onClose={() => dialogStore.openDrawer = false}>
             <div className={classes.list}>
                 <List>
                     <ListItem>

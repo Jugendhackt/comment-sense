@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const NotFound = () => {
+export const NotFound = () => {
     const classes = useStyles();
     return (
         <div className={classes.center}>

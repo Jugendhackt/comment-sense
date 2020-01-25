@@ -1,16 +1,16 @@
 {
   "name": "package",
   "version": "1.0.0",
-  "description": "",
+  "description": "package for comment-sense",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/babel src --out-dir dist",
+    "build": "npm run buildUtil && npm run buildStores && npm run buildComponents && npm run buildTheme && npm run buildPages",
     "buildUtil": "./node_modules/.bin/babel src/util --out-dir util",
     "buildStores": "./node_modules/.bin/babel src/stores --out-dir stores",
     "buildComponents": "./node_modules/.bin/babel src/components --out-dir components",
     "buildTheme": "./node_modules/.bin/babel src/theme --out-dir theme",
-    "buildAll": "npm run buildUtil && npm run buildStores && npm run buildComponents && npm run buildTheme"
+    "buildPages": "./node_modules/.bin/babel src/pages --out-dir pages"
   },
   "author": "",
   "license": "ISC",
@@ -34,6 +34,7 @@
     "@material-ui/core": "^4.8.2",
     "@material-ui/icons": "^4.5.1",
     "mobx-react-lite": "^1.5.2",
-    "mobx": "^5.15.1"
+    "mobx": "^5.15.1",
+    "@material-ui/lab": "4.0.0-alpha.39"
   }
 }

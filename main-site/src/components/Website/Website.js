@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export const Website = (props) => {
+const Website = (props) => {
     const classes = useStyles();
 
     const showTitle = () => {

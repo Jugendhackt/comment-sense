@@ -1,8 +1,20 @@
 {
-    "plugins": [
-        ["@babel/plugin-proposal-decorators", {
-            "legacy": true
-        }]
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
     ],
-    "presets": ["react-app"]
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ]
+  ],
+  "presets": [
+    "@babel/preset-react",
+    "@babel/preset-env"
+  ]
 }

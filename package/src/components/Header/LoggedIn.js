@@ -17,15 +17,11 @@ export const LoggedIn = observer(() => {
 
     const classes = useStyles();
 
-    const handleOnClick = (evt) => {
-        dialogStore.handleAccount(true);
-        dialogStore.handleAnchorElAccount(evt.currentTarget);
-    };
-
     if (userStore.loggedIn) {
         return (
             <Box className={classes.account}>
-                <IconButton color="inherit" onClick={handleOnClick}>
+                <IconButton color="inherit"
+                            onClick={evt => dialogStore.setAccount({open: true, anchorEl: evt.currentTarget})}>
                     <Person/>
                 </IconButton>
             </Box>
@@ -34,5 +30,3 @@ export const LoggedIn = observer(() => {
         return null;
     }
 });
-
-export default LoggedIn;

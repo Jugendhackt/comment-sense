@@ -3,7 +3,7 @@ import uuid from "uuid";
 import {observer} from "mobx-react-lite";
 import {Box, CircularProgress, List, makeStyles} from "@material-ui/core";
 import {useStores} from "package/util/hooks";
-import {topCommentsRoute} from "package/util/routes";
+import {Routes} from "package/util/routes";
 import {Comment} from "package/components";
 
 const useStyles = makeStyles(() => ({
@@ -18,20 +18,19 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export const TopComments = observer(() => {
+const TopComments = observer(() => {
     const classes = useStyles();
-
-    const {commentStore} = useStores();
+    const {commentStore, userStore} = useStores();
 
     useEffect(() => {
-        fetch(topCommentsRoute(5))
+        fetch(Routes.topComments({count: 7}))
             .then(res => {
                 if (res.status === 200) {
                     return res.json();
                 }
             })
             .then(res => {
-                commentStore.handleComments(res.comments);
+                commentStore.comments = res.comments;
             })
     }, []);
 

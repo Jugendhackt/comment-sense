@@ -1,5 +1,5 @@
 export {default as Header} from "./dist/components/Header/Navbar";
-export {default as Alert} from "./dist/components/Alert/Alert";
+export {default as Alert} from "./dist/components/ShowAlert/ShowAlert";
 export {default as Comment} from "./dist/components/Comment/Comment";
 export {default as SideList} from "./dist/components/SideList/SideList";
 export {default as SignIn} from "./dist/components/SignIn/SignIn";

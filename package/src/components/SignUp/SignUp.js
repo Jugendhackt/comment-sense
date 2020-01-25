@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {
     Box,
     Button,
@@ -13,8 +13,8 @@ import {
 } from "@material-ui/core";
 import {observer} from "mobx-react-lite";
 import {langDe} from "../../util/lang";
-import {signUpRoute} from "../../util/routes";
-import {useFullscreen, useStores, useTimeout} from "../../util/hooks";
+import {Routes} from "../../util/routes";
+import {useFullscreen, useStores} from "../../util/hooks";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -35,32 +35,39 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignUp = observer(() => {
-    const [status, setStatus] = useState("");
-    const {userStore, dialogStore} = useStores();
+    const {userStore, dialogStore, snackbarStore} = useStores();
     const fullscreen = useFullscreen("sm");
     const classes = useStyles();
 
     const handleOnClose = () => {
-        dialogStore.handleSignUp(false);
+        dialogStore.openSignUp = false;
         userStore.reset();
     };
 
-    const handleOnChange = (evt) => {
-        if (evt.target.name === "username") {
-            userStore.handleUsername(evt.target.value);
-        } else if (evt.target.name === "password") {
-            userStore.handlePassword(evt.target.value);
-        }
-    };
-
     const sendData = () => {
-        const closeDialog = () => {
-            dialogStore.handleSignUp(false);
-            window.location.reload();
+        const signIn = () => {
+            let status;
+            fetch(Routes.signIn({username: userStore.username, password: userStore.password}))
+                .then(res => {
+                    status = res.status;
+                    if (res.status === 200) {
+                        return res.json();
+                    }
+                })
+                .then(res => {
+                    if (res.sid && status === 200) {
+                        userStore.signIn({username: userStore.username, sid: res.sid});
+                        dialogStore.closeSignUp();
+                        snackbarStore.openSignUpSuccess = true;
+                    }
+                })
+                .catch(e => {
+                    snackbarStore.openSignInFail = true;
+                })
         };
 
         if (userStore.username && userStore.password) {
-            fetch(signUpRoute(), {
+            fetch(Routes.signUp(), {
                 method: "POST",
                 header: {
                     "Content-Type": "application/json"
@@ -72,15 +79,14 @@ const SignUp = observer(() => {
             })
                 .then(res => {
                     if (res.status === 200) {
-                        setStatus(langDe.signUpSuccessText);
+                        signIn();
                     } else if (res.status === 403) {
-                        setStatus(langDe.signUpErrText403);
+                        snackbarStore.openSignUpTaken = true;
                     }
-                    useTimeout(2000, closeDialog);
                 })
-                .catch(() => {
-                    setStatus(langDe.signUpErrText500);
-                });
+                .catch(e => {
+                    snackbarStore.openSignUpFail = true;
+                })
         }
     };
 
@@ -94,10 +100,10 @@ const SignUp = observer(() => {
                     <form>
                         <TextField label={langDe.username} value={userStore.username} fullWidth required name="username"
                                    autoComplete="username"
-                                   className={classes.mb} onChange={handleOnChange}/>
+                                   className={classes.mb} onChange={evt => userStore.username = evt.target.value}/>
                         <TextField label={langDe.password} value={userStore.password} fullWidth required name="password"
                                    autoComplete="new-password"
-                                   className={classes.mb} onChange={handleOnChange}
+                                   className={classes.mb} onChange={evt => userStore.password = evt.target.value}
                                    type="password"/>
                     </form>
                     <Typography component="div" variant="body1">

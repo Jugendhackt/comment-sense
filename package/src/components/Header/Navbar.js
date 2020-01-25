@@ -14,20 +14,18 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-
 const Navbar = observer(() => {
     const {dialogStore} = useStores();
-
     const classes = useStyles();
 
     const handleOnClick = evt => {
         if (evt && evt.target.type === "keydown" && (evt.key === "Tab" || evt.key === "Shift"))
             return;
-        dialogStore.handleDrawer(!dialogStore.openDrawer);
+        dialogStore.openDrawer = !dialogStore.openDrawer;
     };
 
     return (
-        <>
+        <div>
             <AppBar position="sticky">
                 <Toolbar>
                     <IconButton edge="start" className={classes.menuButton} color="inherit" onClick={handleOnClick}>
@@ -39,7 +37,7 @@ const Navbar = observer(() => {
                 </Toolbar>
             </AppBar>
             <SideList/>
-        </>
+        </div>
     );
 });
 

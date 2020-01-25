@@ -2,7 +2,7 @@ import React from "react";
 import {Redirect, Route, Switch} from "react-router-dom";
 import {Home} from "./Home";
 import {Account} from "./Account";
-import {NotFound} from "./NotFound";
+import {NotFound} from "package/pages";
 import {Container, makeStyles} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({

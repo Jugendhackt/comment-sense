@@ -1,7 +1,6 @@
-import React, {useState} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import {
-    Box,
     Button,
     Dialog,
     DialogActions,
@@ -9,13 +8,11 @@ import {
     DialogContentText,
     DialogTitle,
     makeStyles,
-    TextField,
-    Typography
+    TextField
 } from "@material-ui/core";
 import {langDe} from "../../util/lang";
-import {useSetStorage, useStores, useTimeout} from "../../util/hooks";
-import {signInRoute} from "../../util/routes";
-import useFullscreen from "../../util/hooks/use-fullscreen";
+import {useFullscreen, useSetStorage, useStores} from "../../util/hooks";
+import {Routes} from "../../util/routes";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -37,50 +34,37 @@ const useStyles = makeStyles(theme => ({
 
 
 const SignIn = observer(() => {
-    const [status, setStatus] = useState("");
-    const {userStore, dialogStore} = useStores();
+    const {userStore, dialogStore, snackbarStore} = useStores();
     const fullscreen = useFullscreen("sm");
     const classes = useStyles();
 
     const handleOnClose = () => {
-        dialogStore.handleSignIn(false);
-        userStore.reset();
-    };
-
-    const handleOnChange = (evt) => {
-        if (evt.target.name === "username") {
-            userStore.handleUsername(evt.target.value);
-        } else if (evt.target.name === "password") {
-            userStore.handlePassword(evt.target.value);
-        }
+        dialogStore.openSignIn = false;
+        userStore.clearInput();
     };
 
     const sendData = () => {
-        const closeDialog = () => {
-            dialogStore.handleSignIn(false);
-            window.location.reload();
-        };
-
-        fetch(signInRoute({username: userStore.username, password: userStore.password}))
-            .then(res => {
-                if (res.status === 200) {
-                    useSetStorage("username", userStore.username);
-                    setStatus(langDe.signInSuccessText);
-                    return res.json();
-                } else {
-                    setStatus(langDe.signInErrText);
-                }
-            })
-            .then(res => {
-                if (res.sid) {
-                    userStore.handleSid(res.sid);
-                    useSetStorage("sid", res.sid);
-                    useTimeout(2000, closeDialog);
-                }
-            })
-            .catch(() => {
-                setStatus(langDe.signInErrText);
-            });
+        if (userStore.username && userStore.password) {
+            let status;
+            fetch(Routes.signIn({username: userStore.username, password: userStore.password}))
+                .then(res => {
+                    status = res.status;
+                    if (res.status === 200) {
+                        return res.json();
+                    }
+                })
+                .then(res => {
+                    if (res.sid && status === 200) {
+                        useSetStorage(["username", "sid"], [userStore.username, res.sid]);
+                        userStore.signIn({username: userStore.username, sid: res.sid});
+                        dialogStore.closeSignIn();
+                        snackbarStore.openSignInSuccess = true;
+                    }
+                })
+                .catch(e => {
+                    snackbarStore.openSignInFail = true;
+                })
+        }
     };
 
     return (
@@ -93,17 +77,12 @@ const SignIn = observer(() => {
                     <form>
                         <TextField label={langDe.username} value={userStore.username} fullWidth required name="username"
                                    autoComplete="username"
-                                   className={classes.mb} onChange={handleOnChange}/>
+                                   className={classes.mb} onChange={evt => userStore.username = evt.target.value}/>
                         <TextField label={langDe.password} value={userStore.password} fullWidth required name="password"
                                    autoComplete="password"
-                                   className={classes.mb} onChange={handleOnChange}
+                                   className={classes.mb} onChange={evt => userStore.password = evt.target.value}
                                    type="password"/>
                     </form>
-                    <Typography variant="body1" component="div">
-                        <Box textAlign="center">
-                            {status}
-                        </Box>
-                    </Typography>
                 </DialogContent>
                 <DialogActions className={classes.center}>
                     <Button variant="contained" color="primary" onClick={sendData}>{langDe.signIn}</Button>

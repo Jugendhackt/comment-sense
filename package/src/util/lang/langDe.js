@@ -36,7 +36,12 @@ export const langDe = {
     commentSuccessTitle: "Kommentar erfolgreich erstellt",
     commentSuccessText: "Hier kommt noch Text hin",
     commentFailTitle: "Fehler beim Kommentar erstellen",
-    commentFailText: "Hier kommt noch Text hin"
+    commentFailText: "Hier kommt noch Text hin",
+    accountText: "Hier kommt noch Text hin",
+    oldPassword: "altes Passwort",
+    newPassword: "neues Passwort",
+    signOutSuccessText: "Erfolgreich abgemeldet!",
+    signOutFailText: "Fehler beim Abmelden!"
 };
 
 /*

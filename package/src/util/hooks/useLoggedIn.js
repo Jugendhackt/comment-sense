@@ -1,16 +1,18 @@
-import {ipAddress} from "../constants";
+import {Routes} from "../routes";
 
-export const useLoggedIn = (sessionId) => {
+export const useLoggedIn = (sid) => {
     return new Promise(resolve => {
-        console.log(sessionId);
-        if (sessionId !== undefined && sessionId !== null) {
-            fetch(`${ipAddress}/api/checksid?sid='${sessionId}'`)
+        if (sid !== undefined && sid !== null) {
+            fetch(Routes.checkSid(sid))
                 .then(res => {
                     if (res.status === 401) {
                         resolve(false);
                     } else if (res.status === 200) {
                         resolve(true);
                     }
+                })
+                .catch(e => {
+                    resolve(false);
                 })
         } else {
             resolve(false);

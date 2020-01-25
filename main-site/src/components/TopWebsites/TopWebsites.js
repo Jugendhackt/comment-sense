@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {Box, CircularProgress, List, makeStyles} from "@material-ui/core";
 import uuid from "uuid";
 import {useStores} from "package/util/hooks";
-import {topWebsitesRoute} from "package/util/routes";
+import {Routes} from "package/util/routes";
 import {Website} from "../Website";
 import {observer} from "mobx-react-lite";
 
@@ -18,21 +18,21 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export const TopWebsites = observer(() => {
+const TopWebsites = observer(() => {
     const {websiteStore} = useStores();
 
     const classes = useStyles();
 
     useEffect(() => {
-        fetch(topWebsitesRoute(5))
+        fetch(Routes.topWebsites(5))
             .then(res => {
-                if (res.status === 200){
+                if (res.status === 200) {
                     return res.json();
                 }
             })
             .then(res => {
                 const {sites} = res;
-                websiteStore.handleWebsites(sites);
+                websiteStore.websites = sites;
             })
     }, []);
 

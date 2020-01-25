@@ -3,8 +3,8 @@ import {action, observable} from "mobx";
 export class WebsiteStore {
     @observable websites = [];
 
-    @action handleWebsites(websites) {
-        this.websites = websites;
+    @action reset() {
+        this.websites = [];
     }
 }
 

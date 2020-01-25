@@ -2,7 +2,7 @@ import React from "react";
 import {Box, ListItem, ListItemText, makeStyles, Paper, Typography} from "@material-ui/core";
 import {ThumbUp} from "@material-ui/icons";
 import {useStores} from "../../util/hooks";
-import {voteCommentRoute} from "../../util/routes";
+import {Routes} from "../../util/routes";
 
 const useStyles = makeStyles(theme => ({
     comment: {
@@ -33,10 +33,9 @@ const Comment = (props) => {
     const {voted} = props;
     const classes = useStyles();
 
-
     const sendVote = () => {
         console.log(userStore.sid);
-        fetch(voteCommentRoute(), {
+        fetch(Routes.voteComment(), {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
@@ -46,17 +45,12 @@ const Comment = (props) => {
                 username: userStore.username,
                 id: props.id,
                 vote: !voted,
-                password: "q"
+                password: "test"
             })
         }).then(res => {
-            if (res.status === 200) {
-
-            } else if (res.status === 400) {
-
-            }
+            console.log(res);
         })
     };
-
 
 
     return (
