@@ -11,3 +11,4 @@ export {default as useTimeout} from "./useTimeout";
 export {default as useSignOut} from "./useSignOut";
 export {default as useEmail} from "./useEmail";
 export {default as useSignIn} from "./useSignIn";
+export {default as useLoading} from "./useLoading";

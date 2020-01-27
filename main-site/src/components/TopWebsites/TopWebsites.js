@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Box, CircularProgress, List, makeStyles} from "@material-ui/core";
 import uuid from "uuid";
-import {useStores} from "package/util/hooks";
+import {useLoading, useStores} from "package/util/hooks";
 import {Routes} from "package/util/routes";
 import {Website} from "../Website";
 import {observer} from "mobx-react-lite";
@@ -19,25 +19,27 @@ const useStyles = makeStyles(() => ({
 }));
 
 const TopWebsites = observer(() => {
-    const {websiteStore} = useStores();
-
+    const {websiteStore, loadingStore} = useStores();
+    const loading = loadingStore.loading;
     const classes = useStyles();
 
     useEffect(() => {
-        fetch(Routes.topWebsites(5))
-            .then(res => {
-                if (res.status === 200) {
-                    return res.json();
-                }
-            })
-            .then(res => {
-                const {sites} = res;
-                websiteStore.websites = sites;
-            })
+        useLoading(loading, () => {
+            fetch(Routes.topWebsites(5))
+                .then(res => {
+                    if (res.status === 200) {
+                        return res.json();
+                    }
+                })
+                .then(res => {
+                    const {sites} = res;
+                    websiteStore.websites = sites;
+                })
+        });
     }, []);
 
     const showWebsites = () => {
-        if (Array.isArray(websiteStore.websites) && websiteStore.websites.length) {
+        if (!loadingStore.loading) {
             return Array.from(websiteStore.websites).map(item => {
                 return <Website url={item.url} comments={item.comments} key={uuid.v4()}/>
             });

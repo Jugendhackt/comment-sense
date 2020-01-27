@@ -8,9 +8,10 @@ import {CssBaseline, ThemeProvider} from '@material-ui/core';
 import {observer} from 'mobx-react-lite';
 
 export const App = observer(() => {
-    const {userStore} = useStores();
+    const {userStore, loadingStore} = useStores();
     const sid = useGetStorage("sid");
     console.log("render");
+    loadingStore.loading = false;
 
     useLoggedIn(sid).then(res => {
         if (res) {

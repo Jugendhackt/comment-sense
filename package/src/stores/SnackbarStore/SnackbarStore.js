@@ -11,6 +11,9 @@ export class SnackbarStore {
     @observable openSignOutSuccess = false;
     @observable openSignOutFail = false;
 
+    @observable openCommentSuccess = false;
+    @observable openCommentFail = false;
+
     @action reset() {
         this.openSignInSuccess = false;
         this.openSignInFail = false;
@@ -18,6 +21,12 @@ export class SnackbarStore {
         this.openSignUpSuccess = false;
         this.openSignUpTaken = false;
         this.openSignUpFail = false;
+
+        this.openSignOutSuccess = false;
+        this.openSignOutFail = false;
+
+        this.openCommentSuccess = false;
+        this.openCommentFail = false;
     }
 }
 

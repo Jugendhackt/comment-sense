@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/main-site.iml" filepath="$PROJECT_DIR$/.idea/main-site.iml" />
       <module fileurl="file://$PROJECT_DIR$/../package/.idea/package.iml" filepath="$PROJECT_DIR$/../package/.idea/package.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../plugin-chrome/.idea/plugin-chrome.iml" filepath="$PROJECT_DIR$/../plugin-chrome/.idea/plugin-chrome.iml" />
     </modules>
   </component>
 </project>

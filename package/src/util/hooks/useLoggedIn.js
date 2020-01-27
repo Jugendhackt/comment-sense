@@ -1,4 +1,4 @@
-import {Routes} from "../routes";
+import {Routes} from "../routes/index";
 
 export const useLoggedIn = (sid) => {
     return new Promise(resolve => {

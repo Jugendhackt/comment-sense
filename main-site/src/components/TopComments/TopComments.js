@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import uuid from "uuid";
 import {observer} from "mobx-react-lite";
 import {Box, CircularProgress, List, makeStyles} from "@material-ui/core";
-import {useStores} from "package/util/hooks";
+import {useLoading, useStores} from "package/util/hooks";
 import {Routes} from "package/util/routes";
 import {Comment} from "package/components";
 
@@ -20,18 +20,21 @@ const useStyles = makeStyles(() => ({
 
 const TopComments = observer(() => {
     const classes = useStyles();
-    const {commentStore, userStore} = useStores();
+    const {commentStore, loadingStore} = useStores();
+    const loading = loadingStore.loading;
 
     useEffect(() => {
-        fetch(Routes.topComments({count: 7}))
-            .then(res => {
-                if (res.status === 200) {
-                    return res.json();
-                }
-            })
-            .then(res => {
-                commentStore.comments = res.comments;
-            })
+        useLoading(loading, () => {
+            fetch(Routes.topComments({count: 7}))
+                .then(res => {
+                    if (res.status === 200) {
+                        return res.json();
+                    }
+                })
+                .then(res => {
+                    commentStore.comments = res.comments;
+                })
+        });
     }, []);
 
     const showComments = () => {

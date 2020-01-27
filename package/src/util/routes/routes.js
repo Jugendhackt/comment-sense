@@ -3,7 +3,7 @@ import {ipAddress} from "../constants";
 const Routes = {
     checkSid: sid => {
         if (sid) {
-            return `${ipAddress}/api/checksid?sid='${sid}'`;
+            return `${ipAddress}/api/checksid?sid=${sid}`;
         } else {
             return null;
         }
@@ -13,9 +13,9 @@ const Routes = {
     },
     getComments: (data) => {
         if (data.url && data.username) {
-            return `${ipAddress}/api/comments?site='${data.url}'&username='${data.username}'`;
+            return `${ipAddress}/api/comments?site=${data.url}&username=${data.username}`;
         } else if (data.url) {
-            return `${ipAddress}/api/comments?site='${data.url}`;
+            return `${ipAddress}/api/comments?site=${data.url}`;
         } else {
             return null;
         }
