@@ -44,7 +44,7 @@ export const UserList = observer(() => {
     } else {
         return (
             <>
-                <Link color="inherit" href={"/account/"}>
+                <Link color="inherit" href={"/account"}>
                     <ListItem button>
                         <ListItemIcon><SettingsApplications color="secondary"/></ListItemIcon>
                         <ListItemText>{langDe.account}</ListItemText>
