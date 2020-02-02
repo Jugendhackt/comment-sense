@@ -1,8 +1,7 @@
 import React from "react";
 import {Redirect, Route, Switch} from "react-router-dom";
 import {Home} from "./Home";
-import {Account} from "./Account";
-import {NotFound} from "package/pages";
+import {NotFound, Settings} from "package/pages";
 import {Container, makeStyles} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -21,7 +20,7 @@ export const Routes = () => {
                     <Home/>
                 </Route>
                 <Route exact path="/account">
-                    <Account/>
+                    <Settings/>
                 </Route>
                 <Route exact path="/404">
                     <NotFound/>

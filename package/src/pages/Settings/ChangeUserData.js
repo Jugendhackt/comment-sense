@@ -1,6 +1,6 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
-import {useChangeUserData, useStores} from "package/util/hooks";
+import {useChangeUserData, useStores} from "../../util/hooks";
 import {
     Button,
     ExpansionPanel,
@@ -11,7 +11,7 @@ import {
     TextField,
     Typography
 } from "@material-ui/core";
-import {langDe} from "package/util/lang";
+import {langDe} from "../../util/lang";
 
 const useStyles = makeStyles(theme => ({
     textField: {
