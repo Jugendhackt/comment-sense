@@ -6,6 +6,7 @@ export class SnackbarStore {
 
     @observable openSignUpSuccess = false;
     @observable openSignUpTaken = false;
+    @observable openSignUpPasswordUnequal = false;
     @observable openSignUpFail = false;
 
     @observable openSignOutSuccess = false;
@@ -14,12 +15,19 @@ export class SnackbarStore {
     @observable openCommentSuccess = false;
     @observable openCommentFail = false;
 
+    @observable openVoteSuccess = false;
+    @observable openVoteFail = false;
+
+    @observable openChangeUserDataSuccess = false;
+    @observable openChangeUserDataFail = false;
+
     @action reset() {
         this.openSignInSuccess = false;
         this.openSignInFail = false;
 
         this.openSignUpSuccess = false;
         this.openSignUpTaken = false;
+        this.openSignUpPasswordUnequal = false;
         this.openSignUpFail = false;
 
         this.openSignOutSuccess = false;
@@ -27,6 +35,9 @@ export class SnackbarStore {
 
         this.openCommentSuccess = false;
         this.openCommentFail = false;
+
+        this.openChangeUserDataSuccess = false;
+        this.openChangeUserDataFail = false;
     }
 }
 

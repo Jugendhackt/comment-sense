@@ -1,29 +1,30 @@
 import React from 'react';
 import {BrowserRouter as Router} from "react-router-dom";
-import {useEmail, useGetStorage, useLoggedIn, useStores} from "package/util/hooks";
-import {Header, Snackbars} from "package/components";
+import {useEmail, useLoggedIn, useStorage, useStores, useTopComments, useTopWebsites} from "package/util/hooks";
+import {Dialogs, Header, Snackbars} from "package/components";
 import {theme} from "package/theme";
 import {Routes} from "./pages/Routes";
 import {CssBaseline, ThemeProvider} from '@material-ui/core';
 import {observer} from 'mobx-react-lite';
 
-export const App = observer(() => {
-    const {userStore, loadingStore} = useStores();
-    const sid = useGetStorage("sid");
-    console.log("render");
-    loadingStore.loading = false;
+const request = async () => {
+    const {userStore, commentStore, websiteStore} = useStores();
+    const sid = useStorage.get("sid");
+    const username = useStorage.get("username");
 
-    useLoggedIn(sid).then(res => {
-        if (res) {
-            userStore.signIn({sid: sid, username: useGetStorage("username")});
-            useEmail(sid)
-                .then(email => {
-                    if (email) {
-                        userStore.email = email;
-                    }
-                });
-        }
-    });
+    const loggedIn = await useLoggedIn(sid);
+    if (loggedIn) {
+        userStore.signIn(sid, username);
+        userStore.email = await useEmail(sid);
+        commentStore.comments = await useTopComments(5, userStore.username);
+    } else {
+        commentStore.comments = await useTopComments(5);
+    }
+    websiteStore.websites = await useTopWebsites(5);
+};
+
+export const App = observer( () => {
+    request();
 
     return (
         <>
@@ -32,6 +33,7 @@ export const App = observer(() => {
                     <CssBaseline/>
                     <Header/>
                     <Routes/>
+                    <Dialogs/>
                     <Snackbars/>
                 </Router>
             </ThemeProvider>

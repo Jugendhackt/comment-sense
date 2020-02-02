@@ -1,7 +1,7 @@
 import React from "react";
 import {Grid} from "@material-ui/core";
-import {TopWebsites} from "../../components/TopWebsites";
-import {TopComments} from "../../components/TopComments";
+import {TopWebsites} from "package/components/TopWebsites";
+import {TopComments} from "package/components/TopComments";
 
 const Home = () =>  {
     return (

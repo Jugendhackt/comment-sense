@@ -9,13 +9,13 @@ const Routes = {
         }
     },
     changeUser: () => {
-        return `${ipAddress}/api/user`;
+        return `${ipAddress}/api/user/`;
     },
-    getComments: (data) => {
-        if (data.url && data.username) {
-            return `${ipAddress}/api/comments?site=${data.url}&username=${data.username}`;
-        } else if (data.url) {
-            return `${ipAddress}/api/comments?site=${data.url}`;
+    getComments: (url, username) => {
+        if (url && username) {
+            return `${ipAddress}/api/comments?site=${url}&username=${username}`;
+        } else if (url) {
+            return `${ipAddress}/api/comments?site=${url}`;
         } else {
             return null;
         }
@@ -31,11 +31,15 @@ const Routes = {
         }
     },
     signOut: sid => {
-        return `${ipAddress}/api/signout?sid=${sid}`;
+        if (sid) {
+            return `${ipAddress}/api/signout?sid=${sid}`;
+        } else {
+            return null;
+        }
     },
-    signIn: data => {
-        if (data.username && data.password) {
-            return `${ipAddress}/api/signin?username=${data.username}&password=${data.password}`;
+    signIn: (username, password) => {
+        if (username && password) {
+            return `${ipAddress}/api/signin?username=${username}&password=${password}`;
         } else {
             return null;
         }
@@ -43,17 +47,17 @@ const Routes = {
     signUp: () => {
         return `${ipAddress}/api/signup/`;
     },
-    topComments: (data) => {
-        if (data.count && data.username) {
-            return `${ipAddress}/api/comments?count=${data.count}&username=${data.username}`;
-        } else if (data.count) {
-            return `${ipAddress}/api/comments?count=${data.count}`;
+    topComments: (count, username) => {
+        if (count && username) {
+            return `${ipAddress}/api/comments?count=${count}&username=${username}`;
+        } else if (count && typeof count === "number") {
+            return `${ipAddress}/api/comments?count=${count}`;
         } else {
             return null;
         }
     },
     topWebsites: count => {
-        if (count) {
+        if (count && typeof count === "number") {
             return `${ipAddress}/api/sites?count=${count}`;
         } else {
             return null;

@@ -3,15 +3,18 @@ import {action, observable} from "mobx"
 export class UserStore {
     @observable username = "";
     @observable password = "";
+    @observable repeatPassword = "";
     @observable newPassword = "";
     @observable email = "";
     @observable sid = "";
     @observable loggedIn = false;
 
-    @action signIn(data) {
-        this.username = data.username;
-        this.loggedIn = true;
-        this.sid = data.sid;
+    @action signIn(sid, username) {
+        if (username && sid) {
+            this.username = username;
+            this.loggedIn = true;
+            this.sid = sid;
+        }
     }
 
     @action reset() {
@@ -22,6 +25,7 @@ export class UserStore {
         this.loggedIn = false;
         this.email = "";
         this.newPassword = "";
+        this.repeatPassword = "";
     }
 
     @action clearInput() {

@@ -1,8 +1,8 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
-import {makeStyles} from "@material-ui/styles";
-import {Button} from "@material-ui/core";
-import {langDe, useStores} from "package";
+import {Button, makeStyles} from "@material-ui/core";
+import {useStores} from "package/util/hooks";
+import {langDe} from "package/util/lang";
 import {CreateComment} from "../CreateComment";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,9 +17,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Footer = observer((props) => {
+const Footer = observer(() => {
     const {dialogStore, userStore} = useStores();
-
     const classes = useStyles();
 
     if (userStore.loggedIn) {
@@ -27,7 +26,7 @@ const Footer = observer((props) => {
             <>
                 <CreateComment/>
                 <footer className={classes.footer}>
-                    <Button onClick={() => dialogStore.handleComment(true)}>{langDe.addComment}</Button>
+                    <Button onClick={() => dialogStore.openComment = true}>{langDe.addComment}</Button>
                 </footer>
             </>
         );

@@ -13,8 +13,7 @@ import {
 } from "@material-ui/core";
 import {observer} from "mobx-react-lite";
 import {langDe} from "../../util/lang";
-import {Routes} from "../../util/routes";
-import {useFullscreen, useStores} from "../../util/hooks";
+import {useFullscreen, useSignIn, useSignUp, useStores} from "../../util/hooks";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -44,49 +43,23 @@ const SignUp = observer(() => {
         userStore.reset();
     };
 
-    const sendData = () => {
-        const signIn = () => {
-            let status;
-            fetch(Routes.signIn({username: userStore.username, password: userStore.password}))
-                .then(res => {
-                    status = res.status;
-                    if (res.status === 200) {
-                        return res.json();
-                    }
-                })
-                .then(res => {
-                    if (res.sid && status === 200) {
-                        userStore.signIn({username: userStore.username, sid: res.sid});
+    const sendData = async () => {
+        if (userStore.username && userStore.password && userStore.repeatPassword) {
+            if (userStore.password === userStore.repeatPassword) {
+                const response = await useSignUp(userStore.username, userStore.password, userStore.email);
+                if (response) {
+                    const sid = await useSignIn(userStore.username, userStore.password);
+                    if (sid) {
+                        userStore.signIn(sid, userStore.username);
                         dialogStore.closeSignUp();
                         snackbarStore.openSignUpSuccess = true;
                     }
-                })
-                .catch(e => {
-                    snackbarStore.openSignInFail = true;
-                })
-        };
-
-        if (userStore.username && userStore.password) {
-            fetch(Routes.signUp(), {
-                method: "POST",
-                header: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username: userStore.username,
-                    password: userStore.password
-                })
-            })
-                .then(res => {
-                    if (res.status === 200) {
-                        signIn();
-                    } else if (res.status === 403) {
-                        snackbarStore.openSignUpTaken = true;
-                    }
-                })
-                .catch(e => {
+                } else {
                     snackbarStore.openSignUpFail = true;
-                })
+                }
+            } else if (userStore.password !== userStore.repeatPassword) {
+                snackbarStore.openSignUpPasswordUnequal = true;
+            }
         }
     };
 
@@ -105,6 +78,13 @@ const SignUp = observer(() => {
                                    autoComplete="new-password"
                                    className={classes.mb} onChange={evt => userStore.password = evt.target.value}
                                    type="password"/>
+                        <TextField label={langDe.repeatPassword} value={userStore.repeatPassword} fullWidth required
+                                   name="repeatPassword" autoComplete="new-password"
+                                   className={classes.mb} onChange={evt => userStore.repeatPassword = evt.target.value}
+                                   type="password"/>
+                        <TextField label={langDe.email} value={userStore.email} fullWidth name="email"
+                                   autoComplete="email" className={classes.mb}
+                                   onChange={evt => userStore.email = evt.target.value}/>
                     </form>
                     <Typography component="div" variant="body1">
                         <Box textAlign="center">{status}</Box>

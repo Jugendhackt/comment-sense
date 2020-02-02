@@ -1,8 +1,8 @@
 import React from "react";
 import {Box, ListItem, ListItemText, makeStyles, Paper, Typography} from "@material-ui/core";
 import {ThumbUp} from "@material-ui/icons";
-import {useStores} from "../../util/hooks";
-import {Routes} from "../../util/routes";
+import {useStores, useTopComments, useVote} from "../../util/hooks";
+import {observer} from "mobx-react-lite";
 
 const useStyles = makeStyles(theme => ({
     comment: {
@@ -24,53 +24,57 @@ const useStyles = makeStyles(theme => ({
     },
     text: {
         marginLeft: theme.spacing(1)
+    },
+    date: {
+        marginLeft: theme.spacing(2)
     }
 }));
 
 
-const Comment = (props) => {
-    const {userStore} = useStores();
-    const {voted} = props;
+const Comment = observer((props) => {
+    const {userStore, snackbarStore, commentStore} = useStores();
     const classes = useStyles();
 
-    const sendVote = () => {
-        console.log(userStore.sid);
-        fetch(Routes.voteComment(), {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                sid: userStore.sid,
-                username: userStore.username,
-                id: props.id,
-                vote: !voted,
-                password: "test"
-            })
-        }).then(res => {
-            console.log(res);
-        })
+    const sendVote = async () => {
+        if (userStore.loggedIn) {
+            const response = await useVote(userStore.sid, props.id, userStore.username, !props.voted);
+
+            if (response) {
+                snackbarStore.openVoteSuccess = true;
+                commentStore.comments = await useTopComments(5,userStore.username);
+            } else {
+                snackbarStore.openVoteFail = true;
+            }
+        }
     };
 
+    const showTime = () => {
+        const date = new Date(props.date);
+        const day = date.getDate();
+        //month begins at zero
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `${day}.${month}.${year}`;
+    };
 
     return (
         <ListItem button className={classes.comment}>
             <Paper className={classes.paper}>
                 <Box className={`${classes.box} ${classes.mb}`}>
-                    <Typography variant="h5">{props.title}</Typography>
-                    <Typography variant="caption">{props.date}</Typography>
+                    <Typography variant="h5">{props.headline}</Typography>
+                    <Typography variant="caption" className={classes.date}>{showTime()}</Typography>
                 </Box>
                 <ListItemText primary={props.content} className={classes.mb}/>
                 <Box className={classes.box}>
                     <Typography variant="caption">{props.author}</Typography>
                     <Box display="flex" onClick={sendVote}>
-                        <ThumbUp color={(voted) ? "primary" : "inherit"}/>
-                        <ListItemText primary={props.votes} className={classes.text}/>
+                        <ThumbUp color={(props.voted) ? "primary" : "inherit"}/>
+                        <ListItemText primary={props.likes} className={classes.text}/>
                     </Box>
                 </Box>
             </Paper>
         </ListItem>
     );
-};
+});
 
 export default Comment;

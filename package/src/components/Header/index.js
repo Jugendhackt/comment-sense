@@ -1,1 +1,1 @@
-export {default as Header} from "./Navbar";
+export {default as newHeader} from "./Header";

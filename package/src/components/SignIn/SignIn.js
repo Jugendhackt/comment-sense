@@ -11,8 +11,7 @@ import {
     TextField
 } from "@material-ui/core";
 import {langDe} from "../../util/lang";
-import {useFullscreen, useSetStorage, useStores} from "../../util/hooks";
-import {Routes} from "../../util/routes";
+import {useFullscreen, useSignIn, useStores} from "../../util/hooks";
 
 const useStyles = makeStyles(theme => ({
     box: {
@@ -43,27 +42,14 @@ const SignIn = observer(() => {
         userStore.clearInput();
     };
 
-    const sendData = () => {
-        if (userStore.username && userStore.password) {
-            let status;
-            fetch(Routes.signIn({username: userStore.username, password: userStore.password}))
-                .then(res => {
-                    status = res.status;
-                    if (res.status === 200) {
-                        return res.json();
-                    }
-                })
-                .then(res => {
-                    if (res.sid && status === 200) {
-                        useSetStorage(["username", "sid"], [userStore.username, res.sid]);
-                        userStore.signIn({username: userStore.username, sid: res.sid});
-                        dialogStore.closeSignIn();
-                        snackbarStore.openSignInSuccess = true;
-                    }
-                })
-                .catch(e => {
-                    snackbarStore.openSignInFail = true;
-                })
+    const sendData = async () => {
+        const sid = await useSignIn(userStore.username, userStore.password);
+        if (sid) {
+            userStore.signIn(sid, userStore.username);
+            dialogStore.closeSignIn();
+            snackbarStore.openSignInSuccess = true;
+        } else {
+            snackbarStore.openSignInFail = true;
         }
     };
 

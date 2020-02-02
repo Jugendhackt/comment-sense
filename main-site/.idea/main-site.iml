@@ -12,5 +12,6 @@
     <orderEntry type="module" module-name="package" />
     <orderEntry type="module" module-name="package" />
     <orderEntry type="module" module-name="package" />
+    <orderEntry type="library" name="@types/jest" level="application" />
   </component>
 </module>

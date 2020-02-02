@@ -1,10 +1,10 @@
 import React from "react";
-import {Switch, Route, Redirect} from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import {Container} from "@material-ui/core";
 import Home from "./Home";
-import NotFound from "./NotFound";
+import {NotFound} from "package/pages";
 
-const Routes = (props) => {
+const Routes = () => {
     return (
         <div className="scrollbar">
             <Container fixed>

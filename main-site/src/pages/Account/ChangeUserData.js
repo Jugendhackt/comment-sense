@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
-import {useStores} from "package/util/hooks";
+import {useChangeUserData, useStores} from "package/util/hooks";
 import {
     Button,
     ExpansionPanel,
@@ -12,7 +12,6 @@ import {
     Typography
 } from "@material-ui/core";
 import {langDe} from "package/util/lang";
-import {Routes} from "package/util/routes";
 
 const useStyles = makeStyles(theme => ({
     textField: {
@@ -36,31 +35,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ChangeUserData = observer(() => {
-    const [expand, setExpand] = useState(false);
-
-    const {userStore} = useStores();
+    const {userStore, dialogStore, snackbarStore} = useStores();
     const classes = useStyles();
 
-    const sendData = () => {
-        fetch(Routes.changeUser(), {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: userStore.username,
-                password: userStore.password,
-                email: userStore.email,
-                "new-password": userStore.newPassword
-            })
-        })
-            .then(res => {
-                console.log(res.status);
-            });
+    const sendData = async () => {
+        const response = await useChangeUserData(userStore.username, userStore.password, userStore.newPassword, userStore.email);
+        if (response) {
+            snackbarStore.openChangeUserDataSuccess = true;
+        } else {
+            snackbarStore.openChangeUserDataFail = true;
+        }
     };
 
     return (
-        <ExpansionPanel expanded={expand} onChange={() => setExpand(!expand)}>
+        <ExpansionPanel expanded={dialogStore.openChangeUser} onChange={() => dialogStore.openChangeUser = !dialogStore.openChangeUser}>
             <ExpansionPanelSummary>
                 <Typography variant="body1">{langDe.account}</Typography>
             </ExpansionPanelSummary>

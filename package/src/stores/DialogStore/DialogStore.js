@@ -7,10 +7,11 @@ export class DialogStore {
     @observable anchorElAccount = null;
     @observable openDrawer = false;
     @observable openComment = false;
+    @observable openChangeUser = false;
 
-    @action setAccount(data) {
-        this.openAccount = data.open;
-        this.anchorElAccount = data.anchorEl;
+    @action setAccount(open, anchorEl) {
+        this.openAccount = open;
+        this.anchorElAccount = anchorEl;
     }
 
     @action closeSignIn() {
@@ -30,6 +31,7 @@ export class DialogStore {
         this.anchorElAccount = null;
         this.openDrawer = false;
         this.openComment = false;
+        this.openChangeUser = false;
     }
 }
 

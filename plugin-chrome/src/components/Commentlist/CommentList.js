@@ -1,8 +1,11 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import uuid from "uuid";
 import {observer} from "mobx-react-lite";
-import {List, makeStyles, CircularProgress, Box} from "@material-ui/core";
-import {Comment, standardComment, getCurrentTab, commentRoute, useStores} from "package";
+import {Box, CircularProgress, List, makeStyles} from "@material-ui/core";
+import {useCurrentTab, useStores} from "package/util/hooks";
+import {Comment} from "package/components";
+import {standardComment} from "package/util/constants";
+import {Routes} from "package/util/routes";
 
 const useStyles = makeStyles(() => ({
     box: {
@@ -17,26 +20,27 @@ const useStyles = makeStyles(() => ({
 }));
 
 const CommentList = observer(() => {
+    const [url, setUrl] = useState("");
     const {commentStore, userStore} = useStores();
     const classes = useStyles();
 
     useEffect(() => {
-        const getData = () => {
-            getCurrentTab().then(url => {
-                fetch(commentRoute(url, userStore.username))
+        useCurrentTab().then(url => {
+            const getData = () => {
+                fetch(Routes.getComments(url, userStore.username))
                     .then(res => {
                         if (res.ok)
                             return res.json();
                     })
                     .then(res => {
-                        commentStore.handleComments(res.comments);
+                        commentStore.comments = res.comments;
                     })
-            })
-        };
+            };
 
-        const interval = setInterval(getData, 30000);
-        getData();
-        return () => clearInterval(interval);
+            const interval = setInterval(getData, 30000);
+            getData();
+            return () => clearInterval(interval);
+        });
     }, []);
 
     const showComments = () => {

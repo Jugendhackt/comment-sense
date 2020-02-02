@@ -1,49 +1,36 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {BrowserRouter as Router} from "react-router-dom";
-import {Header, getStorage, useStores, useLoggedIn, theme} from "package";
+import {Header, Snackbars} from "package/components";
+import {theme} from "package/theme";
+import {useGetStorage, useLoggedIn, useStores} from "package/util/hooks";
 import {Footer} from "./components/Footer";
 import Routes from "./pages/Routes";
 import {ThemeProvider} from '@material-ui/styles';
-import {CircularProgress, CssBaseline} from '@material-ui/core';
+import {CssBaseline} from '@material-ui/core';
 import {observer} from "mobx-react-lite";
 
-const App = observer(() => {
-    const [loading, setLoading] = useState(true);
+export const App = observer(() => {
     const {userStore} = useStores();
-    const sessionId = getStorage("sid");
+    const sid = useGetStorage("sid");
 
-    useLoggedIn(sessionId).then(res => {
+    useLoggedIn(sid).then(res => {
         if (res) {
-            userStore.loggedIn = true;
-            userStore.handleUsername(getStorage("username"));
-            userStore.handleSid(sessionId);
-            setLoading(false);
-        } else {
-            setLoading(false);
+            userStore.signIn({username: useGetStorage("username"), sid: sid});
         }
     });
+    console.log("rerender");
 
-    if (!loading) {
-        return (
-            <>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline/>
-                    <Router>
-                        <Header/>
-                        <Routes/>
-                        <Footer/>
-                    </Router>
-                </ThemeProvider>
-            </>
-        );
-    } else {
-        return (
+    return (
+        <>
             <ThemeProvider theme={theme}>
                 <CssBaseline/>
-                <CircularProgress size={100}/>
+                <Router>
+                    <Header/>
+                    <Routes/>
+                    <Footer/>
+                    <Snackbars/>
+                </Router>
             </ThemeProvider>
-        );
-    }
+        </>
+    );
 });
-
-export default App;

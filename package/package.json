@@ -4,7 +4,7 @@
   "description": "package for comment-sense",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "npm run buildUtil && npm run buildStores && npm run buildComponents && npm run buildTheme && npm run buildPages",
     "buildUtil": "./node_modules/.bin/babel src/util --out-dir util",
     "buildStores": "./node_modules/.bin/babel src/stores --out-dir stores",
@@ -17,16 +17,20 @@
   "devDependencies": {
     "@babel/cli": "^7.7.7",
     "@babel/core": "^7.7.7",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
     "@babel/plugin-proposal-decorators": "^7.7.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "@material-ui/core": "^4.8.2",
     "@material-ui/icons": "^4.5.1",
+    "jest": "^25.1.0",
+    "jest-localstorage-mock": "^2.4.0",
+    "mobx": "^5.15.1",
     "mobx-react-lite": "^1.5.2",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "mobx": "^5.15.1"
+    "react-dom": "^16.12.0"
   },
   "peerDependencies": {
     "react": "^16.12.0",
@@ -36,5 +40,14 @@
     "mobx-react-lite": "^1.5.2",
     "mobx": "^5.15.1",
     "@material-ui/lab": "4.0.0-alpha.39"
+  },
+  "jest": {
+    "setupFiles": [
+      "jest-localstorage-mock"
+    ]
+  },
+  "dependencies": {
+    "@types/react": "^16.9.19",
+    "uuid": "^3.4.0"
   }
 }
