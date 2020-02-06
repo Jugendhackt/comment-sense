@@ -67,6 +67,11 @@ const Snackbars = observer(() => {
                 <Alert severity="success" variant="filled"
                        onClose={() => snackbarStore.openVoteSuccess = false}>{langDe.voteCommentSuccess}</Alert>
             </Snackbar>
+            <Snackbar open={snackbarStore.openUnVoteSuccess} onClose={() => snackbarStore.openUnVoteSuccess = false}
+                      autoHideDuration={5000}>
+                <Alert severity="success" variant="filled"
+                       onClose={() => snackbarStore.openUnVoteSuccess = false}>{langDe.unvoteCommentSuccess}</Alert>
+            </Snackbar>
             <Snackbar open={snackbarStore.openVoteFail} onClose={() => snackbarStore.openVoteFail = false}
                       autoHideDuration={5000}>
                 <Alert severity="error" variant="filled"

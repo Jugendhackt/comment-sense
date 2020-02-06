@@ -40,7 +40,11 @@ const Comment = observer((props) => {
             const response = await useVote(userStore.sid, props.id, userStore.username, !props.voted);
 
             if (response) {
-                snackbarStore.openVoteSuccess = true;
+                if (props.voted == 1) {
+                    snackbarStore.openUnVoteSuccess = true;
+                } else {
+                    snackbarStore.openVoteSuccess = true;
+                }
                 commentStore.comments = await useTopComments(5,userStore.username);
             } else {
                 snackbarStore.openVoteFail = true;

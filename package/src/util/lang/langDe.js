@@ -42,12 +42,13 @@ export const langDe = {
     newPassword: "neues Passwort",
     signOutSuccessText: "Erfolgreich abgemeldet!",
     signOutFailText: "Fehler beim Abmelden!",
-    voteCommentSuccess: "Kommentar erfolgreich gevoted",
+    voteCommentSuccess: "Kommentar erfolgreich gevotet",
     voteCommentFail: "Fehler beim voten des Kommentars",
     repeatPassword: "Passwort wiederholen",
     signUpPasswordUnequal: "Passwörter stimmen nicht überein",
     changeUserDataSuccess: "Daten erfolgreich geändert",
-    changeUserDataFail: "Fehler beim Daten ändern"
+    changeUserDataFail: "Fehler beim Daten ändern",
+    unvoteCommentSuccess: "Kommentar erfolgreich geunvotet"
 };
 
 /*

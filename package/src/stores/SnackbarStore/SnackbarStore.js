@@ -16,6 +16,7 @@ export class SnackbarStore {
     @observable openCommentFail = false;
 
     @observable openVoteSuccess = false;
+    @observable openUnVoteSuccess = false;
     @observable openVoteFail = false;
 
     @observable openChangeUserDataSuccess = false;
